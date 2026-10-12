@@ -1,0 +1,30 @@
+@page{size:auto;margin:12mm}
+@media print{
+  html,body{height:auto!important;margin:0!important;padding:0!important;background:white!important;color:#302e32!important}
+  html{scroll-behavior:auto}
+  body>:not(#print-root){display:none!important}
+  #print-root{display:block!important;position:static!important;width:100%!important;margin:0!important;padding:0!important;visibility:visible!important}
+  #print-root *{visibility:visible!important;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-page{display:flex;flex-direction:column;min-height:240mm;width:100%;break-inside:avoid;page-break-inside:avoid;break-after:page;page-break-after:always;padding:5mm 7mm}
+  .print-page:last-child{break-after:auto;page-break-after:auto}
+  .print-page .game-sheet{border:0!important;box-shadow:none!important;width:100%!important;max-width:none!important;padding:0!important;height:auto;transform:none!important}
+  .print-page .print-topline{font-size:10pt;padding-bottom:5mm}
+  .print-page .game-sheet h4{font-size:39pt;margin:12mm 0 3mm}
+  .print-page .sheet-subtitle{font-size:10pt;margin-bottom:10mm}
+  .print-page .bingo-board{margin:0 auto;max-width:175mm}
+  .print-page .bingo-cell{min-height:25mm;font-size:11pt;padding:2mm 2.5mm;line-height:1.2;font-weight:600}
+  .print-page .bingo-board[style*="--side:4"] .bingo-cell{min-height:31mm;font-size:12pt}
+  .print-page .bingo-cell.free-cell{font-size:17pt}
+  .print-page .print-footnote{font-size:9pt;margin-top:11mm}
+  .print-page .question-list{margin:8mm 0 0;padding-left:9mm}
+  .print-page .question-list li{font-size:12pt;line-height:1.5;padding:3mm 0;break-inside:avoid}
+  .print-page .scavenger-list{margin-top:9mm;grid-template-columns:1fr 1fr;gap:6mm 9mm}
+  .print-page .scavenger-list li{font-size:12pt;padding-bottom:5mm;break-inside:avoid}
+  .print-page .answer-list{margin-top:7mm}
+  .print-page .answer-list li{padding:2mm 0;font-size:11pt}
+  .print-page .answer-list strong{font-weight:750}
+  .print-page .answer-intro{font-size:11pt;color:#554b50;line-height:1.7}
+  .print-page .print-how-to{margin-top:auto;border-top:1px solid #ddd3cb;padding:5mm 0 0;text-align:center;font-size:9pt;color:#74696e}
+  .print-page .print-how-to strong{color:var(--theme-ink)}
+  .print-page .print-leaf{font-size:18pt;color:var(--theme-ink)}
+}

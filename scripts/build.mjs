@@ -1,0 +1,45 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const output = path.join(root, "dist");
+fs.rmSync(output, { recursive: true, force: true });
+fs.mkdirSync(output, { recursive: true });
+
+const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.html", "styles.css", "print.css", "robots.txt", "_headers"];
+const directories = ["src", "assets", "guides"];
+for (const name of files) fs.copyFileSync(path.join(root, name), path.join(output, name));
+for (const name of directories) fs.cpSync(path.join(root, name), path.join(output, name), { recursive: true });
+
+const siteURL = process.env.PUBLIC_SITE_URL?.trim();
+if (siteURL) {
+  const parsed = new URL(siteURL);
+  if (parsed.protocol !== "https:" || parsed.pathname !== "/" || parsed.search || parsed.hash) {
+    throw new Error("PUBLIC_SITE_URL must be an HTTPS origin with a trailing slash and no path, query or hash.");
+  }
+  const base = parsed.origin;
+  const walk = folder => fs.readdirSync(folder, { withFileTypes: true }).flatMap(item => {
+    const target = path.join(folder, item.name);
+    return item.isDirectory() ? walk(target) : [target];
+  });
+  const html = walk(output).filter(file => file.endsWith(".html") && !file.endsWith("404.html"));
+  for (const file of html) {
+    const relative = path.relative(output, file).split(path.sep).join("/");
+    const slug = relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative;
+    const canonical = base + slug;
+    const safe = canonical.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
+    const source = fs.readFileSync(file, "utf8");
+    if (!source.includes("</head>")) throw new Error("Missing </head>: " + file);
+    fs.writeFileSync(file, source.replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
+  }
+  const urls = html.filter(file => !["privacy.html", "terms.html"].includes(path.relative(output, file).split(path.sep).join("/"))).map(file => {
+    const relative = path.relative(output, file).split(path.sep).join("/");
+    return base + (relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative);
+  });
+  const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    urls.map(url => '  <url><loc>' + url.replaceAll("&", "&amp;") + '</loc></url>').join("\n") + '\n</urlset>\n';
+  fs.writeFileSync(path.join(output, "sitemap.xml"), xml);
+  fs.appendFileSync(path.join(output, "robots.txt"), "Sitemap: " + base + "/sitemap.xml\n");
+}
+console.log("Built static PartyPrint site in dist/" + (siteURL ? " with canonical URLs and sitemap." : ". Set PUBLIC_SITE_URL after choosing the live domain."));
