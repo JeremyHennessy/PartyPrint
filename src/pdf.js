@@ -106,9 +106,22 @@ export function createPDF(pack, format, jsPDF, fontData, progress = () => {}) {
       if (answerKey) { font(size, ink); doc.text(entry.answer, left + 18, top, {lineHeightFactor:1.35}); top += entry.answer.length * size * 1.35; }
       top += 10;
     }
-    footer(answerKey ? "HOST COPY · Do not hand out until the round is complete." : "Host reads each question. Players write their answers on the back or on separate paper.");
+    footer(answerKey ? "HOST COPY · Do not hand out until the round is complete." : pack.config.answerCount ? "Host reads each question. Players use the included guest answer sheets." : "Host reads each question. Players write their answers on the back or on separate paper.");
   }
-  if (pack.trivia.length) { questionSheet(false); questionSheet(true); }
+  if (pack.trivia.length) {
+    questionSheet(false);
+    for (let copy = 0; copy < pack.config.answerCount; copy++) {
+      const y = start("my trivia answers", "Name / team: __________________________");
+      const spacing = Math.min(36, (height - 145 - y) / pack.trivia.length);
+      pack.trivia.forEach((_, i) => {
+        const top = y + (i + 1) * spacing;
+        font(11); doc.text(String(i + 1) + ".", left, top);
+        doc.setDrawColor("#bbb0aa"); doc.setLineWidth(.5); doc.line(left + 25, top + 2, right, top + 2);
+      });
+      footer("Write one answer per line. Wait until the host finishes before checking the answers.");
+    }
+    questionSheet(true);
+  }
   if (pack.scavenger.length) {
     const y = start("find & seek", "Spot each item · Tick it off · Have fun!");
     const gap = 24, colWidth = (contentWidth - gap) / 2;

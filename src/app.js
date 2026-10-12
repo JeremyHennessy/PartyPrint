@@ -10,6 +10,7 @@ const message = $("form-message");
 const tabs = Array.from(document.querySelectorAll("[data-preview]"));
 const printButton = $("print-button");
 let activeTab = "bingo";
+let previewCardIndex = 0;
 let currentPack = null;
 let printablePack = null;
 let editorScrollY = 0;
@@ -31,6 +32,7 @@ function readConfig() {
     promptSource: $("prompt-source").value,
     title: $("party-title").value,
     count: $("guest-count").value,
+    answerCount: $("trivia-answer-count").value,
     size: $("card-size").value,
     games: {
       bingo: $("game-bingo").checked,
@@ -84,6 +86,11 @@ function answersHTML(pack) {
     ).join("")}</ol>` + sheetEnd("A LITTLE KNOWLEDGE GOES A LONG WAY ✳");
 }
 
+function guestAnswersHTML(pack) {
+  return sheetStart(pack, "my trivia answers", "Name / team: __________________________") +
+    `<ol class="guest-answer-lines">${pack.trivia.map(() => "<li><span></span></li>").join("")}</ol>` + sheetEnd("12 QUESTIONS · ONE POINT PER CORRECT ANSWER");
+}
+
 function scavengerHTML(pack, isPreview = false) {
   const items = isPreview ? pack.scavenger.slice(0, 8) : pack.scavenger;
   return sheetStart(pack, "find & seek", "Spot each item · Tick it off · Have fun!") +
@@ -100,7 +107,8 @@ function printPages(pack) {
   }
   if (pack.trivia.length) {
     pages.push(`<article class="print-page">${triviaHTML(pack)}
-      <p class="print-how-to">Host reads each question. Players write their answers on the back or on separate paper.</p></article>`);
+      <p class="print-how-to">${pack.config.answerCount ? "Host reads each question. Players use the included guest answer sheets." : "Host reads each question. Players write their answers on the back or on separate paper."}</p></article>`);
+    for (let i = 0; i < pack.config.answerCount; i++) pages.push(`<article class="print-page">${guestAnswersHTML(pack)}<p class="print-how-to">Write one answer per line. Wait until the host finishes before checking the answers.</p></article>`);
     pages.push(`<article class="print-page">${answersHTML(pack)}
       <p class="print-how-to">HOST COPY · Do not hand out until the round is complete.</p></article>`);
   }
@@ -113,6 +121,8 @@ function printPages(pack) {
 
 function displayError(text) {
   currentPack = null;
+  $("card-navigation").hidden = true;
+  $("expand-preview").disabled = true;
   printRoot.innerHTML = "";
   printablePack = null;
   message.textContent = text;
@@ -125,6 +135,7 @@ function displayError(text) {
 
 function render() {
   clearPDF();
+  $("trivia-sheets-field").hidden = !$("game-trivia").checked;
   $("bingo-mode-field").hidden = $("occasion").value !== "baby" || !$("game-bingo").checked;
   $("bingo-mode-help").textContent = $("bingo-mode").value === "gifts" ? "Mark gifts as the guest of honor opens them." : "Mark things guests say or do during the celebration.";
   try {
@@ -147,10 +158,9 @@ function render() {
       tab.tabIndex = type === activeTab ? 0 : -1;
     }
     stage.setAttribute("aria-labelledby", "tab-" + activeTab);
-    if (activeTab === "bingo") stage.innerHTML = bingoHTML(pack, pack.bingoCards[0]);
-    else if (activeTab === "trivia") stage.innerHTML = triviaHTML(pack, true);
-    else stage.innerHTML = scavengerHTML(pack, true);
-    const extras = [pack.trivia.length && "trivia", pack.scavenger.length && "scavenger hunt"].filter(Boolean);
+    previewCardIndex = Math.min(previewCardIndex, Math.max(0, pack.bingoCards.length - 1));
+    renderPreview();
+    const extras = [pack.trivia.length && "trivia", pack.config.answerCount && pack.config.answerCount + " answer sheets", pack.scavenger.length && "scavenger hunt"].filter(Boolean);
     const parts = [
       pack.bingoCards.length ? pack.bingoCards.length + " bingo card" + (pack.bingoCards.length === 1 ? "" : "s") : "",
       ...extras
@@ -161,6 +171,36 @@ function render() {
     displayError(error.message || "Please check your party settings.");
   }
 }
+
+function renderPreview() {
+  const pack = currentPack;
+  if (!pack) return;
+  for (const tab of tabs) {
+    tab.setAttribute("aria-selected", String(tab.dataset.preview === activeTab));
+    tab.tabIndex = tab.dataset.preview === activeTab ? 0 : -1;
+  }
+  stage.setAttribute("aria-labelledby", "tab-" + activeTab);
+  stage.innerHTML = activeTab === "bingo" ? bingoHTML(pack, pack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(pack, true) : scavengerHTML(pack, true);
+  $("expand-preview").disabled = false;
+  $("card-navigation").hidden = activeTab !== "bingo" || pack.bingoCards.length < 2;
+  $("card-position").textContent = "Card " + (previewCardIndex + 1) + " / " + pack.bingoCards.length;
+  $("previous-card").disabled = previewCardIndex === 0;
+  $("next-card").disabled = previewCardIndex >= pack.bingoCards.length - 1;
+}
+for (const [id, direction] of [["previous-card", -1], ["next-card", 1]]) $(id).addEventListener("click", () => {
+  if (!currentPack) return;
+  previewCardIndex = Math.max(0, Math.min(currentPack.bingoCards.length - 1, previewCardIndex + direction));
+  renderPreview();
+});
+$("expand-preview").addEventListener("click", () => {
+  if (!currentPack) return;
+  $("full-sheet").innerHTML = activeTab === "bingo" ? bingoHTML(currentPack, currentPack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(currentPack) : scavengerHTML(currentPack);
+  $("sheet-dialog").showModal();
+  $("sheet-dialog").scrollTop = 0;
+  $("close-sheet").focus({preventScroll:true});
+});
+$("close-sheet").addEventListener("click", () => $("sheet-dialog").close());
+$("sheet-dialog").addEventListener("close", () => { $("full-sheet").innerHTML = ""; });
 
 function preparePrint() {
   if (!currentPack) return false;
@@ -177,6 +217,7 @@ function restoreFromURL() {
   $("occasion").value = config.occasion;
   $("bingo-mode").value = config.bingoMode;
   $("guest-count").value = config.count;
+  $("trivia-answer-count").value = config.answerCount;
   $("card-size").value = config.size;
   $("game-bingo").checked = config.games.bingo;
   $("game-trivia").checked = config.games.trivia;
@@ -211,7 +252,7 @@ for (const tab of tabs) {
   tab.addEventListener("click", () => {
     if (tab.disabled) return;
     activeTab = tab.dataset.preview;
-    render();
+    renderPreview();
   });
   tab.addEventListener("keydown", event => {
     if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
@@ -221,7 +262,7 @@ for (const tab of tabs) {
     event.preventDefault();
     const next = available[(index + (event.key === "ArrowRight" ? 1 : -1) + available.length) % available.length];
     activeTab = next.dataset.preview;
-    render();
+    renderPreview();
     next.focus();
   });
 }

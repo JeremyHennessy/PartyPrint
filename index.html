@@ -110,6 +110,7 @@
                 <label class="toggle-card"><input id="game-trivia" type="checkbox" checked><span class="toggle-icon">?</span><span>Trivia</span><span class="toggle-check">✓</span></label>
                 <label class="toggle-card"><input id="game-scavenger" type="checkbox" checked><span class="toggle-icon">⌕</span><span>Scavenger</span><span class="toggle-check">✓</span></label>
               </div></fieldset>
+              <div class="field-group" id="trivia-sheets-field"><label for="trivia-answer-count">Guest trivia answer sheets</label><input id="trivia-answer-count" type="number" min="0" max="48" value="0" inputmode="numeric"><small>Optional: 0–48 copies with space for 12 answers. The host key stays separate.</small></div>
               <fieldset class="field-group theme-field"><legend>Set the mood</legend><div class="theme-choices" id="theme-choices">
                 <label class="theme-choice"><input type="radio" name="theme" value="peach" checked><span class="theme-swatch" style="--swatch:#f5bda8"></span><span>Peachy</span></label>
                 <label class="theme-choice"><input type="radio" name="theme" value="sage"><span class="theme-swatch" style="--swatch:#acbc9c"></span><span>Garden</span></label>
@@ -128,6 +129,7 @@
               <button type="button" role="tab" aria-selected="false" id="tab-scavenger" aria-controls="preview-stage" data-preview="scavenger">Scavenger hunt</button>
             </div>
             <div id="preview-stage" class="preview-stage" role="tabpanel" aria-labelledby="tab-bingo" tabindex="0"><div class="preview-loading">Creating a little magic…</div></div>
+            <div class="preview-controls"><div id="card-navigation" hidden><button type="button" id="previous-card" aria-label="Previous bingo card">←</button><span id="card-position" aria-live="polite"></span><button type="button" id="next-card" aria-label="Next bingo card">→</button></div><button type="button" id="expand-preview">Read full sheet ↗</button></div>
             <div class="preview-bottom">
               <div><strong id="pack-summary">12 unique cards + 2 games</strong><small id="page-summary">Ready for your printer</small></div>
               <button type="button" id="shuffle-button" class="shuffle-button">↻ Mix it up</button>
@@ -175,6 +177,7 @@
     <p id="iphone-print-help" hidden><strong>On iPhone or iPad:</strong> tap your browser’s Share button, then <strong>Print</strong>. To save a PDF, use the Share button in the print preview and choose <strong>Save to Files</strong>. If this site is inside another app, open PartyPrint in Safari and create your pack there.</p>
     <p id="desktop-print-help">Use the button above, or your browser’s Print menu. Choose Letter or A4, portrait orientation, and turn off browser headers and footers.</p>
   </section>
+  <dialog id="sheet-dialog" aria-labelledby="sheet-dialog-heading"><div class="sheet-dialog-toolbar"><h2 id="sheet-dialog-heading">Full printable preview</h2><button type="button" id="close-sheet">Close ×</button></div><p>Full content preview. Download the PDF for the final paper layout.</p><p class="sheet-swipe-help">On a narrow screen, swipe sideways across the sheet to read every column.</p><div id="full-sheet" tabindex="0" role="region" aria-label="Scrollable full printable"></div></dialog>
   <div id="print-root" aria-hidden="true"></div>
   <script type="module" src="./src/app.js"></script>
 </body>

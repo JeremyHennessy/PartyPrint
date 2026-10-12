@@ -33,6 +33,7 @@ const cases = [
   {name:'maximum-quick',count:48,size:4,games:'bingo',theme:'blue'},
   {name:'unbroken-text',count:1,size:4,games:'bingo',theme:'lilac',unbroken:true},
 ];
+cases.push({name:'guest-answers',count:1,size:5,games:'bingo,trivia,scavenger',theme:'sage',answers:12},{name:'maximum-answers',count:1,size:5,games:'trivia',theme:'blue',answers:48,long:true});
 const results = [];
 try {
   const page = await browser.newPage({ viewport: {width:1440,height:1000} });
@@ -149,7 +150,37 @@ try {
   const words = await page.locator('#custom-prompts').inputValue();
   assert.match(words, /Diapers/);
   assert.equal(await page.locator('#prompt-source').inputValue(), 'replace');
-  const before = await page.locator('.bingo-board').innerText();
+  const firstCard = await page.locator('#preview-stage .bingo-board').innerText();
+  await page.locator('#next-card').click();
+  assert.match(await page.locator('#card-position').innerText(), /Card 2/);
+  assert.notEqual(await page.locator('#preview-stage .bingo-board').innerText(),firstCard);
+  await page.locator('#previous-card').click();
+  assert.equal(await page.locator('#preview-stage .bingo-board').innerText(),firstCard);
+  await page.locator('#pdf-button').click();
+  await page.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
+  await page.locator('#next-card').click();
+  assert.ok(await page.locator('#pdf-result').isVisible(),'Preview navigation must retain the prepared PDF');
+  for (const width of [320,390,1440]) {
+    await page.setViewportSize({width,height:844});
+    await page.locator('#expand-preview').click();
+    assert.ok(await page.locator('#close-sheet').evaluate(n=>{const r=n.getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight;}),'Modal close control must be visible');
+    assert.equal(await page.locator('#full-sheet .bingo-cell').count(),25);
+    assert.ok(await page.locator('#full-sheet .bingo-cell').first().evaluate(n=>n.getBoundingClientRect().width>=90 && parseFloat(getComputedStyle(n).fontSize)>=12),'Expanded cells must remain readable');
+    assert.ok(await page.evaluate(()=>document.querySelector('#sheet-dialog').scrollWidth <= document.querySelector('#sheet-dialog').clientWidth),'Modal overflow');
+    await page.locator('#sheet-dialog').screenshot({path:path.join(output,`full-sheet-${width}.png`)});
+    await page.keyboard.press('Escape');
+    assert.ok(await page.locator('#expand-preview').evaluate(n=>n===document.activeElement));
+  }
+  await page.locator('#guest-count').fill('1');
+  assert.ok(await page.locator('#card-navigation').isHidden());
+  await page.locator('#guest-count').fill('12');
+  await page.locator('#game-trivia').check();
+  await page.locator('#tab-trivia').click();
+  await page.locator('#expand-preview').click();
+  assert.equal(await page.locator('#full-sheet .question-list li').count(),12);
+  await page.locator('#close-sheet').click();
+  await page.locator('#game-trivia').uncheck();
+  const before = await page.locator('#preview-stage .bingo-board').innerText();
   await page.locator('#shuffle-button').click();
   assert.equal(await page.locator('#custom-prompts').inputValue(), words);
   assert.notEqual(await page.locator('.bingo-board').innerText(), before);
@@ -164,7 +195,7 @@ try {
   await page.keyboard.press('ArrowRight');
   assert.equal(await page.locator('#tab-trivia').getAttribute('aria-selected'),'true');
   for (const test of cases) {
-    await page.goto(base + '?' + new URLSearchParams({occasion:test.occasion || 'baby',mode:test.mode || 'moments',count:test.count,size:test.size,games:test.games,theme:test.theme}));
+    await page.goto(base + '?' + new URLSearchParams({occasion:test.occasion || 'baby',mode:test.mode || 'moments',count:test.count,size:test.size,games:test.games,theme:test.theme,answers:test.answers || 0}));
     await page.waitForSelector('.bingo-board, .question-list, .scavenger-list');
     if (test.long || test.unbroken) {
       await page.locator('#party-title').fill(test.unbroken ? 'W'.repeat(70) : 'Celebrating Alexandra & Christopher’s wonderful new adventure — welcome!');
@@ -175,9 +206,16 @@ try {
     for (const format of ['Letter','A4']) {
       const file = `${test.name}-${format}.pdf`;
       await page.pdf({path:path.join(output,file),format,printBackground:true,displayHeaderFooter:false});
-      const expected = (test.games.includes('bingo') ? test.count : 0) + (test.games.includes('trivia') ? 2 : 0) + (test.games.includes('scavenger') ? 1 : 0);
+      const expected = (test.games.includes('bingo') ? test.count : 0) + (test.games.includes('trivia') ? 2 + (test.answers || 0) : 0) + (test.games.includes('scavenger') ? 1 : 0);
       const pages = await page.locator('#print-root .print-page').evaluateAll(nodes => nodes.map(node => { const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT); const parts = []; while (walker.nextNode()) parts.push(walker.currentNode.textContent); return parts.join(' '); }));
       assert.equal(pages.length, expected, 'Missing logical sheets');
+      if (test.answers) {
+        const guestSheets=page.locator('#print-root .print-page').filter({has:page.locator('.guest-answer-lines')});
+        assert.equal(await guestSheets.count(),test.answers);
+        assert.equal(await guestSheets.first().locator('li').count(),12);
+        assert.equal(await guestSheets.first().locator('.answer-list,.question-list').count(),0,'Guest sheets must not expose questions or host answers');
+        assert.equal(await page.locator('#print-root .answer-list').count(),1,'Only one host key');
+      }
       results.push({file,format,expectedPages:expected,expectedText:pages.map(text=>text.replace(/\s+/g,' ').trim())});
       console.log(`${file}: ${pages.length} expected pages`);
       // Exercise the real file-download controls, not just a renderer API.

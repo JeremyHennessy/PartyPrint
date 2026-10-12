@@ -7,9 +7,10 @@ A cheerful free party-game studio for baby showers, bridal showers, birthdays, o
 ## Features
 
 - Live studio: pick an occasion, choose a printable design and a 4×4 or 5×5 bingo board, and generate 1–48 independently shuffled cards.
-- Curated bingo, 12-question trivia with a separate answer key, and 12-item scavenger hunts.
+- Curated bingo, 12-question trivia with a separate host key and optional 0–48 guest answer sheets, and 12-item scavenger hunts.
 - Baby shower gift-opening or party-moment bingo. Edit the full curated list, replace it entirely, or add up to 80 of your own bingo prompts, preview any game, and shuffle again.
 - Real on-device **Download PDF** export with Letter/A4, embedded fonts, Save PDF, Open PDF and supported file sharing. Browser-native **Print games** remains a separate option.
+- Browse every guest’s bingo card and open an upright full-content preview; narrow screens can scroll across the enlarged sheet. Preview navigation preserves prepared PDF files.
 - Share generic game settings via URL. No party title, personal name or custom prompts are embedded.
 - Four original guides plus accessible mobile UI, legal pages and SEO-friendly HTML.
 
