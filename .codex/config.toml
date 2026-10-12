@@ -1,0 +1,6 @@
+# PartyPrint's project-scoped Cloudflare MCP connection for Codex.
+# Codex reads this file only when this repository is marked trusted.
+# Authentication is user-specific and must be completed through OAuth;
+# no tokens or credentials belong in this repository.
+[mcp_servers.cloudflare]
+url = "https://mcp.cloudflare.com/mcp"
