@@ -1,5 +1,15 @@
 # Launch and revenue guardrails
 
+## Current continuation record — 2026-10-12
+
+This section supersedes historical blockers and next-task lists below. Starting main: `f978a8c7f3be624e029685e35140b4971e683737`; verified Pages deployment `76c1ecf4-7a23-443c-b412-fba6b4ee6fa0`; production https://partyprint-5xv.pages.dev/. Main Actions 38305393363 passed. Search Console ownership is complete; homepage indexed. Four guides are unknown to Google; baby and office guides passed actual live tests. Indexing request hit Google daily quota. Sitemap report still could not fetch; six public URLs return 200 with matching canonicals and no HTML noindex. Performance data is processing, not measured zero traffic.
+
+This release restores the owner-supplied printer artwork in navigation and displays its complete logo and tagline in the footer. Existing guide/social assets, games, PDF export and hosting are preserved. Exact release SHA/checks/deployment evidence will be recorded in the release PR. Original artwork stays intact.
+
+Outstanding: actual Safari and physical printer acceptance, sitemap processing and guide indexing, authenticated aggregate traffic baseline. No ads, affiliate links, payments or measured revenue. Next three tasks: (1) retry indexing after quota reset and diagnose sitemap using real fetch evidence; (2) real Safari/Letter/A4 printer checks and establish analytics baseline; (3) prepare one coordinated baby-shower premium sample without enabling payments.
+
+Older sections below are historical evidence, not current setup instructions.
+
 ## Google Search Console — verified ownership, sitemap read outstanding — 2026-10-12
 
 Completed: owner signed in to the controlled browser; URL-prefix property https://partyprint-5xv.pages.dev/ created; Google's public HTML tag deployed; Google displayed **Ownership verified** using **HTML tag**. Keep the homepage tag permanently. No DNS change, additional tracking or security-setting change was made.
