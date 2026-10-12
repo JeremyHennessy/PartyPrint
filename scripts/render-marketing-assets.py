@@ -142,6 +142,30 @@ def main(pdfs,output):
             save(portrait(key,sheet),dest);files.append(dest.name)
         result["assets"][key]={"source_pdf":source,"page":1,"source_sha256":digest,"text_sample":sample,"files":files}
         for f in files:print(f, (output/f).stat().st_size)
+    # Homepage preview combines three authentic generated sheets rather than
+    # depicting the site as exclusively a baby shower generator.
+    home=Image.new("RGBA",(1200,630),"#fff6ec")
+    background=ImageDraw.Draw(home)
+    background.ellipse((845,-100,1450,590),fill="#f1e5dc")
+    background.ellipse((-160,460,230,850),fill="#f6dfd5")
+    confetti(home)
+    brand(background,60,58,1.5)
+    pill(background,"FREE PRINTABLE PARTY GAMES",62,140,WHITE,CORAL,16)
+    fitted(background,"Good times.",62,217,680,64,INK,"serif")
+    fitted(background,"Great games.",62,304,700,63,CORAL,"serif")
+    fitted(background,"Bingo, trivia and scavenger hunts.",64,410,640,21,INK,"body")
+    roundbox(background,60,503,538,60,INK,29)
+    fitted(background,"Create your free game kit at PartyPrint",79,517,496,20,WHITE,"bold")
+    sheets=[
+        pdf_image(pdfs/DATA["bridal"][0])[0],
+        pdf_image(pdfs/DATA["birthday"][0])[0],
+        pdf_image(pdfs/DATA["baby"][0])[0],
+    ]
+    overlay_sheet(home,sheets[0],938,50,265,380,14)
+    overlay_sheet(home,sheets[1],864,173,340,486,-7)
+    overlay_sheet(home,sheets[2],752,-55,370,530,8)
+    save(home.convert("RGB"),output/"og-home.jpg")
+    result["assets"]["home"]={"source_pdfs":[DATA[k][0] for k in ("baby","bridal","birthday")],"files":["og-home.jpg"]}
     (output/"provenance.json").write_text(json.dumps(result,indent=2)+"\n")
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
