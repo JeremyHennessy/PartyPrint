@@ -8,7 +8,7 @@ fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
 const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.html", "styles.css", "print.css", "robots.txt", "_headers"];
-const directories = ["src", "assets", "guides"];
+const directories = ["src", "assets", "guides", "collections"];
 for (const name of files) fs.copyFileSync(path.join(root, name), path.join(output, name));
 for (const name of directories) fs.cpSync(path.join(root, name), path.join(output, name), { recursive: true });
 // Only the self-contained PDF engine is shipped, loaded on demand by the exporter.
@@ -36,6 +36,7 @@ if (siteURL) {
     let source = fs.readFileSync(file, "utf8");
     // Product-specific social previews; PNG is deliberate for major social crawlers.
     const shareImages = {
+      "collections/a-little-love/index.html": ["kits/prediction-preview.png", "Two printable baby prediction cards from the free sample collection", 696, 900],
       "index.html": ["partyprint-social.png", "PartyPrint free printable party games — bingo, trivia and scavenger hunts", 1200, 630],
       "guides/baby-shower-bingo/index.html": ["baby-shower-gift-bingo.png", "Example of a printable baby shower gift-opening bingo card", 850, 1100],
       "guides/bridal-shower-games/index.html": ["guide-bridal.png", "Illustrated bridal shower trivia printable", 720, 420],
