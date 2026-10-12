@@ -37,7 +37,7 @@ try {
     // Lazy-loaded images below the fold are not guaranteed to be fetched at "load".
     // Request them explicitly; this tests asset availability rather than scroll timing.
     await page.evaluate(async () => {
-      const images = [...document.querySelectorAll(".guide-image img, .editorial-preview img")];
+      const images = [...document.querySelectorAll(".occasion-art img, .guide-image img, .editorial-preview img")];
       images.forEach(img => { img.loading = "eager"; });
       await Promise.all(images.map(img => img.decode().catch(() => null)));
     });
@@ -51,6 +51,8 @@ try {
       const a = header.getBoundingClientRect();
       const b = navCTA.getBoundingClientRect();
       const images = [...document.querySelectorAll(".guide-image img, .editorial-preview img")];
+      const icons = [...document.querySelectorAll(".occasion-art img")];
+      const sourceImgs = [...document.querySelectorAll(".guide-image img, .editorial-preview img")].map(img => img.getAttribute("src"));
       return {
         scrollWidth: document.documentElement.scrollWidth, viewport: window.innerWidth,
         hasName: header.textContent.toLowerCase().replace(/\s/g, "").includes("partyprint"),
@@ -60,6 +62,9 @@ try {
         touch: touch?.getAttribute("href") || "",
         overlap: a.right > b.left + 1,
         imageCount: images.length,
+        sourceImgs,
+        iconCount: icons.length,
+        allIconsLoaded: icons.every(img => img.complete && img.naturalWidth > 0),
         allArtLoaded: images.every(img => img.complete && img.naturalWidth > 0)
       };
     });
@@ -71,6 +76,14 @@ try {
     assert.ok(result.scrollWidth <= result.viewport + 2, name + " horizontal overflow at " + width);
     assert.equal(result.overlap, false, name + " header collision at " + width);
     assert.equal(result.allArtLoaded, true, name + " guide asset loading and decoding");
+    assert.equal(result.allIconsLoaded, true, name + " occasion asset loading");
+    if (name === "home") {
+      assert.equal(result.iconCount, 6, "Six vector occasion icons");
+      assert.ok(result.sourceImgs.every(src => src.includes("/assets/marketing/preview-")), "Homepage marketing cards must use real-PDF-derived images");
+    }
+    if (["bridal","office","birthday"].includes(name)) {
+      assert.ok(result.sourceImgs.some(src => src.includes("/assets/marketing/preview-")), "Guide missing real-PDF-derived preview");
+    }
     if (name === "home" && width <= 390) {
       // Test actual transformed paper bounds, not just the parent container;
       // the previous -110px margin visually covered the trust copy on phones.
