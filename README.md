@@ -55,6 +55,8 @@ Manual QA remains required: Chromium, Firefox, Safari and iPhone; 4×4 and 5×5 
 
 ## Monetization (NOT enabled)
 
+AdSense ownership verification uses the real publisher meta tag and root ads.txt. Neither loads ad scripts. Site review/approval and consent remain required before restrained manual ad placements; see docs/LAUNCH_PLAN.md.
+
 1. Launch useful free tools and original hosting guides; connect Google Search Console once a real domain is confirmed.
 2. Measure actual traffic, indexing and utility. Add approved analytics only with updated privacy notice and applicable consent mechanisms.
 3. Apply for an ad network when content and traffic justify it. Place minimal ads away from controls and printable sheets; do not add placeholder ads to low-value pages. Follow the network's policies and certified CMP/consent rules for applicable geographies.

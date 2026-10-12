@@ -1,5 +1,19 @@
 # Launch and revenue guardrails
 
+## AdSense readiness and restrained launch policy — 2026-10-12
+
+Current baseline reconciles newer authentic-preview work at `c6bb6367a4fb72e8889a3aa2430babf6a48f72b4`. Owner completed AdSense enrollment after automatic approval review blocked agent enrollment. The actual dashboard lists PartyPrint with Requires review and real publisher `pub-5463991523233853`; payment information remains Required. Site acceptance in the account is confirmed, not publisher approval.
+
+Deploy the exact dashboard-provided homepage ownership meta tag and root ads.txt. These public ownership identifiers are not login credentials. No ad runtime, cookies, consent collection or CSP/security changes. Verify the public tag/ads.txt before clicking Verify and requesting review; production evidence and Google result are recorded in the release PR. No ads are activated by this release.
+
+Ad policy for eventual activation: begin with one manually placed unit after guide content; at most one additional distant editorial placement after observing performance. No generator/preview/download-ad adjacency, no popups, anchor overlays, vignette/interstitial ads or Auto ads expansion. Never include ads in browser prints, exported PDFs or static download packs. Reserve responsive space and test layout shifts, keyboard access and real file delivery. Advertising activation requires actual site Ready status, publisher/unit IDs, updated privacy disclosure and applicable consent configuration.
+
+Prefer Google's certified Privacy & messaging CMP where appropriate, with clear Consent / Manage options / Do not consent controls. EEA/UK/Swiss requirements and other visitor-region rules must be checked at activation; nonpersonalized ads do not automatically remove cookie-consent obligations. Current privacy page correctly says ads are absent and stays accurate until implementation. Sources: [site verification](https://support.google.com/adsense/answer/12169212?hl=en), [site/subdomain rules](https://support.google.com/adsense/answer/12170421?hl=en), [publisher consent requirements](https://support.google.com/adsense/answer/13554116?hl=en).
+
+Observed analytics are 150 pageviews/124 visits in a same-day window heavily affected by QA and owner use. All recorded referrals are absent; these are not proven organic customers or a revenue forecast. Google Search Console is processing; its sitemap read and indexing quota remain unresolved. Real iPhone Safari and physical printers remain independent owner/device checks. Next: finish publisher account, verify real ownership ID and request review; establish a later traffic window; address only reproduced current-release layout shifts.
+
+
+
 ## Real product-imagery pass — October 12, 2026
 
 This visual improvement was prepared from the current main baseline 9d102a42ad1663565ffb4153b1cc0843c3c01526, including the free coordinated baby-shower collection merged by PR #15. The owner-restored printer logo, header, footer, favicon, existing PDFs, private answer sheets, Cloudflare Pages and Search Console verification are intentionally preserved.

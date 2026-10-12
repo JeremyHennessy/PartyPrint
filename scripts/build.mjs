@@ -7,7 +7,7 @@ const output = path.join(root, "dist");
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
-const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.html", "styles.css", "print.css", "robots.txt", "_headers"];
+const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.html", "styles.css", "print.css", "robots.txt", "ads.txt", "_headers"];
 const directories = ["src", "assets", "guides", "collections"];
 for (const name of files) fs.copyFileSync(path.join(root, name), path.join(output, name));
 for (const name of directories) fs.cpSync(path.join(root, name), path.join(output, name), { recursive: true });
