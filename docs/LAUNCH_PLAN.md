@@ -1,11 +1,16 @@
 # Launch and revenue guardrails
 
-## Google Search Console ownership setup — 2026-10-12
+## Google Search Console — verified ownership, sitemap read outstanding — 2026-10-12
 
-Owner signed in to Search Console in the controlled browser. Created the URL-prefix property https://partyprint-5xv.pages.dev/ and obtained Google's HTML verification tag for that account. The tag is public ownership proof, not a login credential; it must remain in the homepage head to retain verification. Publishing this tag requires no DNS change or extra analytics script. Once the tagged production homepage is confirmed, complete Google's Verify action and submit https://partyprint-5xv.pages.dev/sitemap.xml. Final verification outcome, sitemap status and exact deployed release are recorded in the Search Console release PR. Property creation/sitemap submission do not prove indexing, rankings or traffic; initial reports may contain no data.
+Completed: owner signed in to the controlled browser; URL-prefix property https://partyprint-5xv.pages.dev/ created; Google's public HTML tag deployed; Google displayed **Ownership verified** using **HTML tag**. Keep the homepage tag permanently. No DNS change, additional tracking or security-setting change was made.
 
-Reconciled newer brand-assets work at main `38dd2aaa81163486afe4c7e48cad5680bd5fc761`, production Pages deployment `f562c80c-1ed8-4094-98e2-c187c772a9a2`. Preserve that work and existing deployment/analytics/privacy configuration. Next steps after ownership: inspect indexing status and measured search performance, then prioritize substantive content from actual queries. Revenue and organic growth remain unmeasured.
+Release [PR #11](https://github.com/JeremyHennessy/PartyPrint/pull/11): exact tested head `e4cee6b3c6fde73f8bf433237d43edecca7b9880`, merged main `f640836f305840d0ee98ce811ff6b4fa54c27ca6`, successful Pages production deployment `028511e6-c25c-46cf-975d-75b948499509`; [main Actions 38304251276](https://github.com/JeremyHennessy/PartyPrint/actions/runs/38304251276) green. The exact verification tag was independently confirmed inside the public homepage head with HTTP 200 before clicking Verify. Newer brand work at `38dd2aaa81163486afe4c7e48cad5680bd5fc761` and mobile-hero fix at `4f3a6590914396df0a71df8e5ab968d9eeebe03b` were reconciled and preserved.
 
+Submitted https://partyprint-5xv.pages.dev/sitemap.xml. Google confirmed **Sitemap submitted successfully**, but the report shows **Couldn't fetch / Sitemap could not be read**, zero discovered pages. One resubmission after checking the public endpoint produced the same report. Public sitemap is valid six-URL XML, HTTP 200, application/xml; robots.txt is HTTP 200 and allows crawling. This remains an unresolved Google sitemap-read result; submission is not successful processing, and the report's zero discovery is not a site-traffic measurement. Do not repeatedly resubmit or alter security controls without evidence.
+
+Confirmed separately in Google URL Inspection: the homepage shows **URL is on Google / Page is indexed**. Google's live test shows **URL is available to Google / Page can be indexed**. Other pages' indexing has not been checked; search performance and aggregate indexing reports are still processing. No traffic, rankings or revenue figures are available. Sitemap-fetch cause is not established by the successful homepage test.
+
+Next three tasks: (1) revisit the sitemap read report and investigate Google's detailed error if it persists; (2) inspect indexing of the four useful guides and actual search queries when reports are ready; (3) use measured discovery to choose substantive content and a low-maintenance premium-pack experiment. No ads, payments or affiliates enabled. Search Console no longer requires owner authentication in the current session.
 
 ## Brand and visual assets refresh — 2026-10-12
 
