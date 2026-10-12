@@ -1,6 +1,6 @@
 # Launch and revenue guardrails
 
-## Completed redirect and Google move — 2026-10-12, 23:49 UTC
+## Completed redirect and Google move — 2026-10-12
 
 Observed main `d2647277e3ad675ab4e46104fa1bf8b008068a5f`; successful Pages production deployment `63c1ad40-85cf-44ef-af22-bdc6a8ea0342`, https://partyprint.live/. Ordinary HTTPS now works and the owner confirms phone access. Enabled the existing migration rule after that prerequisite. Verified legacy production and www return 301 to the primary domain, preserving paths and query parameters; primary returns 200 and the deployment-specific preview remains 200/noindex. No application, DNS, nameserver or security changes were needed.
 
