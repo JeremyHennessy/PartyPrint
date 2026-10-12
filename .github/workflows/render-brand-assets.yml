@@ -6,6 +6,8 @@ on:
     paths:
       - "assets/partyprint-mark.svg"
       - "assets/partyprint-social.svg"
+      - "assets/guide-*.svg"
+      - "scripts/render-brand-assets.py"
       - ".github/workflows/render-brand-assets.yml"
 
 permissions:
@@ -29,7 +31,7 @@ jobs:
         run: python scripts/render-brand-assets.py
       - name: Commit generated assets only to the current feature branch
         run: |
-          git add assets/partyprint-social.png assets/apple-touch-icon.png
+          git add assets/partyprint-social.png assets/apple-touch-icon.png assets/guide-baby.png assets/guide-bridal.png assets/guide-office.png assets/guide-birthday.png
           if ! git diff --cached --quiet; then
             git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "assets: render versioned social and iOS icon PNGs"
             git push origin HEAD:feat/brand-asset-refresh

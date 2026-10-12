@@ -23,5 +23,13 @@ touch = Image.new("RGBA", (180, 180), "#fff9f2")
 touch.alpha_composite(icon, (12, 12))
 touch.convert("RGB").save(ASSETS / "apple-touch-icon.png", optimize=True)
 
-for path in (out, ASSETS / "apple-touch-icon.png"):
+for kind in ("baby", "bridal", "office", "birthday"):
+    source = ASSETS / f"guide-{kind}.svg"
+    target = ASSETS / f"guide-{kind}.png"
+    cairosvg.svg2png(url=str(source), write_to=str(target))
+    preview = Image.open(target).convert("RGB")
+    assert preview.size == (720, 420), (kind, preview.size)
+    preview.quantize(colors=128, dither=Image.Dither.NONE).save(target, optimize=True)
+
+for path in (out, ASSETS / "apple-touch-icon.png", *(ASSETS / f"guide-{x}.png" for x in ("baby", "bridal", "office", "birthday"))):
     print(f"Created {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
