@@ -35,6 +35,11 @@ jobs:
           test -s dist/src/app.js
           test -s dist/guides/baby-shower-bingo/index.html
           test -s dist/_headers
+          test -s dist/assets/partyprint-social.png
+          test -s dist/assets/apple-touch-icon.png
+          test -s dist/assets/guide-birthday.png
+          grep -q 'og:image.*partyprint-social.png' dist/index.html
+          grep -q 'og:image.*guide-bridal.png' dist/guides/bridal-shower-games/index.html
       - name: Browser smoke and print-to-PDF
         run: bash scripts/browser-smoke.sh
       - name: Install PDF inspection tools

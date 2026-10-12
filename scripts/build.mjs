@@ -34,9 +34,17 @@ if (siteURL) {
     const canonical = base + slug;
     const safe = canonical.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
     let source = fs.readFileSync(file, "utf8");
-    if (relative === "index.html") source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/partyprint-logo.jpg"><meta property="og:image:alt" content="PartyPrint — Print Happy Moments"></head>`);
-    if (relative === "guides/baby-shower-bingo/index.html") {
-      source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/baby-shower-gift-bingo.png"><meta property="og:image:alt" content="A printable baby shower gift-opening bingo card"><meta name="twitter:card" content="summary_large_image"></head>`);
+    // Product-specific social previews; PNG is deliberate for major social crawlers.
+    const shareImages = {
+      "index.html": ["partyprint-social.png", "PartyPrint free printable party games — bingo, trivia and scavenger hunts", 1200, 630],
+      "guides/baby-shower-bingo/index.html": ["baby-shower-gift-bingo.png", "Example of a printable baby shower gift-opening bingo card", 850, 1100],
+      "guides/bridal-shower-games/index.html": ["guide-bridal.png", "Illustrated bridal shower trivia printable", 720, 420],
+      "guides/office-party-games/index.html": ["guide-office.png", "Illustrated office party bingo printable", 720, 420],
+      "guides/birthday-party-games/index.html": ["guide-birthday.png", "Illustrated printable birthday party bingo", 720, 420]
+    };
+    if (Object.prototype.hasOwnProperty.call(shareImages, relative)) {
+      const [asset, alt, width, height] = shareImages[relative];
+      source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/${asset}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="${width}"><meta property="og:image:height" content="${height}"><meta property="og:image:alt" content="${alt}"><meta name="twitter:card" content="summary_large_image"></head>`);
     }
     if (!source.includes("</head>")) throw new Error("Missing </head>: " + file);
     fs.writeFileSync(file, source.replace("</body>", '<script defer src="/src/analytics.js"></script></body>').replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
