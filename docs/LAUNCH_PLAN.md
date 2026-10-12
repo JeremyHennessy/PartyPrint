@@ -1,5 +1,12 @@
 # Launch and revenue guardrails
 
+## Google Search Console ownership setup — 2026-10-12
+
+Owner signed in to Search Console in the controlled browser. Created the URL-prefix property https://partyprint-5xv.pages.dev/ and obtained Google's HTML verification tag for that account. The tag is public ownership proof, not a login credential; it must remain in the homepage head to retain verification. Publishing this tag requires no DNS change or extra analytics script. Once the tagged production homepage is confirmed, complete Google's Verify action and submit https://partyprint-5xv.pages.dev/sitemap.xml. Final verification outcome, sitemap status and exact deployed release are recorded in the Search Console release PR. Property creation/sitemap submission do not prove indexing, rankings or traffic; initial reports may contain no data.
+
+Reconciled newer brand-assets work at main `38dd2aaa81163486afe4c7e48cad5680bd5fc761`, production Pages deployment `f562c80c-1ed8-4094-98e2-c187c772a9a2`. Preserve that work and existing deployment/analytics/privacy configuration. Next steps after ownership: inspect indexing status and measured search performance, then prioritize substantive content from actual queries. Revenue and organic growth remain unmeasured.
+
+
 ## Brand and visual assets refresh — 2026-10-12
 
 Initial visual audit started from `main` `aaea6e6b56737ea2454727a459ad35c79dc18640` (merged PR #9). The square owner-supplied artwork was intact, but the navigation cropped its middle band with CSS, the favicon displayed the entire 1,254px JPG, the footer placed a white JPG block on a dark surface, and the guide thumbnails relied on large font glyphs. That made the identity inconsistent and fragile at small sizes. The original JPG is preserved unchanged for rollback/reference; no claim that the replacement design is owner-approved.
