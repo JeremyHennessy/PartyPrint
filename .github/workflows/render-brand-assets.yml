@@ -1,0 +1,36 @@
+name: Temporary brand asset rasterization
+
+on:
+  push:
+    branches: [feat/brand-asset-refresh]
+    paths:
+      - "assets/partyprint-mark.svg"
+      - "assets/partyprint-social.svg"
+      - ".github/workflows/render-brand-assets.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated artwork render tools
+        run: python -m pip install cairosvg==2.8.2 pillow==12.0.0
+      - name: Render PNG assets from committed SVG artwork
+        run: python scripts/render-brand-assets.py
+      - name: Commit generated assets only to the current feature branch
+        run: |
+          git add assets/partyprint-social.png assets/apple-touch-icon.png
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "assets: render versioned social and iOS icon PNGs"
+            git push origin HEAD:feat/brand-asset-refresh
+          fi
