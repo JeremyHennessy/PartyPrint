@@ -2,7 +2,7 @@
 
 A cheerful free party-game studio for baby showers, bridal showers, birthdays, office parties, holidays and game nights.
 
-**Production:** https://partyprint-5xv.pages.dev/ — Git-integrated Cloudflare Pages. See `docs/LAUNCH_PLAN.md` for verified releases and outstanding browser/business work. Revenue services are not enabled.
+**Production:** https://partyprint.live/ — Git-integrated Cloudflare Pages. DNS migration is completing; the previous https://partyprint-5xv.pages.dev/ remains available until redirects are verified. See `docs/LAUNCH_PLAN.md` for verified releases and outstanding browser/business work. Revenue services are not enabled.
 
 ## Features
 
