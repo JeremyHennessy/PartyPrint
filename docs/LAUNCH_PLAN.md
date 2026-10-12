@@ -1,5 +1,16 @@
 # Launch and revenue guardrails
 
+## Real product-imagery pass — October 12, 2026
+
+This visual improvement was prepared from the current main baseline 9d102a42ad1663565ffb4153b1cc0843c3c01526, including the free coordinated baby-shower collection merged by PR #15. The owner-restored printer logo, header, footer, favicon, existing PDFs, private answer sheets, Cloudflare Pages and Search Console verification are intentionally preserved.
+
+The previous guide illustrations were not accurate representations of generated sheets (e.g. miniature grids). A deterministic development-only build now creates authentic PDFs with the shipping core/jsPDF modules and renders them into five thumbnails, five wide OG social cards, and three 2:3 Pinterest-ready images. Original printable contents are visible; marketing crops are disclosed. Six new occasion pictograms replace Unicode decorative symbols. Only targeted low-contrast small explanatory text is adjusted, with the owner logo untouched. All source PDFs, graphic details, dimensional checks and image provenance are documented in docs/MARKETING_ASSETS.md.
+
+Acceptance criteria: core tests and static checks, browser images and mobile layout checks, full 72-document Letter/A4 PDF matrix, exact-head preview success and post-merge production deployment. This section is a work summary, not a claim that indexing, impressions, Pinterest traffic or revenue have been measured. Real iPhone Safari and physical-print checks are still independent.
+
+Sitemap: Search Console reported "Couldn't fetch" even after the site and all six listed URLs were publicly verified as accessible. Google's own sitemap troubleshooting guidance permits transient conditions and low crawl demand; do not repeatedly resubmit or disable Cloudflare protection without evidence. Revisit the specific Search Console error and aggregate performance after processing, keeping the new baby-shower collection indexed separately from generator pages.
+
+
 ## Free baby-shower collection sample — 2026-10-12
 
 Publish a useful free six-page Letter/A4 keepsake sample with a substantive collection page, real printable preview, instructions and direct gift-bingo preset. Includes host plan, two-up predictions/encouragement, gift record and alphabet game. No paid edition, demand claims, prices, checkout, accounts or extra tracking. PDFs were independently checked for six nonblank pages and safe text bounds; all twelve rendered pages visually inspected. Generation source retained at scripts/create-sample-kit.py; Python tools are optional authoring dependencies, not deployment requirements. Real Safari and physical-print acceptance remain outstanding. Exact release evidence is recorded in the release PR.
