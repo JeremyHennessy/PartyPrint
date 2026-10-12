@@ -57,6 +57,7 @@ jobs:
           export CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
           node scripts/print-qa.mjs
           python3 scripts/verify-print.py qa
+          python3 scripts/verify-collection-pdfs.py
       - name: Upload visual QA samples
         if: always()
         uses: actions/upload-artifact@v4
