@@ -1,0 +1,58 @@
+{
+  "generator": "src/core.js + src/pdf.js",
+  "type": "Rendered production PDFs; no fictitious game grids",
+  "assets": {
+    "baby": {
+      "source_pdf": "baby-gift-bingo.pdf",
+      "page": 1,
+      "source_sha256": "532b499eba70a8671ebc65a8d6d89a353c8ae3215b1bc0ca6141a4b8c20df1fd",
+      "text_sample": "PARTYPRINT ORIGINALS \u00b7 BABY SHOWER | Baby Shower Gift Bingo | BINGO! | Mark each gift as it is opened \u00b7 Card 1 of 1 | Baby socks | Bottles | Baby hat | Diaper cream | Baby brush | Play mat",
+      "files": [
+        "preview-baby.jpg",
+        "og-baby.jpg",
+        "pin-baby.jpg"
+      ]
+    },
+    "bridal": {
+      "source_pdf": "bridal-trivia.pdf",
+      "page": 1,
+      "source_sha256": "e6a38671b55fd6070e8e2a68c2fbc9978596498746f3ab2fe8bff74db6d898bb",
+      "text_sample": "PARTYPRINT ORIGINALS \u00b7 BRIDAL SHOWER | Bridal Shower Trivia | trivia time | 12 questions \u00b7 One point per correct answer | 1. What is the traditional name for a 50th wedding anniv",
+      "files": [
+        "preview-bridal.jpg",
+        "og-bridal.jpg",
+        "pin-bridal.jpg"
+      ]
+    },
+    "birthday": {
+      "source_pdf": "birthday-bingo.pdf",
+      "page": 1,
+      "source_sha256": "67bf85f492ca27eac122bf56d86fac534e3ad16b103452f4d4f1cdca970a09b6",
+      "text_sample": "PARTYPRINT ORIGINALS \u00b7 BIRTHDAY PARTY | Birthday Party Bingo | BINGO! | Mark a square when you spot it \u00b7 Card 1 of 1 | A guest makes | everyone laugh | A guest makes a | toast | Someone | ",
+      "files": [
+        "preview-birthday.jpg",
+        "og-birthday.jpg",
+        "pin-birthday.jpg"
+      ]
+    },
+    "office": {
+      "source_pdf": "office-bingo.pdf",
+      "page": 1,
+      "source_sha256": "60a10faa53f425da2103cd0a5d9fe65506d08ccc652fdea6208351a4bac94df9",
+      "text_sample": "PARTYPRINT ORIGINALS \u00b7 OFFICE PARTY | Office Party Bingo | BINGO! | Mark a square when you spot it \u00b7 Card 1 of 1 | A person loses | their phone for a | moment | A guest | introduces two | ",
+      "files": [
+        "preview-office.jpg",
+        "og-office.jpg"
+      ]
+    },
+    "scavenger": {
+      "source_pdf": "scavenger.pdf",
+      "page": 1,
+      "source_sha256": "e228357bdecbee5db99aebd50c848288905c0794368087a54eaadde2fd6bc798",
+      "text_sample": "PARTYPRINT ORIGINALS \u00b7 BABY SHOWER | Party Scavenger Hunt | find & seek | Spot each item \u00b7 Tick it off \u00b7 Have fun! | A picture of an animal | An object in your favorite color | Somet",
+      "files": [
+        "preview-scavenger.jpg"
+      ]
+    }
+  }
+}
