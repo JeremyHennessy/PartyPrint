@@ -1,5 +1,15 @@
 # Launch and revenue guardrails
 
+## Verified printable-domain release — 2026-10-12, 23:15 UTC
+
+Current product main observed: `175dadba8beb7affe410d09ae04386d28a602ca3`, merged [PR #20](https://github.com/JeremyHennessy/PartyPrint/pull/20), exact tested head `f888a35d43cbb2cba53fc294f25ce981d86f589e` passed GitHub verify and Pages. Production deployment `229a828d-9a01-44d0-bcce-4b93a80d93b6` reports success with that main SHA. Both production collection downloads were fetched from the real custom-domain HTTPS endpoint and their SHA-256 hashes match the audited Letter/A4 files. Main Actions [38321002486](https://github.com/JeremyHennessy/PartyPrint/actions/runs/38321002486) was still running at this observation. Documentation-only release [PR #19](https://github.com/JeremyHennessy/PartyPrint/pull/19) also passed and deployed before this product update.
+
+Google's new-domain homepage live test now confirms **URL is available to Google / Page can be indexed**. Google subsequently confirmed **Indexing requested**, added to a priority crawl queue. The indexed report still says URL unknown/not indexed; a request is not indexing success. New sitemap submission remains **Couldn't fetch** at its last read; revisit after DNS cache expiry without repeated submissions. AdSense new site remains verified and **Getting ready / Review requested**; ads remain off. Publisher payment-profile entry remains owner-only.
+
+Primary URL https://partyprint.live/ is deployed with correct canonical/sitemap/social metadata, production-only analytics and updated printable links. Both Pages custom domains are active and DNSSEC validated at a public Cloudflare resolver; however local normal navigation and some sampled public answers still have stale negative DNS caches. **The complete public rollout is not yet verified.** The tested permanent redirect rule is intentionally paused (enabled false); https://partyprint-5xv.pages.dev/ independently returns 200 as the working fallback. Resume redirects only after ordinary new-domain access succeeds. No nameserver, certificate, security or advertising workaround is justified by remaining cache expiry.
+
+Next: (1) verify normal public browser access and remaining resolver cache expiry, then resume/retest redirects; (2) resolve Google's sitemap read and submit Change of Address once redirects are active, without claiming indexing prematurely; (3) owner completes AdSense publisher profile, await genuine approval, then assess consent/disclosures and a restrained ad experiment. Real iPhone Safari/physical printing, measured organic growth and revenue remain unverified. Earlier dated sections preserve history and are superseded by this release record.
+
 ## Published domain migration — 2026-10-12, 23:02 UTC
 
 Printable follow-up: updated both six-page free collection PDFs and their reproducible source to print partyprint.live and link directly to the correct `occasion=baby&mode=gifts` preset. Added CI verification of physical page count, Letter/A4 dimensions, nonblank pages, safe text bounds, every footer and the actual PDF hyperlink. This preserves the existing kit design and contents.
