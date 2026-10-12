@@ -4,7 +4,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const required = ["index.html", "styles.css", "print.css", "src/app.js", "src/core.js", "src/content.js", "privacy.html", "terms.html", "about.html", "404.html", "assets/favicon.svg", "robots.txt", "_headers", ".github/workflows/verify.yml", "guides/baby-shower-bingo/index.html", "guides/bridal-shower-games/index.html", "guides/birthday-party-games/index.html", "guides/office-party-games/index.html"];
+const required = ["index.html", "styles.css", "print.css", "src/app.js", "src/pdf.js", "src/core.js", "src/content.js", "privacy.html", "terms.html", "about.html", "404.html", "assets/favicon.svg", "robots.txt", "_headers", ".github/workflows/verify.yml", "guides/baby-shower-bingo/index.html", "guides/bridal-shower-games/index.html", "guides/birthday-party-games/index.html", "guides/office-party-games/index.html"];
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), "Missing: " + file);
 const walk = folder => fs.readdirSync(folder, { withFileTypes: true }).flatMap(entry => {
   const abs = path.join(folder, entry.name);
@@ -28,7 +28,7 @@ for (const file of html) {
     localLinks += 1;
   }
 }
-for (const file of ["src/app.js", "src/core.js", "src/content.js", "src/analytics.js", "scripts/build.mjs", "scripts/check.mjs", "scripts/print-qa.mjs"]) {
+for (const file of ["src/app.js", "src/pdf.js", "src/core.js", "src/content.js", "src/analytics.js", "scripts/build.mjs", "scripts/check.mjs", "scripts/print-qa.mjs"]) {
   const abs = path.join(root, file);
   execFileSync(process.execPath, ["--check", abs]);
   if (file.startsWith("src/")) {

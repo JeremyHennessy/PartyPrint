@@ -9,13 +9,13 @@ A cheerful free party-game studio for baby showers, bridal showers, birthdays, o
 - Live studio: pick an occasion, choose a printable design and a 4×4 or 5×5 bingo board, and generate 1–48 independently shuffled cards.
 - Curated bingo, 12-question trivia with a separate answer key, and 12-item scavenger hunts.
 - Baby shower gift-opening or party-moment bingo. Edit the full curated list, replace it entirely, or add up to 80 of your own bingo prompts, preview any game, and shuffle again.
-- Browser-native **Print / Save as PDF** button. Choose “Save as PDF” as the destination in your browser print menu. It is not a direct PDF download.
+- Real on-device **Download PDF** export with Letter/A4, embedded fonts, Save PDF, Open PDF and supported file sharing. Browser-native **Print games** remains a separate option.
 - Share generic game settings via URL. No party title, personal name or custom prompts are embedded.
 - Four original guides plus accessible mobile UI, legal pages and SEO-friendly HTML.
 
 ## Architecture
 
-**No backend, database, API keys, login or behavioral tracking.** The generator has no third-party runtime dependencies. Cookie-free Cloudflare Web Analytics is enabled only on the production hostname. Source is static HTML, CSS and ES modules. The generator logic lives in `src/core.js`, content in `src/content.js` and UI/print layouts in `src/app.js`. Print output stays in the browser. The production build exports a static `dist/` folder.
+**No backend, database, API keys, login or behavioral tracking.** The generator remains lightweight; direct PDF export lazy-loads a pinned, locally served jsPDF engine and Noto Sans font only when requested. Cookie-free Cloudflare Web Analytics is enabled only on the production hostname. Source is static HTML, CSS and ES modules. The generator logic lives in `src/core.js`, content in `src/content.js` and UI/print layouts in `src/app.js`. Print output stays in the browser. The production build exports a static `dist/` folder.
 
 ## Local development
 
@@ -46,7 +46,7 @@ The build does not fabricate a production hostname. Without `PUBLIC_SITE_URL`, n
 
 ## Test and release checklist
 
-GitHub Actions runs unit tests, checks local links and syntax, builds the artifact, and exports real Letter/A4 PDFs with page count, nonblank page, text-completeness and safe-margin checks. Playwright is a development dependency only.
+GitHub Actions runs unit tests, checks local links and syntax, builds the artifact, and exports real Letter/A4 PDFs with page count, nonblank page, text-completeness and safe-margin checks. Playwright is a development dependency only. jsPDF 4.2.1 is pinned in development dependencies for deterministic builds; only its 420 KB UMD browser file and license ship in dist. The bundled Noto Sans font is 569 KB, under SIL OFL; both assets are requested only on PDF export. No HTML rasterization libraries or export server are used.
 
 For local browser/PDF QA: set `CHROME_PATH` to Chrome or Edge, run `node scripts/print-qa.mjs`, then `python3 scripts/verify-print.py qa` (requires `pdfplumber==0.11.9`). Screenshots, PDFs and the manifest are written under ignored `qa/`; CI retains them as an artifact.
 

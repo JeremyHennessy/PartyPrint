@@ -13,6 +13,8 @@ let activeTab = "bingo";
 let currentPack = null;
 let printablePack = null;
 let editorScrollY = 0;
+let pdfBusy = false;
+let readyPDF = null;
 const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let seed = (() => {
@@ -64,7 +66,7 @@ function bingoHTML(pack, card) {
   }).join("");
   return sheetStart(pack, "BINGO!", (pack.config.bingoMode === "gifts" ? "Mark each gift as it is opened · Card " : "Mark a square when you spot it · Card ") + card.number + " of " + pack.bingoCards.length) +
     `<div class="bingo-board" style="--side:${card.size}">${board}</div>` +
-    sheetEnd("FIRST TO COMPLETE A ROW WINS · GOOD LUCK ♡");
+    sheetEnd("FIRST COMPLETE LINE WINS · GOOD LUCK ♡");
 }
 
 function triviaHTML(pack, isPreview = false) {
@@ -116,11 +118,13 @@ function displayError(text) {
   message.textContent = text;
   stage.textContent = text;
   printButton.disabled = true;
+  $("pdf-button").disabled = true;
   $("pack-summary").textContent = "Choose your games";
   $("page-summary").textContent = "Your pack will appear here";
 }
 
 function render() {
+  clearPDF();
   $("bingo-mode-field").hidden = $("occasion").value !== "baby" || !$("game-bingo").checked;
   $("bingo-mode-help").textContent = $("bingo-mode").value === "gifts" ? "Mark gifts as the guest of honor opens them." : "Mark things guests say or do during the celebration.";
   try {
@@ -128,6 +132,7 @@ function render() {
     currentPack = pack;
     message.textContent = "";
     printButton.disabled = false;
+    $("pdf-button").disabled = pdfBusy;
     const activeGames = {
       bingo: pack.bingoCards.length > 0,
       trivia: pack.trivia.length > 0,
@@ -237,7 +242,7 @@ function openPrintableView(pushHistory = true) {
   document.body.classList.add("print-preview");
   $("print-toolbar").hidden = false;
   $("iphone-print-help").hidden = !isAppleMobile;
-  $("print-ready-summary").textContent = $("pack-summary").textContent + " · " + currentPack.pageCount + " pages";
+  $("print-ready-summary").textContent = $("pack-summary").textContent + " · " + currentPack.pageCount + " page" + (currentPack.pageCount === 1 ? "" : "s");
   printRoot.setAttribute("aria-hidden", "false");
   window.scrollTo(0, 0);
   $("print-ready-heading").focus({ preventScroll: true });
@@ -268,6 +273,54 @@ window.addEventListener("popstate", () => {
 });
 
 window.addEventListener("beforeprint", preparePrint);
+
+function clearPDF() {
+  if (readyPDF) URL.revokeObjectURL(readyPDF.url);
+  readyPDF = null;
+  $("pdf-result").hidden = true;
+  if (!pdfBusy) $("pdf-status").textContent = "";
+}
+$("pdf-paper").addEventListener("change", clearPDF);
+$("pdf-button").addEventListener("click", async () => {
+  if (!currentPack || pdfBusy) return;
+  const pack = currentPack, paper = $("pdf-paper").value;
+  clearPDF(); pdfBusy = true;
+  $("pdf-button").disabled = true;
+  $("pdf-button").textContent = "Creating your PDF…";
+  $("pdf-status").textContent = "Preparing a real PDF file. Your details stay on this device.";
+  try {
+    // Let the loading state paint before rendering a high-card-count pack.
+    await new Promise(resolve => window.requestAnimationFrame(() => window.setTimeout(resolve, 0)));
+    const { loadPDFResources, createPDF } = await import("./pdf.js");
+    const [engine, font] = await loadPDFResources();
+    const bytes = createPDF(pack, paper, engine, font);
+    if (pack !== currentPack || paper !== $("pdf-paper").value) throw new Error("Your settings changed. Tap Download PDF again for the updated pack.");
+    const filename = "PartyPrint-" + pack.config.occasion + "-" + paper + ".pdf";
+    const file = new File([bytes], filename, {type:"application/pdf"});
+    readyPDF = {url:URL.createObjectURL(file),file};
+    $("pdf-download").href = readyPDF.url;
+    $("pdf-download").download = filename;
+    $("pdf-open").href = readyPDF.url;
+    let canShare = false;
+    try { canShare = Boolean(navigator.canShare?.({files:[file]})); } catch { /* Download stays available. */ }
+    $("pdf-share").hidden = !canShare;
+    $("pdf-result").hidden = false;
+    $("pdf-status").textContent = "Your " + pack.pageCount + "-page PDF is ready. Tap Save PDF below. On iPhone, you can also Share PDF → Save to Files.";
+    $("pdf-download").focus({preventScroll:true});
+    $("pdf-result").scrollIntoView({block:"nearest",behavior:"smooth"});
+  } catch (error) {
+    $("pdf-status").textContent = error.message?.startsWith("The PDF font") || error.message?.startsWith("Your settings") ? error.message : "We couldn’t create the PDF. Check your connection and try again, or use Print below.";
+  } finally {
+    pdfBusy = false;
+    $("pdf-button").disabled = !currentPack;
+    $("pdf-button").textContent = "Download PDF ↓";
+  }
+});
+$("pdf-share").addEventListener("click", async () => {
+  if (!readyPDF) return;
+  try { await navigator.share({files:[readyPDF.file]}); }
+  catch (error) { if (error.name !== "AbortError") $("pdf-status").textContent = "Sharing is unavailable here. Use Save PDF or Open PDF instead."; }
+});
 
 $("share-button").addEventListener("click", async () => {
   const link = shareURL(window.location.href, readConfig());
