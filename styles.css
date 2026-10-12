@@ -231,3 +231,4 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
 .footer-brand{display:block;width:260px;max-width:100%;background:#fff;border-radius:12px;overflow:hidden}
 .footer-brand>img{display:block;width:100%;height:auto}
 @media(max-width:640px){.nav-bar{gap:12px}.brand-wordmark{width:150px;height:38px}.brand-wordmark img{width:168px;height:168px;left:-10px;top:-87px}}
+.brand-wordmark img{clip-path:polygon(0 52%,35% 52%,35% 53.8%,63% 53.8%,63% 52%,100% 52%,100% 73.5%,0 73.5%)}
