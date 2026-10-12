@@ -24,7 +24,7 @@ for name,size in [('Letter',letter),('A4',A4)]:
   text(40,h-61,'PARTYPRINT / A LITTLE LOVE',10,sage)
   text(40,h-103,title,26);text(40,h-128,sub,10)
   flower(w-56,h-77)
-  line(40,44,w-80);text(40,27,'DESIGN SAMPLE - Free generator: partyprint-5xv.pages.dev',8,sage);text(w-60,27,str(n),8,sage)
+  line(40,44,w-80);text(40,27,'DESIGN SAMPLE - Free generator: partyprint.live',8,sage);text(w-60,27,str(n),8,sage)
  def finish():c.showPage()
  page('A little love. A lot of joy.','A coordinated baby-shower keepsake collection',1)
  c.drawImage(str(root/'assets/partyprint-logo.jpg'),w/2-90,h-360,width=180,height=180)
@@ -32,7 +32,7 @@ for name,size in [('Letter',letter),('A4',A4)]:
  for i,s in enumerate(['Host plan and game instructions','Baby predictions - two guest cards per sheet','Words of encouragement - two keepsake cards per sheet','Gift record for thoughtful thank-you notes','Baby-name alphabet game - one guest sheet']):text(65,h-463-i*27,s,11)
  text(65,116,'Print at actual size. Choose the matching Letter or A4 file.',10)
  text(65,95,'Pair with free gift-opening bingo, trivia and answer sheets.',10)
- c.linkURL('https://partyprint-5xv.pages.dev/?occasion=baby-shower&mode=gifts#studio',(40,50,w-40,160),relative=0)
+ c.linkURL('https://partyprint.live/?occasion=baby&mode=gifts#studio',(40,50,w-40,160),relative=0)
  finish()
  page('A calm, cheerful host plan','Keep participation optional. Sharing should feel comfortable.',2)
  sections=[('BEFORE GUESTS ARRIVE',['Print one prediction and encouragement card per willing guest.','Cut the two-card sheets at the dotted center line.','Generate free bingo cards using the baby-shower gift preset.','Put pens on the table and keep the gift record with the host.']),('AS EVERYONE SETTLES IN',['Invite guests to write a kind note or complete a prediction card.','Leave name and personal details optional; guests may skip prompts.','Allow five minutes for the alphabet game, then compare ideas.']),('WHILE GIFTS ARE OPENED',['Mark gift bingo only when that item is actually opened.','A bundle may cover several named items; repeated gifts mark once.','First completed row, column or diagonal wins. Use small prizes.']),('AFTER THE CELEBRATION',['Save the notes and predictions as keepsakes for the family.','Use the gift record for thank-you notes; keep it private.','If no bingo line wins, celebrate the guest with most marked squares.'])]
