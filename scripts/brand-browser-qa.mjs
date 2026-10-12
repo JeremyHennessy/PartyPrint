@@ -21,6 +21,7 @@ const pages = [
   ["bridal", "guides/bridal-shower-games/", 390, 844],
   ["office", "guides/office-party-games/", 390, 844],
   ["birthday", "guides/birthday-party-games/", 390, 844],
+  ["collection", "collections/a-little-love/", 390, 844],
   ["about", "about.html", 390, 844],
   ["privacy", "privacy.html", 390, 844],
   ["terms", "terms.html", 390, 844]

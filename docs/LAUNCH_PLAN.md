@@ -1,5 +1,9 @@
 # Launch and revenue guardrails
 
+## Free baby-shower collection sample — 2026-10-12
+
+Publish a useful free six-page Letter/A4 keepsake sample with a substantive collection page, real printable preview, instructions and direct gift-bingo preset. Includes host plan, two-up predictions/encouragement, gift record and alphabet game. No paid edition, demand claims, prices, checkout, accounts or extra tracking. PDFs were independently checked for six nonblank pages and safe text bounds; all twelve rendered pages visually inspected. Generation source retained at scripts/create-sample-kit.py; Python tools are optional authoring dependencies, not deployment requirements. Real Safari and physical-print acceptance remain outstanding. Exact release evidence is recorded in the release PR.
+
 ## Current continuation record — 2026-10-12
 
 This section supersedes historical blockers and next-task lists below. Starting main: `f978a8c7f3be624e029685e35140b4971e683737`; verified Pages deployment `76c1ecf4-7a23-443c-b412-fba6b4ee6fa0`; production https://partyprint-5xv.pages.dev/. Main Actions 38305393363 passed. Search Console ownership is complete; homepage indexed. Four guides are unknown to Google; baby and office guides passed actual live tests. Indexing request hit Google daily quota. Sitemap report still could not fetch; six public URLs return 200 with matching canonicals and no HTML noindex. Performance data is processing, not measured zero traffic.
