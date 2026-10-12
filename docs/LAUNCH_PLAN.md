@@ -1,5 +1,48 @@
 # Launch and revenue guardrails
 
+## Quality, product and growth pass — 2026-10-12 (release verification pending)
+
+This section supersedes older next-step lists. Starting main was `0fd3e214f36bc49e706db06af55248d4c727222f`; fetched main and open PRs were reconciled before editing. Pages production was independently confirmed at deployment `d60ffd5d-289b-488b-ad6e-403347ffd6da`, serving that commit at https://partyprint-5xv.pages.dev/. Git integration, main, `npm run build`, `dist`, canonical origin and absence of custom domains remain correct. Obsolete Workers triggers were left disabled.
+
+### Implemented in this pass
+
+- Fixed proven print defects: normal trivia produced 4 Letter / 3 A4 pages instead of 2; combined packs inherited extra pages; long titles produced 7 instead of 4 pages; unbroken strings crossed safe margins. Reduced print heading/spacing and added wrapping. Native printing is retained without a PDF runtime library.
+- Clear baby-shower choice between 40 curated baby gifts and the existing party-moment pool, with mode-specific preview and printed instructions. Legacy setups still default to moments.
+- Edit the complete curated pool, remove unwanted items, add words, or choose replacement rather than supplementation. Up to 80 unique prompts, 56 characters each; minimum 16/24 for replacement grids. Shuffle retains edits. Invalid configurations clear stale printable output.
+- Expanded the existing baby-shower guide rather than adding duplicate landing pages: original gift-opening rules, registry customization, repeated-gift/bundle guidance, no-winner fallback, print settings, a real generated example and direct presets. Added absolute Open Graph image metadata and a tall printable example suitable for sharing. No social posting was performed.
+- Registered exactly one Cloudflare Web Analytics site, tag `7b36d9515b694ca4a8d6e58bb1a6a151`, for the production hostname; auto-injection disabled. The public beacon identifier is not an account credential. Source loads the beacon only on production; local/preview QA is excluded. Updated privacy disclosure and limited CSP additions to official script/collection origins. Activation and actual beacon response must be verified after deployment.
+
+### QA evidence and limits
+
+- 18 generator tests pass; source link/syntax checks and canonical build pass.
+- Development-only Playwright runner exports 30 PDF fixtures / 328 physical pages: all six occasions; 1, 12 and 48 bingo cards; both grid sizes; all four themes; gifts; trivia and separate answer keys; scavenger and combined packs; long titles, long custom prompts and unbroken strings; Letter and A4.
+- Actual PDFs checked with pdfplumber for independent expected counts, nonblank pages, all expected words and character counts, and safe page margins. These are document checks, not merely file-signature checks. CI now repeats them and retains artifacts for seven days.
+- Local artifacts retained in `qa/baseline/`, `qa/release/`, `qa/final/`: PDFs, manifests, desktop/mobile screenshots and rendered sample pages. Visually inspected color gift bingo, answer key, long text, unbroken strings, and grayscale scavenger output. Print layouts use mostly white backgrounds and colored text/borders; grayscale remains readable. Physical ink consumption is not measured.
+- Actual desktop studio and 320px mobile studio inspected; 320/390/768px screenshots and DOM width checks pass. Browser checks exercise replacement, curated-list loading, escaped content, regeneration, invalid-state clearing, keyboard preview arrows and privacy-safe sharing.
+- Tested engine: Microsoft Edge Chromium on Windows; CI will additionally test Linux Chrome. **Real iPhone Safari, Firefox, Safari print dialogs, physical printers and actual save-menu interactions remain unverified.** No iPhone test device is available here. Chromium PDFs are not iOS proof.
+
+### Discovery and measurement baseline
+
+- Research checked real search results for baby-shower gifts, custom bingo, office games and holiday trivia. [Bingo Card Creator](https://www.bingocardcreator.com/bingo-cards/baby-shower/) explicitly offers gift-opening and editable cards; [MakeYourBingo](https://makeyourbingo.com/) advertises list editing/PDFs. These demonstrate competing functionality, not keyword volume or PartyPrint demand. Focused opportunity: explain gift versus moment rules and give a free, privacy-safe coordinated pack immediately. Other content priorities need actual query evidence.
+- Canonical origin remains https://partyprint-5xv.pages.dev/; six useful sitemap URLs retained. Existing title/descriptions, article schema, internal presets and image sharing improved without scaled content. [Google people-first guidance](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) informed this choice.
+- Search Console access is unavailable in this session; existing ownership/indexing, impressions, clicks, rankings and queries are **unknown**. Account holder's precise remaining step: add URL-prefix property `https://partyprint-5xv.pages.dev/` in Search Console and obtain its HTML-file verification challenge (or HTML meta tag). Supply the exact generated challenge for a verified commit/deploy; then complete Verify and submit `https://partyprint-5xv.pages.dev/sitemap.xml`. Do not use DNS verification for the shared pages.dev domain. [Official verification methods](https://support.google.com/webmasters/answer/9008080?hl=en).
+- [Cloudflare metrics](https://developers.cloudflare.com/web-analytics/data-metrics/dimensions/) can cover pages, approximate visits, referring hosts, device/browser categories and [Core Web Vitals](https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/). It does not supply the requested custom generator/print/share funnel out of the box; no custom event infrastructure was added. Most-used occasion is not measured when selection only changes form state. Print-dialog events cannot prove a successful printable.
+- Measured business baseline: no authenticated traffic or payout report available; visitor volume, acquisition mix, conversion, retention, field Core Web Vitals and revenue are **unknown**. Initial analytics QA requests are synthetic verification traffic, not customers. Hypothesis: better gift intent matching and reliable output improve usefulness, sharing and organic discovery. Impact has not been measured.
+
+### Commercial assessment (no ads, payments or affiliate links enabled)
+
+- [AdSense eligibility](https://support.google.com/adsense/answer/9724?hl=en) requires original useful policy-compliant content and an eligible account holder; no fabricated minimum traffic/page threshold. PartyPrint now has useful tools and policies, but has no verified publisher approval/ID, audience baseline or advertising consent setup. Keep ads out of controls/print output. Application is a later account-holder step.
+- Optional coordinated premium kits are the preferred next commercial experiment after observing real queries/use; they add value beyond free cards and allow automated delivery. An illustrative USD $9 test price is a hypothesis, not proven willingness to pay. A competing seller [lists packs at $9.99 and $29.99](https://getbabyshowergames.com/shop/); listed prices are observed offers, not evidence of sales or equivalent scope. [Gumroad direct pricing](https://gumroad.com/pricing): 10% + $0.50 gives $7.60 per $9 sale before refunds/income tax; marketplace fees differ. [Payhip](https://payhip.com/pricing): free plan 5% plus payment processing; assuming processing 2.9% + $0.30 gives about $7.99, but actual fees depend on processor/location. Merchant-of-record and local tax obligations must be assessed when selecting a provider. No merchant account created.
+- Illustrative monthly economics, **not forecasts**: 10,000 pageviews at an assumed $3 net page RPM = $30 advertising; 10,000 visits at an assumed 0.1% $9 kit purchase rate = 10 sales / $76 after Gumroad direct fees; 10,000 visits × assumed 2% affiliate clicks × 5% purchase × $30 basket × 3% commission = $9. None of these rates are measured or promised.
+- Ads have low content maintenance but approval/consent/performance costs. Premium packs require upfront original design, refunds and occasional support, with greater possible revenue per transaction. Affiliates have low engineering cost but program eligibility, disclosure and link upkeep; use only relevant printing/supply recommendations if real participation is obtained. No fabricated links or commissions.
+
+### Next three priorities
+
+1. Real iPhone Safari and additional desktop-browser printing; address demonstrated failures before considering direct PDF export. Evaluate two-up printing only after reliable single-page layouts.
+2. Verify Search Console ownership, submit the real sitemap, and inspect actual queries/indexing alongside the new analytics baseline. Use evidence to choose the next useful page or game improvement.
+3. Validate one coordinated premium baby-shower kit at an explicit test price, preserving the free tool. Obtain merchant authorization only when the concrete product/delivery/refund setup is reviewable; consider ads later with real approval and consent handling.
+
+
 ## Verified handoff — 2026-10-12
 
 ### Live deployment update

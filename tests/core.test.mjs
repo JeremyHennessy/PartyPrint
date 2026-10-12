@@ -137,3 +137,26 @@ test("different events produce meaningfully different trivia selections", () => 
   const office = createPack({ occasion: "office", seed: 45 });
   assert.notDeepEqual(baby.trivia, office.trivia);
 });
+
+
+test("gift-opening bingo uses only baby gifts and sharing restores the mode", () => {
+  const config = {occasion:"baby", bingoMode:"gifts", count:48, seed:12};
+  const pool = getBingoPrompts("baby", "gifts");
+  assert.equal(pool.length, 40);
+  assert.ok(pool.includes("Diapers"));
+  for (const card of createPack(config).bingoCards) assert.ok(card.rows.flat().every(word => word === "FREE SPACE" || pool.includes(word)));
+  const restored = configFromURL(new URL(shareURL("https://example.test/", config)).search);
+  assert.equal(restored.bingoMode, "gifts");
+  assert.equal(normalizeConfig({occasion:"office",bingoMode:"gifts"}).bingoMode,"moments");
+});
+
+test("replacement lists exclude curated words and validate enough unique entries", () => {
+  const custom = Array.from({length:24},(_,i)=>"Personal word " + i).join("\n");
+  const pack = createPack({custom,promptSource:"replace",seed:3});
+  assert.ok(pack.bingoCards.every(card=>card.rows.flat().every(word=>word === "FREE SPACE" || word.startsWith("Personal word "))));
+  assert.throws(()=>createPack({custom:"One\nTwo",promptSource:"replace"}), /unique bingo prompts/);
+  const link = shareURL("https://example.test/",pack.config);
+  assert.ok(!link.includes("Personal"));
+  assert.equal(configFromURL(new URL(link).search).promptSource,"supplement");
+  assert.equal(parseCustomPrompts(Array.from({length:81},(_,i)=>"Word "+i).join("\n")).length,80);
+});

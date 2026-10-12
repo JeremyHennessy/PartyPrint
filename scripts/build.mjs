@@ -29,9 +29,12 @@ if (siteURL) {
     const slug = relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative;
     const canonical = base + slug;
     const safe = canonical.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
-    const source = fs.readFileSync(file, "utf8");
+    let source = fs.readFileSync(file, "utf8");
+    if (relative === "guides/baby-shower-bingo/index.html") {
+      source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/baby-shower-gift-bingo.png"><meta property="og:image:alt" content="A printable baby shower gift-opening bingo card"><meta name="twitter:card" content="summary_large_image"></head>`);
+    }
     if (!source.includes("</head>")) throw new Error("Missing </head>: " + file);
-    fs.writeFileSync(file, source.replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
+    fs.writeFileSync(file, source.replace("</body>", '<script defer src="/src/analytics.js"></script></body>').replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
   }
   const urls = html.filter(file => !["privacy.html", "terms.html"].includes(path.relative(output, file).split(path.sep).join("/"))).map(file => {
     const relative = path.relative(output, file).split(path.sep).join("/");
