@@ -1,0 +1,55 @@
+name: Render authentic PartyPrint marketing assets (temporary)
+
+on:
+  push:
+    branches: [feat/authentic-product-marketing]
+    paths:
+      - scripts/make-marketing-pdfs.mjs
+      - scripts/render-marketing-assets.py
+      - .github/workflows/render-real-marketing.yml
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned development tools
+        run: |
+          npm ci
+          python -m pip install pymupdf==1.26.7 pillow==12.3.0
+      - name: Create deterministic PDFs using the production generator
+        run: node scripts/make-marketing-pdfs.mjs
+      - name: Render social, Pinterest and guide images from the real PDFs
+        run: python scripts/render-marketing-assets.py
+      - name: Check generated marketing files
+        run: |
+          test -s assets/marketing/provenance.json
+          test -s assets/marketing/preview-baby.jpg
+          test -s assets/marketing/preview-bridal.jpg
+          test -s assets/marketing/preview-office.jpg
+          test -s assets/marketing/preview-birthday.jpg
+          test -s assets/marketing/preview-scavenger.jpg
+          test -s assets/marketing/og-baby.jpg
+          test -s assets/marketing/pin-baby.jpg
+          test -s assets/marketing/pin-bridal.jpg
+          test -s assets/marketing/pin-birthday.jpg
+      - name: Commit only rendered marketing files to isolated branch
+        run: |
+          git add assets/marketing/
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "assets: commit actual PDF-derived promotional artwork"
+            git push origin HEAD:feat/authentic-product-marketing
+          fi
