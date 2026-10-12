@@ -11,7 +11,7 @@ Make a recognizably playful, trustworthy consumer brand that stays readable as a
 - `assets/guide-baby.svg`, `assets/guide-bridal.svg`, `assets/guide-office.svg`, `assets/guide-birthday.svg` — 720x420 illustrative game previews matching the site's print palettes.
 - Matching `assets/guide-*.png` files for crawlers/social sharing.
 - `assets/baby-shower-gift-bingo.png` — existing genuine generated gift-opening example, kept unchanged.
-- `assets/partyprint-logo.jpg` — previous supplied artwork preserved unchanged but no longer referenced in public HTML, the build or favicon.
+- `assets/partyprint-logo.jpg` — owner-supplied artwork preserved unchanged, restored in header marks and shown intact in the footer.
 
 ## Design tokens (established site compatibility)
 - Charcoal `#352f35`

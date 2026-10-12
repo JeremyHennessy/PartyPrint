@@ -253,3 +253,8 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
 .guide-body .editorial-preview{margin:5px auto 34px;max-width:720px;border:1px solid #e9ded5;border-radius:13px;overflow:hidden;background:#fffdf9}
 .guide-body .editorial-preview img{display:block;width:100%;height:auto;aspect-ratio:12/7;object-fit:cover}
 .guide-body .editorial-preview figcaption{padding:11px 15px;color:#766a6c;font-size:12px;line-height:1.6;text-align:center}
+
+/* Owner-supplied artwork is displayed intact, without clipping its tagline. */
+.footer-brand.brand-lockup{width:240px;padding:10px;background:#fff;border-radius:14px}
+.footer-brand .owner-logo{display:block;width:100%;height:auto}
+.brand-lockup .brand-mark{border-radius:8px;background:#fff}
