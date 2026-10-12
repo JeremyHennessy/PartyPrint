@@ -1,5 +1,7 @@
 import { createPack, configFromURL, shareURL, escapeHTML } from "./core.js";
 
+import { getBingoPrompts } from "./content.js";
+
 const $ = id => document.getElementById(id);
 const form = $("party-form");
 const stage = $("preview-stage");
@@ -19,6 +21,8 @@ let seed = (() => {
 function readConfig() {
   return {
     occasion: $("occasion").value,
+    bingoMode: $("bingo-mode").value,
+    promptSource: $("prompt-source").value,
     title: $("party-title").value,
     count: $("guest-count").value,
     size: $("card-size").value,
@@ -54,7 +58,7 @@ function bingoHTML(pack, card) {
     const free = cell === "FREE SPACE";
     return `<div class="bingo-cell${free ? " free-cell" : ""}">${escapeHTML(cell)}</div>`;
   }).join("");
-  return sheetStart(pack, "BINGO!", "Mark a square when you spot it · Card " + card.number + " of " + pack.bingoCards.length) +
+  return sheetStart(pack, "BINGO!", (pack.config.bingoMode === "gifts" ? "Mark each gift as it is opened · Card " : "Mark a square when you spot it · Card ") + card.number + " of " + pack.bingoCards.length) +
     `<div class="bingo-board" style="--side:${card.size}">${board}</div>` +
     sheetEnd("FIRST TO COMPLETE A ROW WINS · GOOD LUCK ♡");
 }
@@ -86,7 +90,7 @@ function printPages(pack) {
   const pages = [];
   for (const card of pack.bingoCards) {
     pages.push(`<article class="print-page">${bingoHTML(pack, card)}
-      <p class="print-how-to"><strong>HOW TO PLAY</strong> · Cross off a moment when it happens. First to finish a row, column or diagonal calls “Bingo!”</p></article>`);
+      <p class="print-how-to"><strong>HOW TO PLAY</strong> · ${pack.config.bingoMode === "gifts" ? "Mark a gift when it is opened." : "Cross off a moment when it happens."} First to finish a row, column or diagonal calls “Bingo!”</p></article>`);
   }
   if (pack.trivia.length) {
     pages.push(`<article class="print-page">${triviaHTML(pack)}
@@ -103,6 +107,7 @@ function printPages(pack) {
 
 function displayError(text) {
   currentPack = null;
+  printRoot.innerHTML = "";
   message.textContent = text;
   stage.textContent = text;
   printButton.disabled = true;
@@ -111,6 +116,8 @@ function displayError(text) {
 }
 
 function render() {
+  $("bingo-mode-field").hidden = $("occasion").value !== "baby" || !$("game-bingo").checked;
+  $("bingo-mode-help").textContent = $("bingo-mode").value === "gifts" ? "Mark gifts as the guest of honor opens them." : "Mark things guests say or do during the celebration.";
   try {
     const pack = createPack(readConfig());
     currentPack = pack;
@@ -155,6 +162,7 @@ function restoreFromURL() {
   if (!window.location.search) return;
   const config = configFromURL(window.location.search);
   $("occasion").value = config.occasion;
+  $("bingo-mode").value = config.bingoMode;
   $("guest-count").value = config.count;
   $("card-size").value = config.size;
   $("game-bingo").checked = config.games.bingo;
@@ -163,6 +171,13 @@ function restoreFromURL() {
   const selected = document.querySelector('input[name="theme"][value="' + config.theme + '"]');
   if (selected) selected.checked = true;
 }
+
+$("edit-word-list").addEventListener("click", () => {
+  $("custom-prompts").value = getBingoPrompts($("occasion").value, $("bingo-mode").value).join("\n");
+  $("prompt-source").value = "replace";
+  render();
+  $("custom-prompts").focus();
+});
 
 restoreFromURL();
 $("year").textContent = String(new Date().getFullYear());

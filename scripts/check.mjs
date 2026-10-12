@@ -8,7 +8,7 @@ const required = ["index.html", "styles.css", "print.css", "src/app.js", "src/co
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), "Missing: " + file);
 const walk = folder => fs.readdirSync(folder, { withFileTypes: true }).flatMap(entry => {
   const abs = path.join(folder, entry.name);
-  return entry.isDirectory() ? walk(abs) : [abs];
+  return entry.isDirectory() ? (["node_modules", "dist", "qa", ".git", ".cloudflare"].includes(entry.name) ? [] : walk(abs)) : [abs];
 });
 const html = walk(root).filter(file => file.endsWith(".html") && !file.includes(path.sep + "dist" + path.sep));
 let localLinks = 0;
@@ -28,7 +28,7 @@ for (const file of html) {
     localLinks += 1;
   }
 }
-for (const file of ["src/app.js", "src/core.js", "src/content.js", "scripts/build.mjs", "scripts/check.mjs"]) {
+for (const file of ["src/app.js", "src/core.js", "src/content.js", "src/analytics.js", "scripts/build.mjs", "scripts/check.mjs", "scripts/print-qa.mjs"]) {
   const abs = path.join(root, file);
   execFileSync(process.execPath, ["--check", abs]);
   if (file.startsWith("src/")) {

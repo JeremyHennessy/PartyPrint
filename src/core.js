@@ -23,7 +23,7 @@ export function parseCustomPrompts(input) {
     if (!item || seen.has(key)) return false;
     seen.add(key);
     return true;
-  }).slice(0, 40);
+  }).slice(0, 80);
 }
 
 export function hashSeed(value) {
@@ -92,13 +92,15 @@ export function normalizeConfig(config = {}) {
   return {
     occasion,
     theme,
+    bingoMode: occasion === "baby" && config.bingoMode === "gifts" ? "gifts" : "moments",
+    promptSource: config.promptSource === "replace" ? "replace" : "supplement",
     title: tidyText(config.title, 70) || occasionById(occasion).label + " games",
     host: tidyText(config.host, 50),
     count: clampInteger(config.count, 1, 48, 12),
     size: config.size === 4 || config.size === "4" ? 4 : 5,
     seed: Number.isFinite(Number(config.seed)) ? Number(config.seed) : 42,
     games,
-    custom: String(config.custom || "").slice(0, 4000)
+    custom: String(config.custom || "").slice(0, 8000)
   };
 }
 
@@ -108,7 +110,7 @@ export function createPack(userConfig) {
     throw new Error("Choose at least one game for your pack.");
   }
   const custom = parseCustomPrompts(config.custom);
-  const prompts = uniquePrompts([...custom, ...getBingoPrompts(config.occasion)]);
+  const prompts = uniquePrompts(config.promptSource === "replace" ? custom : [...custom, ...getBingoPrompts(config.occasion, config.bingoMode)]);
   const bingoCards = config.games.bingo
     ? createBingoCards({ prompts, count: config.count, size: config.size, seed: config.seed })
     : [];
@@ -136,6 +138,7 @@ export function shareURL(baseURL, config) {
   const url = new URL(baseURL);
   const params = new URLSearchParams({
     occasion: normalized.occasion,
+    mode: normalized.bingoMode,
     theme: normalized.theme,
     count: String(normalized.count),
     size: String(normalized.size),
@@ -159,6 +162,7 @@ export function configFromURL(search) {
   return normalizeConfig({
     occasion,
     theme,
+    bingoMode: params.get("mode"),
     count: params.get("count") ?? 12,
     size: params.get("size") ?? 5,
     games

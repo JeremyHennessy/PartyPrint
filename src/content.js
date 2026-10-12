@@ -213,7 +213,18 @@ export function themeById(id) {
   return THEMES.find(item => item.id === id) || THEMES[0];
 }
 
-export function getBingoPrompts(id) {
+const babyGifts = [
+  "Diapers", "Baby wipes", "Onesies", "Baby blanket", "Bottles", "Pacifiers",
+  "Bibs", "Burp cloths", "Baby socks", "Baby hat", "Sleep sack", "Swaddle",
+  "Board book", "Stuffed animal", "Teething toy", "Rattle", "Play mat", "Baby towel",
+  "Washcloths", "Baby shampoo", "Baby lotion", "Diaper cream", "Diaper bag",
+  "Changing pad", "Crib sheets", "Baby monitor", "Thermometer", "Nail clippers",
+  "Baby brush", "Bath toy", "Baby bathtub", "Stroller", "Car seat", "Baby carrier",
+  "High chair", "Baby clothes", "Gift card", "Keepsake", "Photo frame", "Baby shoes"
+];
+
+export function getBingoPrompts(id, mode = "moments") {
+  if (id === "baby" && mode === "gifts") return [...babyGifts];
   return [...specificBingo[id] || [], ...universalBingo];
 }
 
