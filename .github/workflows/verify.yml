@@ -28,7 +28,11 @@ jobs:
       - name: Build static site
         run: npm run build
         env:
-          PUBLIC_SITE_URL: https://partyprint-5xv.pages.dev/
+          PUBLIC_SITE_URL: https://partyprint.live/
+      - name: Verify canonical and publisher metadata
+        run: node scripts/verify-site-metadata.mjs
+        env:
+          PUBLIC_SITE_URL: https://partyprint.live/
       - name: Verify deploy artifact
         run: |
           test -s dist/index.html
