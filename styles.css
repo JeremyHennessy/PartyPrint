@@ -223,3 +223,11 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
 @media(max-width:600px){#full-sheet .game-sheet{min-width:580px;padding:24px}#full-sheet .bingo-cell{font-size:12px;min-height:90px}.sheet-swipe-help{display:block}}
 
 .sheet-dialog-toolbar button{white-space:nowrap}
+
+/* Display the supplied artwork unchanged; compact navigation shows its wordmark. */
+.site-header{background:#fff}
+.brand-wordmark{display:block;position:relative;overflow:hidden;width:216px;height:52px;background:#fff}
+.brand-wordmark img{position:absolute;width:240px;height:240px;max-width:none;left:-14px;top:-125px}
+.footer-brand{display:block;width:260px;max-width:100%;background:#fff;border-radius:12px;overflow:hidden}
+.footer-brand>img{display:block;width:100%;height:auto}
+@media(max-width:640px){.nav-bar{gap:12px}.brand-wordmark{width:150px;height:38px}.brand-wordmark img{width:168px;height:168px;left:-10px;top:-87px}}

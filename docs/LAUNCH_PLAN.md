@@ -1,5 +1,9 @@
 # Launch and revenue guardrails
 
+## Owner-supplied logo — 2026-10-12
+
+Starting main `c0d5d8fca811604f923fc16ad4c881f22df60ce4`, production deployment `338d51b1-61df-4f5d-b726-528d9dd87db0`, is the verified PR #8 release ([main Actions](https://github.com/JeremyHennessy/PartyPrint/actions/runs/38298901636)). The supplied PartyPrint / Print Happy Moments JPG is preserved unchanged in assets/partyprint-logo.jpg. Header wordmarks use a CSS viewport of that artwork; footer displays the full printer illustration, brand and tagline. All eight navigable pages use it, with the matching favicon on all nine HTML pages and homepage social image. Gameplay and printed sheets remain intact. Mobile/desktop and guide navigation/logo loading are checked before publishing; exact release checks and deployment are recorded in the logo PR.
+
 ## Printable preview and guest answer sheets — 2026-10-12
 
 Owner acceptance: after PR #7, the owner reported “That worked” for the real PDF flow on the previously identified iPhone Chrome / Google environment. This verifies their reported delivery problem was resolved; exact app identity, all iOS browsers and physical printer output are not inferred. Starting main `2b7af5982ff023a182fdcdcb2d0aff2a69ec725e` and successful Pages deployment `1acc9e3e-88e1-48b4-83d3-66aba79e2545` were checked against the account. No newer commits or open PRs at the start.

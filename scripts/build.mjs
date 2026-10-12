@@ -34,6 +34,7 @@ if (siteURL) {
     const canonical = base + slug;
     const safe = canonical.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
     let source = fs.readFileSync(file, "utf8");
+    if (relative === "index.html") source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/partyprint-logo.jpg"><meta property="og:image:alt" content="PartyPrint — Print Happy Moments"></head>`);
     if (relative === "guides/baby-shower-bingo/index.html") {
       source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/baby-shower-gift-bingo.png"><meta property="og:image:alt" content="A printable baby shower gift-opening bingo card"><meta name="twitter:card" content="summary_large_image"></head>`);
     }
