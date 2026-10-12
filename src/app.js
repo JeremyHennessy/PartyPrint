@@ -11,6 +11,10 @@ const tabs = Array.from(document.querySelectorAll("[data-preview]"));
 const printButton = $("print-button");
 let activeTab = "bingo";
 let currentPack = null;
+let printablePack = null;
+let editorScrollY = 0;
+const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let seed = (() => {
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     return crypto.getRandomValues(new Uint32Array(1))[0];
@@ -108,6 +112,7 @@ function printPages(pack) {
 function displayError(text) {
   currentPack = null;
   printRoot.innerHTML = "";
+  printablePack = null;
   message.textContent = text;
   stage.textContent = text;
   printButton.disabled = true;
@@ -154,7 +159,10 @@ function render() {
 
 function preparePrint() {
   if (!currentPack) return false;
-  printRoot.innerHTML = printPages(currentPack);
+  if (printablePack !== currentPack) {
+    printRoot.innerHTML = printPages(currentPack);
+    printablePack = currentPack;
+  }
   return true;
 }
 
@@ -220,9 +228,43 @@ $("shuffle-button").addEventListener("click", () => {
   window.setTimeout(() => { $("shuffle-button").textContent = "↻ Mix it up"; }, 1900);
 });
 
+function openPrintableView(pushHistory = true) {
+  if (!preparePrint()) return false;
+  if (!document.body.classList.contains("print-preview")) {
+    editorScrollY = window.scrollY;
+    if (pushHistory) history.pushState({ partyprintPrint: true }, "", "#printables");
+  }
+  document.body.classList.add("print-preview");
+  $("print-toolbar").hidden = false;
+  $("iphone-print-help").hidden = !isAppleMobile;
+  $("print-ready-summary").textContent = $("pack-summary").textContent + " · " + currentPack.pageCount + " pages";
+  printRoot.setAttribute("aria-hidden", "false");
+  window.scrollTo(0, 0);
+  $("print-ready-heading").focus({ preventScroll: true });
+  return true;
+}
+
+function closePrintableView() {
+  document.body.classList.remove("print-preview");
+  $("print-toolbar").hidden = true;
+  printRoot.setAttribute("aria-hidden", "true");
+  window.scrollTo(0, editorScrollY);
+  printButton.focus({ preventScroll: true });
+}
+
 printButton.addEventListener("click", () => {
-  if (!preparePrint()) return;
-  window.print();
+  if (!openPrintableView()) return;
+  // iOS may ignore scripted printing (especially inside app browsers).
+  // Keep the full pack visible so Safari's Share > Print has real content.
+  if (!isAppleMobile) window.print();
+});
+$("print-ready-button").addEventListener("click", () => {
+  if (preparePrint()) window.print();
+});
+$("back-to-editor").addEventListener("click", () => history.back());
+window.addEventListener("popstate", () => {
+  if (!history.state?.partyprintPrint) closePrintableView();
+  else openPrintableView(false);
 });
 
 window.addEventListener("beforeprint", preparePrint);
