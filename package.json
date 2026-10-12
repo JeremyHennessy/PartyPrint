@@ -1,0 +1,13 @@
+{
+  "name": "partyprint",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Beautiful free printable party games, entirely in your browser",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "validate": "npm run test && npm run check && npm run build"
+  }
+}

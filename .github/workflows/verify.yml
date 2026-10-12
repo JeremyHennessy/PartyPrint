@@ -1,0 +1,48 @@
+name: Verify PartyPrint
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test generators
+        run: npm test
+      - name: Check links and syntax
+        run: npm run check
+      - name: Build static site
+        run: npm run build
+      - name: Verify deploy artifact
+        run: |
+          test -s dist/index.html
+          test -s dist/src/app.js
+          test -s dist/guides/baby-shower-bingo/index.html
+          test -s dist/_headers
+      - name: Browser smoke and print-to-PDF
+        run: bash scripts/browser-smoke.sh
+      - name: Upload visual QA samples
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: partyprint-browser-qa
+          path: |
+            qa/desktop.png
+            qa/mobile.png
+            qa/sample-bingo.pdf
+            qa/chrome.log
+            qa/server.log
+          if-no-files-found: warn
+          retention-days: 7
