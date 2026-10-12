@@ -70,6 +70,18 @@ try {
     assert.ok(result.scrollWidth <= result.viewport + 2, name + " horizontal overflow at " + width);
     assert.equal(result.overlap, false, name + " header collision at " + width);
     assert.equal(result.allArtLoaded, true, name + " guide asset loading and decoding");
+    if (name === "home" && width <= 390) {
+      // Test actual transformed paper bounds, not just the parent container;
+      // the previous -110px margin visually covered the trust copy on phones.
+      const hero = await page.evaluate(() => {
+        const trust = document.querySelector(".hero-trust").getBoundingClientRect();
+        const paper = [...document.querySelectorAll(".hero-art .paper")].map(el => el.getBoundingClientRect());
+        return { trustBottom: trust.bottom, paperTop: Math.min(...paper.map(rect => rect.top)) };
+      });
+      assert.ok(hero.paperTop >= hero.trustBottom + 12,
+        "Mobile hero art overlaps trust row at " + width + "px: " + JSON.stringify(hero));
+    }
+
     if (name === "home") assert.equal(result.imageCount, 3, "Three guide illustrations");
     await page.screenshot({ path: path.join(output, name + "-" + width + ".png"), fullPage: true, animations: "disabled" });
     console.log("Brand visual QA:", name, width + "px", "loaded and no overflow");
