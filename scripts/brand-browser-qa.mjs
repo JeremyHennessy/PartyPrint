@@ -33,6 +33,13 @@ try {
     const response = await page.goto(base + route, { waitUntil: "load" });
     assert.equal(response?.status(), 200, name + " HTTP");
     await page.locator("header .brand-mark").waitFor({ state: "visible" });
+    // Lazy-loaded images below the fold are not guaranteed to be fetched at "load".
+    // Request them explicitly; this tests asset availability rather than scroll timing.
+    await page.evaluate(async () => {
+      const images = [...document.querySelectorAll(".guide-image img, .editorial-preview img")];
+      images.forEach(img => { img.loading = "eager"; });
+      await Promise.all(images.map(img => img.decode().catch(() => null)));
+    });
     const result = await page.evaluate(() => {
       const header = document.querySelector("header .brand-lockup");
       const footer = document.querySelector("footer .brand-lockup");
@@ -62,7 +69,7 @@ try {
     assert.ok(result.touch.endsWith("apple-touch-icon.png"), name + " touch icon");
     assert.ok(result.scrollWidth <= result.viewport + 2, name + " horizontal overflow at " + width);
     assert.equal(result.overlap, false, name + " header collision at " + width);
-    assert.equal(result.allArtLoaded, true, name + " guide asset loading");
+    assert.equal(result.allArtLoaded, true, name + " guide asset loading and decoding");
     if (name === "home") assert.equal(result.imageCount, 3, "Three guide illustrations");
     await page.screenshot({ path: path.join(output, name + "-" + width + ".png"), fullPage: true, animations: "disabled" });
     console.log("Brand visual QA:", name, width + "px", "loaded and no overflow");
