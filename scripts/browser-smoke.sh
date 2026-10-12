@@ -30,6 +30,8 @@ timeout 45s "$CHROME" "${OPTIONS[@]}" --window-size=1440,1000 --screenshot="$PWD
 timeout 45s "$CHROME" "${OPTIONS[@]}" --window-size=390,844 --screenshot="$PWD/qa/mobile.png" "$URL" >/dev/null 2>>qa/chrome.log
 timeout 45s "$CHROME" "${OPTIONS[@]}" --no-pdf-header-footer --print-to-pdf="$PWD/qa/sample-bingo.pdf" "$URL" >/dev/null 2>>qa/chrome.log
 
+node scripts/brand-browser-qa.mjs
+
 python3 - <<'PY'
 from pathlib import Path
 pdf = Path("qa/sample-bingo.pdf")

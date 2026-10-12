@@ -1,5 +1,14 @@
 # Launch and revenue guardrails
 
+## Brand and visual assets refresh — 2026-10-12
+
+Initial visual audit started from `main` `aaea6e6b56737ea2454727a459ad35c79dc18640` (merged PR #9). The square owner-supplied artwork was intact, but the navigation cropped its middle band with CSS, the favicon displayed the entire 1,254px JPG, the footer placed a white JPG block on a dark surface, and the guide thumbnails relied on large font glyphs. That made the identity inconsistent and fragile at small sizes. The original JPG is preserved unchanged for rollback/reference; no claim that the replacement design is owner-approved.
+
+This focused work replaces those display references with a small original vector card-and-confetti mark and real HTML wordmark, adds an Apple touch icon, three purpose-built guide thumbnails plus birthday-guide artwork, and supplies PNG social previews for the home page and guide posts. The original baby-shower gift-opening sample remains available. All print logic, Cloudflare configuration, games, PDF export, scoring, data, and approved behaviors remain untouched. The SVGs are committed editable source; PNG derivatives can be regenerated with `python scripts/render-brand-assets.py` using CairoSVG and Pillow. The one-off write-enabled rendering workflow is removed before release.
+
+**QA expected before promotion:** static asset signature/dimension and reference checks, existing complete PDF matrix, 320/390/1440px header/footer and guide screenshot review, Pages preview release check, main Actions, and exact production deployment. Do not conflate source or CI success with verified production appearance. The ChatGPT web fetcher could not directly access the Cloudflare site, so this pass uses repository source and GitHub-hosted QA evidence; direct real-device appearance remains independent testing.
+
+
 ## Owner-supplied logo — 2026-10-12
 
 Starting main `c0d5d8fca811604f923fc16ad4c881f22df60ce4`, production deployment `338d51b1-61df-4f5d-b726-528d9dd87db0`, is the verified PR #8 release ([main Actions](https://github.com/JeremyHennessy/PartyPrint/actions/runs/38298901636)). The supplied PartyPrint / Print Happy Moments JPG is preserved unchanged in assets/partyprint-logo.jpg. Header wordmarks use a CSS viewport of that artwork; footer displays the full printer illustration, brand and tagline. All eight navigable pages use it, with the matching favicon on all nine HTML pages and homepage social image. Gameplay and printed sheets remain intact. Mobile/desktop and guide navigation/logo loading are checked before publishing; exact release checks and deployment are recorded in the logo PR.
