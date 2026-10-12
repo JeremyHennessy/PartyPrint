@@ -1,5 +1,15 @@
 # Launch and revenue guardrails
 
+## Custom-domain migration in progress — 2026-10-12
+
+Target primary URL: https://partyprint.live/. Registrar remains Spaceship. Current working production is still https://partyprint-5xv.pages.dev/ at main `e4ad8c422903dceec14ad84099515e35bf53683f`, Pages deployment `0b96d0c5-9cdd-4032-817f-f42fbda341c8`; Actions `38313055605` passed. No open PRs or newer main commits at inspection.
+
+Created a free Cloudflare zone in the existing Pages account, zone `2609c46dd4d225c2d81331a9da881676`. Assigned nameservers: `aragorn.ns.cloudflare.com`, `selah.ns.cloudflare.com`. Attached apex and www to existing Pages project `partyprint`; both pending validation. Provisioned proxied CNAMEs to the actual existing Pages hostname. Delegation remains `launch1.spaceship.net`, `launch2.spaceship.net`. Public DNSSEC DS key tag 11483, algorithm 13, digest type 2 is present: do not switch nameservers without following the DNSSEC migration procedure. Registrar login is outstanding. Existing apex A records are `54.149.79.189` and `34.216.117.25`; sampled apex MX/TXT/AAAA and www CNAME/_dmarc TXT have no records, but full registrar inventory, CAA and DKIM remain unverified. Local QA holds a DNS snapshot; rollback preserves Spaceship records and restores original delegation with matching DNSSEC state.
+
+All 20 generator tests and static checks passed. Prepared `scripts/verify-site-metadata.mjs` checks built canonical and social origins, real local image files, exact sitemap coverage (seven URLs including the free collection), robots declaration and preserved Google ownership identifiers. Passed against both target and existing origins. This is preparation, not a verified new-domain deployment.
+
+Activation sequence: owner signs in to Spaceship; inventory all DNS services; safely remove old DS and confirm propagation before delegation; activate Cloudflare DNS and verify apex/www TLS and application; then update production/preview PUBLIC_SITE_URL, CI and analytics hostname together through a tested PR. Only after new production works, enable path/query-preserving permanent redirects from www and the exact legacy production hostname, retaining preview deployments. New Search Console property/sitemap, AdSense site review and analytics registration remain outstanding. No ads or payment changes are part of the migration.
+
 ## AdSense readiness and restrained launch policy — 2026-10-12
 
 Current baseline reconciles newer authentic-preview work at `c6bb6367a4fb72e8889a3aa2430babf6a48f72b4`. Owner completed AdSense enrollment after automatic approval review blocked agent enrollment. The actual dashboard lists PartyPrint with Requires review and real publisher `pub-5463991523233853`; payment information remains Required. Site acceptance in the account is confirmed, not publisher approval.
