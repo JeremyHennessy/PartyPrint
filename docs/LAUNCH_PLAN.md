@@ -9,14 +9,14 @@
 - Local browser verification: homepage rendered; office occasion selection, escaped HTML-like party title, 48-card setting, 4×4 preview (16 cells), all four theme summaries, trivia and scavenger previews, custom-prompt entry, and shuffle changing the preview were exercised. Deselecting all games displayed the expected error and disabled printing.
 - Desktop appearance was inspected. A 390×844 viewport was inspected and a DOM width check found no horizontal overflow in that sample. This is partial mobile evidence, not complete mobile QA or iPhone Safari verification.
 - Cloudflare's current official setup prompt was fetched. Its 18 skills installed at `C:\Users\Jerem\.agents\skills`; the CLI now lists the global `cloudflare` MCP at the official endpoint. The existing repository declaration was preserved. Newly installed tooling is not exposed in the already-running conversation.
-- OAuth was initiated, but no successful authorization or account access has been observed. The dashboard presented a sign-in screen. Account identity, existing Pages project, Git integration, build settings, deployments, production hostname, deployed commit, custom domain, and environment variables remain **unverified**. No Pages project was created.
+- Account owner completed OAuth; the CLI reported `Successfully logged in`, and `codex mcp list` reports Cloudflare enabled with OAuth. The redundant subsequent login was stopped. Cloudflare tools are absent from this already-running conversation, so a reload is required before usable account access can be verified. The in-app dashboard presented a sign-in screen. Account identity, existing Pages project, Git integration, build settings, deployments, production hostname, deployed commit, custom domain, and environment variables remain **unverified**. No Pages project was created.
 - No production URL is known. `PUBLIC_SITE_URL` remains unset; production canonical tags, sitemap, robots, navigation, and 404 behavior remain unverified. Do not substitute an assumed hostname.
 - PDF pagination, clipping, blank pages, Letter/A4, high-card-count printing, desktop cross-browser printing, and iPhone Safari remain unverified. Prior CI PDF generation is only smoke evidence.
 - Advertising, affiliate links, payments, Search Console, traffic, and revenue remain unconnected/unverified.
 
 ### Immediate next actions
 
-1. Account owner completes Cloudflare OAuth; reload the agent to expose the registered MCP. Confirm authenticated access to the intended account.
+1. Reload the agent to expose the registered, OAuth-authorized MCP. Confirm authenticated access to the intended account. OAuth itself has completed; do not repeat login unless the connection requires it.
 2. Inspect both the existing Workers build integration and Pages resources before creating anything. Resolve the hosting-target mismatch while preserving existing resources; verify Pages Git integration with `JeremyHennessy/PartyPrint`, `main`, `npm run build`, and `dist`.
 3. Verify the public production URL and deployed commit, then configure the canonical origin and test the served release.
 4. Complete browser and visual PDF QA before feature expansion, indexing submission, or monetization work.
