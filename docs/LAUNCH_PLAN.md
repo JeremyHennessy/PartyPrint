@@ -1,5 +1,19 @@
 # Launch and revenue guardrails
 
+## Printable preview and guest answer sheets — 2026-10-12
+
+Owner acceptance: after PR #7, the owner reported “That worked” for the real PDF flow on the previously identified iPhone Chrome / Google environment. This verifies their reported delivery problem was resolved; exact app identity, all iOS browsers and physical printer output are not inferred. Starting main `2b7af5982ff023a182fdcdcb2d0aff2a69ec725e` and successful Pages deployment `1acc9e3e-88e1-48b4-83d3-66aba79e2545` were checked against the account. No newer commits or open PRs at the start.
+
+Implemented card-by-card bingo navigation, upright full-content previews for all three games, keyboard-close/focus return, and a scrollable enlarged sheet on narrow phones to avoid squeezing words into unreadable fragments. Navigating previews preserves the ready PDF and never changes the card mix or customizations. Full trivia/scavenger previews expose all 12 entries.
+
+Optional guest trivia answer sheets accept 0–48 copies (default 0 preserves existing packs), with name/team and 12 numbered writing lines. Questions and host key remain separate, with one host key regardless of guest copies. Answer-sheet quantity is counted in summaries, native printing and real PDF export, and restored by generic setup links without private content. Turning trivia off excludes answer sheets.
+
+Validation: 20 core tests plus static checks/build. The expanded native/direct Letter/A4 matrix contains 72 PDF documents / 936 physical pages, including 12-copy combined packs and 48-copy trivia packs with long titles. Checks cover exact counts, nonblank sheets, complete text and safe page margins; guest-sheet count/12 lines/no host-answer list, preview navigation, file retention, modal close/focus, readable cell widths/fonts, and 320/390/768/1440px layouts. Representative mobile/desktop previews and rendered A4 direct / Letter native answer sheets were visually inspected. QA evidence retained under `qa/preview-answer-final/`; CI uploads artifacts. Exact release head/main SHA, Actions and deployment IDs are recorded in the release PR after publishing.
+
+Search Console access check still reaches Google’s sign-in screen. Owner sign-in is required before checking existing properties or issuing a verification token; sitemap remains https://partyprint-5xv.pages.dev/sitemap.xml. Cookie-free production analytics remains installed without duplicate tracking; aggregate reports, indexing and organic traffic are unknown. No ads, payments or affiliate links activated. Product improvements should reduce preparation friction; impact on return visits/revenue remains a hypothesis.
+
+Next three objectives: (1) finish Search Console property verification and sitemap submission after owner sign-in; (2) inspect real acquisition/landing-page analytics and indexing before selecting the next substantive guide; (3) test a coordinated premium sample pack and pricing only after evidence of generator demand, preserving the free tool. Real Safari and physical printer checks remain outstanding.
+
 ## Direct PDF export — 2026-10-12 (release verification in PR)
 
 This section supersedes the native-print workaround below. The owner reported that the iPhone Chrome / Google fallback still did not solve file delivery. Reviewed production main was `9ffda3fa8e75b72794bf6431fa66127cbf5118cd`, Cloudflare deployment `8310a766-be4d-4981-8b61-9d275b8b8b24`, at https://partyprint-5xv.pages.dev/. Git integration and hosting settings are preserved.

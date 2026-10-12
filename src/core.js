@@ -97,6 +97,7 @@ export function normalizeConfig(config = {}) {
     title: tidyText(config.title, 70) || occasionById(occasion).label + " games",
     host: tidyText(config.host, 50),
     count: clampInteger(config.count, 1, 48, 12),
+    answerCount: games.trivia ? clampInteger(config.answerCount ?? 0, 0, 48, 0) : 0,
     size: config.size === 4 || config.size === "4" ? 4 : 5,
     seed: Number.isFinite(Number(config.seed)) ? Number(config.seed) : 42,
     games,
@@ -127,7 +128,7 @@ export function createPack(userConfig) {
     bingoCards,
     trivia,
     scavenger,
-    pageCount: bingoCards.length + (trivia.length ? 2 : 0) + (scavenger.length ? 1 : 0),
+    pageCount: bingoCards.length + (trivia.length ? 2 + config.answerCount : 0) + (scavenger.length ? 1 : 0),
     customCount: custom.length
   };
 }
@@ -144,6 +145,7 @@ export function shareURL(baseURL, config) {
     size: String(normalized.size),
     games: Object.entries(normalized.games).filter(([, active]) => active).map(([name]) => name).join(",")
   });
+  if (normalized.answerCount) params.set("answers", String(normalized.answerCount));
   url.search = params.toString();
   url.hash = "studio";
   return url.toString();
@@ -164,6 +166,7 @@ export function configFromURL(search) {
     theme,
     bingoMode: params.get("mode"),
     count: params.get("count") ?? 12,
+    answerCount: params.get("answers") ?? 0,
     size: params.get("size") ?? 5,
     games
   });

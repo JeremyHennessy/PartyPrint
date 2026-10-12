@@ -23,6 +23,9 @@
   .print-page .answer-list{margin-top:7mm}
   .print-page .answer-list li{padding:1.2mm 0;font-size:10pt}
   .print-page .answer-list strong{font-weight:750}
+  .print-page .guest-answer-lines{margin-top:7mm;padding-left:9mm}
+  .print-page .guest-answer-lines li{height:9mm;font-size:11pt;break-inside:avoid}
+  .print-page .guest-answer-lines span{height:6mm}
   .print-page .answer-intro{font-size:11pt;color:#554b50;line-height:1.7}
   .print-page .print-how-to{margin-top:auto;border-top:1px solid #ddd3cb;padding:5mm 0 0;text-align:center;font-size:9pt;color:#74696e}
   .print-page .print-how-to strong{color:var(--theme-ink)}

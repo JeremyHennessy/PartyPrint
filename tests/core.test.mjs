@@ -160,3 +160,17 @@ test("replacement lists exclude curated words and validate enough unique entries
   assert.equal(configFromURL(new URL(link).search).promptSource,"supplement");
   assert.equal(parseCustomPrompts(Array.from({length:81},(_,i)=>"Word "+i).join("\n")).length,80);
 });
+
+test("guest answer sheets are optional, bounded and counted only with trivia", () => {
+  assert.equal(createPack({count:1}).pageCount,4);
+  assert.equal(createPack({count:1,answerCount:12}).pageCount,16);
+  assert.equal(createPack({answerCount:999,games:{bingo:false,scavenger:false}}).pageCount,50);
+  assert.equal(normalizeConfig({answerCount:-2}).answerCount,0);
+  assert.equal(createPack({count:1,answerCount:12,games:{trivia:false}}).pageCount,2);
+});
+test("shared answer-sheet quantities round trip without personal content", () => {
+  const link=shareURL("https://partyprint-5xv.pages.dev/",{answerCount:12,title:"Private guest",custom:"Private prompt"});
+  assert.equal(configFromURL(new URL(link).search).answerCount,12);
+  assert.ok(!link.includes("Private"));
+  assert.equal(configFromURL("?games=bingo&answers=48").answerCount,0);
+});

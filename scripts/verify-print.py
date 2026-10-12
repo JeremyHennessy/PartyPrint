@@ -14,6 +14,10 @@ for case in json.loads((folder / 'print-manifest.json').read_text(encoding='utf-
             failures.append(f"{case['file']}: {len(pdf.pages)} pages, expected {case['expectedPages']}")
         for i, page in enumerate(pdf.pages):
             text = page.extract_text() or ''
+            if 'my trivia answers' in text.lower():
+                if not re.search(r'(?m)^12\.', text): failures.append(f"{case['file']} page {i+1}: missing answer numbers")
+                writing_lines = [edge for edge in page.edges if edge.get('orientation') == 'h' and edge['x1'] - edge['x0'] > 200]
+                if len(writing_lines) < 12: failures.append(f"{case['file']} page {i+1}: missing writing lines")
             if not text.strip(): failures.append(f"{case['file']} page {i+1}: blank")
             # Each logical sheet must be complete on its own physical page.
             if i < len(case['expectedText']):
