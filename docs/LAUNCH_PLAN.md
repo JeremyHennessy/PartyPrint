@@ -1,5 +1,22 @@
 # Launch and revenue guardrails
 
+## Direct PDF export — 2026-10-12 (release verification in PR)
+
+This section supersedes the native-print workaround below. The owner reported that the iPhone Chrome / Google fallback still did not solve file delivery. Reviewed production main was `9ffda3fa8e75b72794bf6431fa66127cbf5118cd`, Cloudflare deployment `8310a766-be4d-4981-8b61-9d275b8b8b24`, at https://partyprint-5xv.pages.dev/. Git integration and hosting settings are preserved.
+
+Implemented real local vector PDF generation from `createPack()` data, with Letter/A4, an explicit Save PDF link, Open PDF and file sharing when supported. Browser printing remains separate. Ready files live only in memory and are invalidated when settings change; canceled sharing preserves the file. Errors show a retry path, resource loading has a timeout, and unsupported glyphs are reported instead of dropped. No upload, backend, account, storage, new tracking or payment service added. On-device PDF sharing intentionally shares the full selected document; generic setup links still omit names/custom words.
+
+The export renderer uses pinned jsPDF 4.2.1, copied at build time to a local 420,165-byte UMD asset, and a bundled SIL-OFL Noto Sans Regular font (569,208 bytes). Both load only on export; no HTML-to-image pipeline is used. Font provenance/hash/license are recorded in assets/fonts/. npm audit reported zero vulnerabilities at installation. Measured sample files: one classic card approximately 40 KB; 48 classic cards approximately 145 KB. These are QA examples, not universal file-size promises.
+
+Also improved primary-action contrast and touch areas, aligned bingo win rules, corrected singular page wording, and updated homepage FAQ, affected guides, README and privacy copy. The cheerful visual identity and generator content remain intact.
+
+Verification: 18 core tests plus static/build checks passed. Browser runner covers actual file download, supported-sharing branch with a mocked file API, canceled sharing, edited-setting invalidation, Unicode title, blocked engine resource then successful retry, and unsupported emoji failure. iPhone user-agent tests run in Chromium and are not real iOS evidence. The expanded matrix contains 64 PDFs / 672 physical pages: native print and direct downloads, six occasions, all themes, gift/moment bingo, 4x4/5x5, 1/12/48 cards, trivia, separate key, scavenger and long/unbroken prompts on Letter/A4. Page counts, nonblank sheets, complete text including Unicode letters, and safe margins are inspected with pdfplumber. Visual samples include mobile ready-file controls, long-text output, Unicode title and the final card of a 48-page download; artifacts are in qa/direct-release/ and CI uploads.
+
+Release PR will contain exact tested head, final main SHA, Actions results, preview and production deployment IDs, and independently verified live downloads. Actual iPhone Chrome, Safari and Google-app saving remains an acceptance check with the owner; it must not be inferred from desktop file downloads or mocked sharing.
+
+Next three tasks: (1) confirm saving/opening the customized file on a real iPhone; (2) add readable full-card preview and optional guest trivia answer sheets once delivery is accepted; (3) authorize Search Console and assess real discovery/aggregate analytics before publishing more content or activating monetization. Traffic, indexing, revenue and ad approval remain unverified; no ads, affiliates or payments enabled.
+
+
 ## iPhone printing report — 2026-10-12 (fix pending release verification)
 
 The account owner reported that Print / save did not work on iPhone. The user identified Chrome / Google on iPhone; exact symptom remains unknown. Previous Chromium PDF results were not iPhone evidence. The original button synchronously rendered a hidden print root then relied exclusively on `window.print()`.

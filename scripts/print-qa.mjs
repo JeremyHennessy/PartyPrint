@@ -39,7 +39,39 @@ try {
   // Test the iPhone handler with a no-op print API; this is not real Safari QA.
   const iphone = await browser.newPage({viewport:{width:390,height:844},userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 CriOS/138.0 Mobile/15E148 Safari/604.1'});
   await iphone.addInitScript(() => { window.printCalls = 0; window.print = () => { window.printCalls++; }; });
+  await iphone.addInitScript(() => {
+    Object.defineProperty(navigator,'canShare',{value:()=>true});
+    Object.defineProperty(navigator,'share',{value:async ({files})=>{window.sharedFile={name:files[0].name,type:files[0].type,size:files[0].size};if(window.cancelShare)throw new DOMException('Cancelled','AbortError');}});
+  });
   await iphone.goto(base + '?occasion=baby&mode=gifts&count=1&games=bingo,trivia,scavenger');
+  await iphone.locator('#party-title').fill('Private iPhone celebration');
+  const requests=[];
+  iphone.on('request',req=>requests.push(req.url()));
+  await iphone.locator('#pdf-button').click();
+  await iphone.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
+  assert.ok(await iphone.locator('#pdf-result').isVisible(),await iphone.locator('#pdf-status').innerText());
+  await iphone.locator('#pdf-share').click();
+  const fileShared=await iphone.evaluate(()=>window.sharedFile);
+  assert.equal(fileShared.type,'application/pdf');
+  assert.equal(fileShared.name,'PartyPrint-baby-Letter.pdf');
+  assert.ok(fileShared.size>10000);
+  await iphone.evaluate(()=>window.cancelShare=true);
+  await iphone.locator('#pdf-share').click();
+  assert.ok(await iphone.locator('#pdf-result').isVisible(),'Share cancellation should retain the ready file');
+  await iphone.locator('#pdf-result').screenshot({path:path.join(output,'iphone-file-actions.png')});
+  await iphone.locator('#studio').screenshot({path:path.join(output,'mobile-pdf-ready.png')});
+  const iphoneDownload=iphone.waitForEvent('download');
+  await iphone.locator('#pdf-download').click();
+  await (await iphoneDownload).saveAs(path.join(output,'iphone-download.pdf'));
+  await iphone.locator('#party-title').fill('Zoë & François — Café № 7');
+  assert.ok(!(await iphone.locator('#pdf-result').isVisible()),'Editing should invalidate old PDF');
+  await iphone.locator('#pdf-button').click();
+  await iphone.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
+  assert.ok(await iphone.locator('#pdf-result').isVisible(),await iphone.locator('#pdf-status').innerText());
+  const unicodeDownload=iphone.waitForEvent('download');
+  await iphone.locator('#pdf-download').click();
+  await (await unicodeDownload).saveAs(path.join(output,'unicode-download.pdf'));
+  assert.ok(requests.every(url=>!url.includes('Private')&&!url.includes('Fran')),'Private title leaked into asset requests');
   await iphone.locator('#party-title').fill('Private iPhone celebration');
   await iphone.locator('#print-button').click();
   assert.equal(await iphone.evaluate(() => window.printCalls),0);
@@ -49,6 +81,9 @@ try {
   assert.ok(!iphone.url().includes('Private'));
   assert.ok(await iphone.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   const printable = await iphone.locator('#print-root').innerText();
+  const iphoneContent=await iphone.locator('#print-root .print-page').evaluateAll(nodes=>nodes.map(node=>Array.from(node.querySelectorAll('h4,.bingo-cell,.question-list li,.scavenger-list li')).map(n=>n.innerText).join(' ')));
+  results.push({file:'iphone-download.pdf',format:'Letter',expectedPages:4,expectedText:iphoneContent});
+  results.push({file:'unicode-download.pdf',format:'Letter',expectedPages:4,expectedText:iphoneContent.map(text=>text.replace('Private iPhone celebration','Zoë & François — Café № 7'))});
   await iphone.screenshot({path:path.join(output,'iphone-print-view.png'),fullPage:true});
   await iphone.locator('#print-ready-button').click();
   assert.equal(await iphone.evaluate(() => window.printCalls),1);
@@ -67,6 +102,24 @@ try {
     results.push({file,format,expectedPages:4,expectedText:text});
   }
   await iphone.close();
+  // Cold resource failure must leave a usable retry, with no broken download.
+  const retry = await browser.newPage();
+  await retry.route('**/assets/vendor/jspdf-4.2.1.min.js',route=>route.abort());
+  await retry.goto(base);
+  await retry.locator('#pdf-button').click();
+  await retry.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
+  assert.match(await retry.locator('#pdf-status').innerText(),/couldn’t create/);
+  assert.ok(!(await retry.locator('#pdf-result').isVisible()));
+  await retry.unroute('**/assets/vendor/jspdf-4.2.1.min.js');
+  await retry.locator('#pdf-button').click();
+  await retry.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
+  assert.ok(await retry.locator('#pdf-result').isVisible(),await retry.locator('#pdf-status').innerText());
+  await retry.locator('#party-title').fill('Party 🎉');
+  await retry.locator('#pdf-button').click();
+  await retry.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
+  assert.match(await retry.locator('#pdf-status').innerText(),/cannot show these characters/);
+  assert.ok(!(await retry.locator('#pdf-result').isVisible()));
+  await retry.close();
   await page.addInitScript(() => { window.printCalls=0; window.print=()=>{window.printCalls++;}; });
   await page.goto(base);
   await page.locator('#print-button').click();
@@ -127,6 +180,20 @@ try {
       assert.equal(pages.length, expected, 'Missing logical sheets');
       results.push({file,format,expectedPages:expected,expectedText:pages.map(text=>text.replace(/\s+/g,' ').trim())});
       console.log(`${file}: ${pages.length} expected pages`);
+      // Exercise the real file-download controls, not just a renderer API.
+      await page.locator('#pdf-paper').selectOption(format);
+      await page.locator('#pdf-button').click();
+      await page.waitForFunction(() => !document.querySelector('#pdf-button').disabled);
+      assert.ok(await page.locator('#pdf-result').isVisible(), await page.locator('#pdf-status').innerText());
+      const downloaded = page.waitForEvent('download');
+      await page.locator('#pdf-download').click();
+      const saved = await downloaded;
+      const directFile = `download-${test.name}-${format}.pdf`;
+      await saved.saveAs(path.join(output,directFile));
+      assert.equal(saved.suggestedFilename(),`PartyPrint-${test.occasion || 'baby'}-${format}.pdf`);
+      const content = await page.locator('#print-root .print-page').evaluateAll(nodes => nodes.map(node => Array.from(node.querySelectorAll('h4,.bingo-cell,.question-list li,.scavenger-list li')).map(n=>n.innerText).join(' ')));
+      results.push({file:directFile,format,expectedPages:expected,expectedText:content});
+      console.log(`${directFile}: ${expected} expected pages`);
     }
   }
   fs.writeFileSync(path.join(output,'print-manifest.json'),JSON.stringify(results,null,2));

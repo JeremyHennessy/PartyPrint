@@ -11,6 +11,10 @@ const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.ht
 const directories = ["src", "assets", "guides"];
 for (const name of files) fs.copyFileSync(path.join(root, name), path.join(output, name));
 for (const name of directories) fs.cpSync(path.join(root, name), path.join(output, name), { recursive: true });
+// Only the self-contained PDF engine is shipped, loaded on demand by the exporter.
+fs.mkdirSync(path.join(output, "assets/vendor"), { recursive: true });
+fs.copyFileSync(path.join(root, "node_modules/jspdf/dist/jspdf.umd.min.js"), path.join(output, "assets/vendor/jspdf-4.2.1.min.js"));
+fs.copyFileSync(path.join(root, "node_modules/jspdf/LICENSE"), path.join(output, "assets/vendor/jsPDF-LICENSE.txt"));
 
 const siteURL = process.env.PUBLIC_SITE_URL?.trim();
 if (siteURL) {

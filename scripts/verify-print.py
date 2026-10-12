@@ -20,8 +20,8 @@ for case in json.loads((folder / 'print-manifest.json').read_text(encoding='utf-
                 expected = normalize(case['expectedText'][i]).lower()
                 actual = normalize(text).lower()
                 # Counts catch lost repeated words or individual clipped letters too.
-                expected_chars = Counter(re.findall(r'[a-z0-9]', expected))
-                actual_chars = Counter(re.findall(r'[a-z0-9]', actual))
+                expected_chars = Counter(c for c in expected if c.isalnum())
+                actual_chars = Counter(c for c in actual if c.isalnum())
                 if expected_chars - actual_chars:
                     failures.append(f"{case['file']} page {i+1}: incomplete character content")
                 # Grid text extraction order is row-major; PDF extraction may interleave wrapped cells.

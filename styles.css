@@ -189,3 +189,14 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
     .print-preview .game-sheet h4{font-size:28px}
   }
 }
+
+.button-primary{background:#8c4c3e}.button-primary:hover{background:#713a30}
+.preview-tabs button,.shuffle-button,.share-button,.advanced-options summary{min-height:44px}
+.advanced-options summary{display:flex;align-items:center;gap:8px}
+.pdf-paper-label{display:block;text-align:left;font-size:12px;font-weight:750;margin:0 0 8px}
+#pdf-paper{width:100%;min-height:44px;padding:10px 12px;border:1px solid #e3d8d1;border-radius:8px;background:white;font:inherit;margin-bottom:12px}
+#pdf-status{font-size:13px;line-height:1.6;color:#55484d}
+#pdf-result{padding:14px 10px;border:1px solid #d8cabf;border-radius:10px;background:#fff9f1;margin-bottom:12px}
+#pdf-result .button{margin:4px;min-height:44px;padding:13px 16px;font-size:12px}
+.print-secondary{min-height:44px;border:1px solid #d8cabf;width:100%;margin-top:10px}
+.download-panel .share-button{margin-top:4px}
