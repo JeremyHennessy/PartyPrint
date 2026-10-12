@@ -36,7 +36,44 @@ const cases = [
 const results = [];
 try {
   const page = await browser.newPage({ viewport: {width:1440,height:1000} });
+  // Test the iPhone handler with a no-op print API; this is not real Safari QA.
+  const iphone = await browser.newPage({viewport:{width:390,height:844},userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 CriOS/138.0 Mobile/15E148 Safari/604.1'});
+  await iphone.addInitScript(() => { window.printCalls = 0; window.print = () => { window.printCalls++; }; });
+  await iphone.goto(base + '?occasion=baby&mode=gifts&count=1&games=bingo,trivia,scavenger');
+  await iphone.locator('#party-title').fill('Private iPhone celebration');
+  await iphone.locator('#print-button').click();
+  assert.equal(await iphone.evaluate(() => window.printCalls),0);
+  assert.ok(await iphone.locator('#iphone-print-help').isVisible());
+  assert.equal(await iphone.locator('#print-root .print-page').count(),4);
+  assert.equal(await iphone.locator('#print-root').getAttribute('aria-hidden'),'false');
+  assert.ok(!iphone.url().includes('Private'));
+  assert.ok(await iphone.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  const printable = await iphone.locator('#print-root').innerText();
+  await iphone.screenshot({path:path.join(output,'iphone-print-view.png'),fullPage:true});
+  await iphone.locator('#print-ready-button').click();
+  assert.equal(await iphone.evaluate(() => window.printCalls),1);
+  const historyLength = await iphone.evaluate(() => history.length);
+  await iphone.locator('#back-to-editor').click();
+  await iphone.waitForFunction(() => !document.body.classList.contains('print-preview'));
+  assert.equal(await iphone.locator('#party-title').inputValue(),'Private iPhone celebration');
+  await iphone.goForward();
+  await iphone.waitForFunction(() => document.body.classList.contains('print-preview'));
+  assert.equal(await iphone.evaluate(() => history.length),historyLength);
+  assert.equal(await iphone.locator('#print-root').innerText(),printable);
+  for (const format of ['Letter','A4']) {
+    const file = `iphone-view-${format}.pdf`;
+    await iphone.pdf({path:path.join(output,file),format,printBackground:true,displayHeaderFooter:false});
+    const text = await iphone.locator('#print-root .print-page').evaluateAll(nodes => nodes.map(node => { const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT); const parts=[]; while(walker.nextNode()) parts.push(walker.currentNode.textContent); return parts.join(' '); }));
+    results.push({file,format,expectedPages:4,expectedText:text});
+  }
+  await iphone.close();
+  await page.addInitScript(() => { window.printCalls=0; window.print=()=>{window.printCalls++;}; });
   await page.goto(base);
+  await page.locator('#print-button').click();
+  assert.equal(await page.evaluate(() => window.printCalls),1);
+  assert.ok(await page.locator('#print-toolbar').isVisible());
+  await page.locator('#back-to-editor').click();
+  await page.waitForFunction(() => !document.body.classList.contains('print-preview'));
   await page.screenshot({path:path.join(output,'desktop.png'),fullPage:true});
   await page.locator('#studio').screenshot({path:path.join(output,'desktop-studio.png')});
   for (const width of [320,390,768]) {

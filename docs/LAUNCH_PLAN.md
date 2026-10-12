@@ -1,5 +1,16 @@
 # Launch and revenue guardrails
 
+## iPhone printing report — 2026-10-12 (fix pending release verification)
+
+The account owner reported that Print / save did not work on iPhone. The user identified Chrome / Google on iPhone; exact symptom remains unknown. Previous Chromium PDF results were not iPhone evidence. The original button synchronously rendered a hidden print root then relied exclusively on `window.print()`.
+
+Implemented a visible printable view with all generated sheets, a return-to-editor control preserving customizations, accessible focus and an explicit print action. On iPhone/iPad the main button opens the prepared pack rather than depending on a scripted dialog; instructions provide the browser-native Share → Print → Share / Save to Files path. In-app browser users are directed to create the pack in Safari. Desktop automatic print stays available, with the same visible fallback if a dialog is blocked. Prepared sheets are reused for the same pack, avoiding another DOM replacement when beforeprint fires. No PDF library, backend, storage or private URL data added.
+
+Local checks: 18 core tests and static/build checks passed. The updated browser regression runner verifies the iPhone user-agent path with a no-op print API, visible four-sheet pack, explicit print action, private title excluded from URL, return/forward history preserving the pack, and desktop automatic printing. This is Chromium handler coverage, not real iOS testing. All 32 PDF fixtures / 336 physical pages passed exact counts, nonblank pages, complete text and page bounds, including the visible view on Letter/A4. Visually inspected the 390px printable view and rendered A4 bingo page; QA artifacts are in qa/iphone-fix/ and CI artifacts. Release PR and deployment evidence will be recorded in the linked PR after publishing.
+
+Source: [Apple printing instructions](https://support.apple.com/en-ie/guide/iphone/iph92628b8f/ios). This is a fallback for the reported failure, not a claim that its exact underlying iOS cause has been reproduced. Real iPhone confirmation remains required after deployment.
+
+
 ## Quality, product and growth pass — 2026-10-12 (verified release)
 
 This section supersedes older next-step lists. Starting main was `0fd3e214f36bc49e706db06af55248d4c727222f`; fetched main and open PRs were reconciled before editing. Pages production was independently confirmed at deployment `d60ffd5d-289b-488b-ad6e-403347ffd6da`, serving that commit at https://partyprint-5xv.pages.dev/. Git integration, main, `npm run build`, `dist`, canonical origin and absence of custom domains remain correct. Obsolete Workers triggers were left disabled.
