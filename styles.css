@@ -98,8 +98,8 @@ h1 em,h2 em{font-weight:400;color:#d97861}
 .field-group{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .field-group label,.field-group legend{font-size:13px;font-weight:800;line-height:1.5}
 .optional{color:#969092;font-weight:450;font-size:12px}
-.field-group input:not([type=radio]):not([type=checkbox]),.field-group select,.advanced-options textarea{display:block;min-width:0;width:100%;height:47px;padding:0 14px;border:1px solid #e3d8d1;border-radius:8px;background:#fff;color:#3b3336;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-.field-group input:focus,.field-group select:focus,.advanced-options textarea:focus{border-color:#ad7d8a!important;box-shadow:0 0 0 3px #d9bad036}
+.field-group input:not([type=radio]):not([type=checkbox]),.field-group select,.advanced-options select,.advanced-options textarea{display:block;min-width:0;width:100%;height:47px;padding:0 14px;border:1px solid #e3d8d1;border-radius:8px;background:#fff;color:#3b3336;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+.field-group input:focus,.field-group select:focus,.advanced-options select:focus,.advanced-options textarea:focus{border-color:#ad7d8a!important;box-shadow:0 0 0 3px #d9bad036}
 .field-group small,.advanced-options small{color:#928589;font-size:11px}
 .select-wrap{position:relative}.select-wrap::after{content:"⌄";position:absolute;right:15px;top:6px;font-size:26px;color:#63575c;pointer-events:none}.select-wrap select{appearance:none;padding-right:35px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}.number-field{position:relative}.number-field span{position:absolute;right:12px;top:11px;font-size:12px;color:#91858b;pointer-events:none}.number-field input{padding-right:58px!important}
@@ -166,3 +166,6 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
 .game-sheet h4,.bingo-cell{overflow-wrap:anywhere}
 .advanced-options select{margin-bottom:12px}
 #edit-word-list{margin-bottom:12px;font-size:13px}
+
+.advanced-options>label:not(.sr-only){display:block;font-size:12px;font-weight:700;margin:12px 0 8px}
+#edit-word-list{background:#fff0e7;border:1px solid #e3d8d1;border-radius:8px;min-height:44px;padding:11px 16px}

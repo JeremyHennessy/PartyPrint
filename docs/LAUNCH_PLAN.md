@@ -1,8 +1,16 @@
 # Launch and revenue guardrails
 
-## Quality, product and growth pass — 2026-10-12 (release verification pending)
+## Quality, product and growth pass — 2026-10-12 (verified release)
 
 This section supersedes older next-step lists. Starting main was `0fd3e214f36bc49e706db06af55248d4c727222f`; fetched main and open PRs were reconciled before editing. Pages production was independently confirmed at deployment `d60ffd5d-289b-488b-ad6e-403347ffd6da`, serving that commit at https://partyprint-5xv.pages.dev/. Git integration, main, `npm run build`, `dist`, canonical origin and absence of custom domains remain correct. Obsolete Workers triggers were left disabled.
+
+### Verified release record
+
+- Application main verified at `0c6111f202216776041db01d5e397559ce36fbdc`, merged from [PR #4](https://github.com/JeremyHennessy/PartyPrint/pull/4), exact tested head `f38653927609e41c29bf9be6132b468baf4fe880`. [Main Actions run 38290840059](https://github.com/JeremyHennessy/PartyPrint/actions/runs/38290840059) passed all tests, including Linux Chrome PDF inspection; QA artifact `partyprint-browser-qa` ID `11766325780` was uploaded (expires 2026-10-19). Both branch and PR checks also passed before exact-head merge.
+- Production deployment `c8b4ec5c-8e9d-4b4a-a353-6ffd5164b582` completed successfully from main at that application SHA via `github:push`; public https://partyprint-5xv.pages.dev/ independently tested. Deployed JS and print CSS exactly matched tested source. Actual live controls, gift mode, editable replacement list, retained shuffle, trivia/scavenger previews and 390px mobile layout passed. Live PDFs: 4 Letter + 4 A4 pages, expected complete contents and safe margins. Production screenshots/manifests/PDFs retained under `qa/production/`.
+- Homepage canonical, six-URL sitemap, robots sitemap reference, guide OG image (HTTP 200) and actual 404 status verified. No custom domain, backend or obsolete Workers trigger changes.
+- Production beacon script loaded with HTTP 200 and collection requests returned HTTP 204. Captured request payloads excluded the explicit private title/custom-word test sentinels; there were no browser JS errors. Preview deployment `dd1aea0b-02f0-4610-b394-e90509f82552` also passed controls/SEO/eight-page PDF checks, and loaded no analytics. Analytics report totals remain unknown; these QA visits are not organic visitors.
+- Follow-up [PR #5](https://github.com/JeremyHennessy/PartyPrint/pull/5) aligns the new replacement selector with existing form styling after inspection of the expanded mobile control, and records this verification. Documentation/follow-up commits may advance main beyond the application SHA above; use the GitHub main ref and Cloudflare canonical deployment when resuming.
 
 ### Implemented in this pass
 
@@ -10,7 +18,7 @@ This section supersedes older next-step lists. Starting main was `0fd3e214f36bc4
 - Clear baby-shower choice between 40 curated baby gifts and the existing party-moment pool, with mode-specific preview and printed instructions. Legacy setups still default to moments.
 - Edit the complete curated pool, remove unwanted items, add words, or choose replacement rather than supplementation. Up to 80 unique prompts, 56 characters each; minimum 16/24 for replacement grids. Shuffle retains edits. Invalid configurations clear stale printable output.
 - Expanded the existing baby-shower guide rather than adding duplicate landing pages: original gift-opening rules, registry customization, repeated-gift/bundle guidance, no-winner fallback, print settings, a real generated example and direct presets. Added absolute Open Graph image metadata and a tall printable example suitable for sharing. No social posting was performed.
-- Registered exactly one Cloudflare Web Analytics site, tag `7b36d9515b694ca4a8d6e58bb1a6a151`, for the production hostname; auto-injection disabled. The public beacon identifier is not an account credential. Source loads the beacon only on production; local/preview QA is excluded. Updated privacy disclosure and limited CSP additions to official script/collection origins. Activation and actual beacon response must be verified after deployment.
+- Registered exactly one Cloudflare Web Analytics site, tag `7b36d9515b694ca4a8d6e58bb1a6a151`, for the production hostname; auto-injection disabled. The public beacon identifier is not an account credential. Source loads the beacon only on production; local/preview QA is excluded. Updated privacy disclosure and limited CSP additions to official script/collection origins. Production activation verified: script HTTP 200 and collection HTTP 204, without private input payloads.
 
 ### QA evidence and limits
 
@@ -19,7 +27,7 @@ This section supersedes older next-step lists. Starting main was `0fd3e214f36bc4
 - Actual PDFs checked with pdfplumber for independent expected counts, nonblank pages, all expected words and character counts, and safe page margins. These are document checks, not merely file-signature checks. CI now repeats them and retains artifacts for seven days.
 - Local artifacts retained in `qa/baseline/`, `qa/release/`, `qa/final/`: PDFs, manifests, desktop/mobile screenshots and rendered sample pages. Visually inspected color gift bingo, answer key, long text, unbroken strings, and grayscale scavenger output. Print layouts use mostly white backgrounds and colored text/borders; grayscale remains readable. Physical ink consumption is not measured.
 - Actual desktop studio and 320px mobile studio inspected; 320/390/768px screenshots and DOM width checks pass. Browser checks exercise replacement, curated-list loading, escaped content, regeneration, invalid-state clearing, keyboard preview arrows and privacy-safe sharing.
-- Tested engine: Microsoft Edge Chromium on Windows; CI will additionally test Linux Chrome. **Real iPhone Safari, Firefox, Safari print dialogs, physical printers and actual save-menu interactions remain unverified.** No iPhone test device is available here. Chromium PDFs are not iOS proof.
+- Tested engine: Microsoft Edge Chromium on Windows; Linux Chrome PDF checks also passed in GitHub Actions. **Real iPhone Safari, Firefox, Safari print dialogs, physical printers and actual save-menu interactions remain unverified.** No iPhone test device is available here. Chromium PDFs are not iOS proof.
 
 ### Discovery and measurement baseline
 
