@@ -1,6 +1,6 @@
 # Three additional free games and complete release review — October 12, 2026
 
-Starting main: 23f8a3e1f9e7780c3b0605c9479fd7eae918d906 (PR #28); verified successful Pages deployment 8e2e6b3-8fd7-4d7f-b7ba-3931ea5adef1, https://partyprint.live/. Current main, PRs, Actions and Pages were reconciled. Final release SHA, PR and production deployment ID are recorded in the release PR after publication.
+Starting main: 23f8a3e1f9e7780c3b0605c9479fd7eae918d906 (PR #28); verified successful Pages deployment e8e2e6b3-8fd7-4d7f-b7ba-3931ea5adef1, https://partyprint.live/. Current main, PRs, Actions and Pages were reconciled. Final release SHA, PR and production deployment ID are recorded in the release PR after publication.
 
 Implemented three optional free games for all six occasions: Who knows them? (up to 12 editable questions, guest worksheet and separate personal host key), themed word scramble (12 words and separate answers), and draw-and-guess (12 cut-out cards). Checking a game immediately selects its preview. Personal questions and answers remain on-device, are excluded from setup links, retain blank answer alignment and stay in order when other games regenerate. Existing defaults, bingo, trivia, scavenger hunts, This or that, themes, photo colors and PDF delivery are preserved.
 
