@@ -2,6 +2,7 @@ import { themeFromPhoto } from "./photo-theme.js";
 import { createPack, configFromURL, shareURL, escapeHTML } from "./core.js";
 
 import { getBingoPrompts } from "./content.js";
+import { honorQuestions } from "./extra-games.js";
 
 const $ = id => document.getElementById(id);
 const form = $("party-form");
@@ -41,10 +42,15 @@ function readConfig() {
       bingo: $("game-bingo").checked,
       trivia: $("game-trivia").checked,
       scavenger: $("game-scavenger").checked,
-      conversation: $("game-conversation").checked
+      conversation: $("game-conversation").checked,
+      honor: $("game-honor").checked,
+      scramble: $("game-scramble").checked,
+      drawing: $("game-drawing").checked
     },
     theme: document.querySelector('input[name="theme"]:checked')?.value || "peach",
     custom: $("custom-prompts").value,
+    honorQuestions: $("honor-questions").value,
+    honorAnswers: $("honor-answers").value,
     seed
   };
 }
@@ -104,6 +110,20 @@ function scavengerHTML(pack) {
 function conversationHTML(pack) {
   return sheetStart(pack, "this or that", "Choose either option · No right or wrong answers") + `<ol class="question-list">${pack.conversation.map(q => `<li>${escapeHTML(q)}</li>`).join("")}</ol>` + sheetEnd("TAKE TURNS · ASK WHY IF YOU WISH · PASS ANY QUESTION");
 }
+function honorHTML(pack, key = false) {
+  const unbroken = pack.honor.some(q=>/\S{35,}/.test(q.question) || /\S{35,}/.test(q.answer));
+  return sheetStart(pack, key ? "personal host key" : "who knows them?", key ? "Host copy · Answers match the numbered guest questions" : "Name / team: __________________________") +
+    `<ol class="question-list honor-list${key ? " honor-key" : ""}${unbroken ? " unbroken-copy" : ""}">${pack.honor.map(q=>`<li>${escapeHTML(key ? q.answer : q.question)}${!key || !q.answer ? '<span class="writing-line"></span>' : ''}</li>`).join("")}</ol>` +
+    sheetEnd(key ? "HOST: AGREE ANSWERS BEFORE PLAY · KEEP THIS SHEET SEPARATE" : "ONE POINT PER MATCH · PASS ANY QUESTION · HOST KEY IS SEPARATE");
+}
+function scrambleHTML(pack, key = false) {
+  return sheetStart(pack, key ? "scramble answers" : "word scramble", key ? "Host copy · Keep separate until the round ends" : "Unscramble each themed word · One point per answer") +
+    `<ol class="scramble-list${key ? " scramble-key" : ""}">${pack.scramble.map(q=>`<li><span class="scramble-clue">${escapeHTML(key ? q.answer : q.clue)}</span>${key ? '' : '<span class="writing-line"></span>'}</li>`).join("")}</ol>` +
+    sheetEnd(key ? "ANSWERS FOLLOW THE SAME NUMBERING AS THE GUEST SHEET" : "SET A SHARED TIMER · CHECK ANSWERS WHEN THE ROUND ENDS");
+}
+function drawingHTML(pack) {
+  return sheetStart(pack, "draw & guess", "Cut out 12 cards · Fold and mix face down") + `<div class="drawing-cards">${pack.drawing.map(q=>`<div class="drawing-card">${escapeHTML(q)}</div>`).join("")}</div>` + sheetEnd("DRAW WITHOUT WORDS OR LETTERS · TAKE TURNS · PASS ANY CARD");
+}
 
 function printPages(pack) {
   const pages = [];
@@ -123,6 +143,15 @@ function printPages(pack) {
       <p class="print-how-to">Check off each thing you find. Set a timer or play throughout the event.</p></article>`);
   }
   if (pack.conversation.length) pages.push(`<article class="print-page">${conversationHTML(pack)}<p class="print-how-to">Read an option pair aloud. Each willing guest chooses one; sharing a reason is optional. No scoring or answer key. Pass any question.</p></article>`);
+  if (pack.honor.length) {
+    pages.push(`<article class="print-page honor-page">${honorHTML(pack)}<p class="print-how-to">Host agrees answers with the guest of honor before play. Give each player a copy of this sheet; one point per matching answer. Set a time limit and allow passes.</p></article>`);
+    pages.push(`<article class="print-page honor-page">${honorHTML(pack,true)}<p class="print-how-to">HOST COPY · Fill any blank answers before play. Keep this sheet away from players until scoring.</p></article>`);
+  }
+  if (pack.scramble.length) {
+    pages.push(`<article class="print-page">${scrambleHTML(pack)}<p class="print-how-to">Give each player a copy. Unscramble the letters into a word for this occasion. Agree a timer; one point per correct answer.</p></article>`);
+    pages.push(`<article class="print-page">${scrambleHTML(pack,true)}<p class="print-how-to">HOST COPY · Reveal answers only after the round ends.</p></article>`);
+  }
+  if (pack.drawing.length) pages.push(`<article class="print-page">${drawingHTML(pack)}<p class="print-how-to">Cut and fold cards. Take turns drawing one on separate paper while others guess. No spoken clues, letters or numbers. Agree a 60-second timer; one point per correct guess. Pass any card.</p></article>`);
   return pages.join("");
 }
 
@@ -141,7 +170,7 @@ function displayError(text) {
   $("preview-details").textContent = "Choose at least one game to preview its sheets.";
   for (const tab of tabs) {
     tab.disabled = true;
-    if (["answers", "guest"].includes(tab.dataset.preview)) tab.hidden = true;
+    if (["answers", "guest", "honor-key", "scramble-key"].includes(tab.dataset.preview)) tab.hidden = true;
     tab.setAttribute("aria-selected", "false");
     tab.tabIndex = -1;
   }
@@ -150,6 +179,7 @@ function displayError(text) {
 function render() {
   clearPDF();
   $("trivia-sheets-field").hidden = !$("game-trivia").checked;
+  $("honor-settings").hidden = !$("game-honor").checked;
   $("bingo-settings").hidden = !$("game-bingo").checked;
   $("bingo-mode-field").hidden = $("occasion").value !== "baby" || !$("game-bingo").checked;
   $("bingo-mode-help").textContent = $("bingo-mode").value === "gifts" ? "Mark gifts as the guest of honor opens them." : "Mark things guests say or do during the celebration.";
@@ -165,22 +195,28 @@ function render() {
       trivia: pack.trivia.length > 0,
       scavenger: pack.scavenger.length > 0,
       conversation: pack.conversation.length > 0,
+      honor: pack.honor.length > 0,
+      scramble: pack.scramble.length > 0,
+      drawing: pack.drawing.length > 0,
+      "honor-key": pack.honor.length > 0,
+      "scramble-key": pack.scramble.length > 0,
       answers: pack.trivia.length > 0,
       guest: pack.trivia.length > 0 && pack.config.answerCount > 0
     };
+    $("shuffle-button").hidden = !["bingo", "trivia", "scavenger", "conversation", "scramble", "drawing"].some(game=>activeGames[game]);
     if (!activeGames[activeTab]) activeTab = Object.keys(activeGames).find(key => activeGames[key]);
 
     for (const tab of tabs) {
       const type = tab.dataset.preview;
       tab.disabled = !activeGames[type];
-      if (type === "answers" || type === "guest") tab.hidden = !activeGames[type];
+      if (["answers", "guest", "honor-key", "scramble-key"].includes(type)) tab.hidden = !activeGames[type];
       tab.setAttribute("aria-selected", type === activeTab ? "true" : "false");
       tab.tabIndex = type === activeTab ? 0 : -1;
     }
     stage.setAttribute("aria-labelledby", "tab-" + activeTab);
     previewCardIndex = Math.min(previewCardIndex, Math.max(0, pack.bingoCards.length - 1));
     renderPreview();
-    const extras = [pack.trivia.length && "trivia", pack.config.answerCount && pack.config.answerCount + " answer sheets", pack.scavenger.length && "scavenger hunt", pack.conversation.length && "this or that"].filter(Boolean);
+    const extras = [pack.trivia.length && "trivia", pack.config.answerCount && pack.config.answerCount + " answer sheets", pack.scavenger.length && "scavenger hunt", pack.conversation.length && "this or that", pack.honor.length && "who knows them?", pack.scramble.length && "word scramble", pack.drawing.length && "draw & guess"].filter(Boolean);
     const parts = [
       pack.bingoCards.length ? pack.bingoCards.length + " bingo card" + (pack.bingoCards.length === 1 ? "" : "s") : "",
       ...extras
@@ -206,6 +242,11 @@ function renderPreview() {
     trivia: "Trivia · All 12 questions · Host answers are a separate sheet",
     scavenger: "Scavenger hunt · All 12 items",
     conversation: "This or that · All 12 prompts",
+    honor: "Who knows them? · " + pack.honor.length + " questions · Separate host key",
+    "honor-key": "Personal host key · " + pack.honor.length + " answers · Complete blanks before play",
+    scramble: "Word scramble · All 12 words · Separate answer key",
+    "scramble-key": "Scramble answers · All 12 answers · Keep separate from players",
+    drawing: "Draw & guess · All 12 cut-out cards · Use separate paper for drawing",
     answers: "Host answer key · All 12 answers · Keep separate from guest sheets",
     guest: "Guest answer sheet · 12 blank answer lines · " + pack.config.answerCount + " identical copies in your PDF"
   };
@@ -222,6 +263,9 @@ function previewHTML(pack) {
   if (activeTab === "answers") return answersHTML(pack);
   if (activeTab === "guest") return guestAnswersHTML(pack);
   if (activeTab === "conversation") return conversationHTML(pack);
+  if (activeTab === "honor" || activeTab === "honor-key") return honorHTML(pack,activeTab === "honor-key");
+  if (activeTab === "scramble" || activeTab === "scramble-key") return scrambleHTML(pack,activeTab === "scramble-key");
+  if (activeTab === "drawing") return drawingHTML(pack);
   return scavengerHTML(pack);
 }
 for (const [id, direction] of [["previous-card", -1], ["next-card", 1]]) $(id).addEventListener("click", () => {
@@ -264,6 +308,7 @@ function restoreFromURL() {
   $("game-trivia").checked = config.games.trivia;
   $("game-scavenger").checked = config.games.scavenger;
   $("game-conversation").checked = config.games.conversation;
+  for (const game of ["honor", "scramble", "drawing"]) $("game-" + game).checked = config.games[game];
   const selected = document.querySelector('input[name="theme"][value="' + config.theme + '"]');
   if (selected) selected.checked = true;
 }
@@ -295,8 +340,16 @@ $("theme-photo").addEventListener("change", async () => {
 function resetPhotoTheme() { photoRequest++; photoTheme = null; $("photo-palette").hidden = true; $("photo-palette").innerHTML = ""; $("remove-photo").hidden = true; $("theme-photo").value = ""; $("photo-status").textContent = ""; }
 $("remove-photo").addEventListener("click", () => { resetPhotoTheme(); render(); });
 for (const radio of document.querySelectorAll('input[name="theme"]')) radio.addEventListener("change", resetPhotoTheme);
-form.addEventListener("input", render);
+form.addEventListener("input", event => {
+  // Selecting a game immediately shows it instead of leaving another preview active.
+  if (event.target.id.startsWith("game-") && event.target.checked) activeTab = event.target.id.slice(5);
+  render();
+});
 form.addEventListener("change", render);
+$("edit-honor-questions").addEventListener("click", () => {
+  $("honor-questions").value = honorQuestions($("occasion").value).join("\n");
+  render();
+});
 
 for (const button of document.querySelectorAll("[data-occasion]")) {
   button.addEventListener("click", () => {

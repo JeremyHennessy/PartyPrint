@@ -11,7 +11,7 @@ const executablePath = process.env.CHROME_PATH ||
 const output = path.resolve("qa", "brand");
 fs.mkdirSync(output, { recursive: true });
 const browser = await chromium.launch({ executablePath, headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-const base = "http://127.0.0.1:4173/";
+const base = process.env.QA_SITE_URL || "http://127.0.0.1:4173/";
 const pages = [
   ["home", "", 320, 720],
   ["home", "", 390, 844],

@@ -121,7 +121,7 @@ test("share link never includes private title, host or custom prompts", () => {
   assert.equal(restored.occasion, "office");
   assert.equal(restored.count, 18);
   assert.equal(restored.size, 4);
-  assert.deepEqual(restored.games, { bingo: true, trivia: false, scavenger: true, conversation: false });
+  assert.deepEqual(restored.games, { bingo: true, trivia: false, scavenger: true, conversation: false, honor: false, scramble: false, drawing: false });
 });
 
 test("untrusted query parameters cannot create arbitrary themes or occasions", () => {
@@ -129,7 +129,7 @@ test("untrusted query parameters cannot create arbitrary themes or occasions", (
   assert.equal(result.occasion, "baby");
   assert.equal(result.theme, "peach");
   assert.equal(result.count, 48);
-  assert.deepEqual(result.games, { bingo: false, trivia: false, scavenger: false, conversation: false });
+  assert.deepEqual(result.games, { bingo: false, trivia: false, scavenger: false, conversation: false, honor: false, scramble: false, drawing: false });
 });
 
 test("different events produce meaningfully different trivia selections", () => {

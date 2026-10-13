@@ -33,7 +33,7 @@ export function createPDF(pack, format, jsPDF, fontData, progress = () => {}) {
   doc.addFont("NotoSans.ttf", "NotoSans", "normal");
   doc.setFont("NotoSans", "normal");
   const cmap = doc.getFont().metadata.cmap.unicode.codeMap;
-  const text = [pack.config.title, ...pack.bingoCards.flatMap(c => c.rows.flat()), ...pack.trivia.flatMap(q => [q.question, q.answer]), ...pack.scavenger, ...(pack.conversation || [])].join(" ");
+  const text = [pack.config.title, ...pack.bingoCards.flatMap(c => c.rows.flat()), ...pack.trivia.flatMap(q => [q.question, q.answer]), ...pack.scavenger, ...(pack.conversation || []), ...(pack.honor || []).flatMap(q=>[q.question,q.answer]), ...(pack.scramble || []).flatMap(q=>[q.clue,q.answer]), ...(pack.drawing || [])].join(" ");
   const missing = [...new Set([...text].filter(c => !/\s/.test(c) && !cmap[c.codePointAt(0)]))];
   if (missing.length) throw new Error("The PDF font cannot show these characters: " + missing.slice(0, 8).join(" ") + ". Replace them or use browser printing.");
   const width = doc.internal.pageSize.getWidth(), height = doc.internal.pageSize.getHeight();
@@ -54,13 +54,13 @@ export function createPDF(pack, format, jsPDF, fontData, progress = () => {}) {
     doc.text(wrapped, width / 2, top, { align: "center", lineHeightFactor: 1.25 });
     return top + wrapped.length * size * 1.25;
   }
-  function start(type, subtitle) {
+  function start(type, subtitle, titleSize = 24) {
     if (pageCount++) doc.addPage(paper, "portrait");
     font(9, ink); doc.text("PARTYPRINT ORIGINALS · " + pack.occasion.label.toUpperCase(), left, 52);
     doc.setDrawColor(ink); doc.setLineWidth(.6); doc.line(left, 65, right, 65);
     // Built-in serif for ordinary titles; embedded Unicode font for other scripts.
     const serifTitle = /^[\u0020-\u007e\u00a0-\u00ff\u2013\u2014\u2018\u2019\u201c\u201d]*$/.test(pack.config.title);
-    let y = centered(pack.config.title, 101, contentWidth, 24, "#3d363a", serifTitle ? "title" : false);
+    let y = centered(pack.config.title, 101, contentWidth, titleSize, "#3d363a", serifTitle ? "title" : false);
     y = centered(type, y + 4, contentWidth, 25, ink, true);
     y = centered(subtitle, y + 7, contentWidth, 9, "#74696e");
     return y + 12;
@@ -141,6 +141,35 @@ export function createPDF(pack, format, jsPDF, fontData, progress = () => {}) {
       font(10); doc.text(lines((i + 1) + ". " + prompt, contentWidth, 10), left, y + 12 + i * spacing, {lineHeightFactor:1.3});
     });
     footer("Take turns choosing an option. Sharing a reason is optional. Pass any question. No scoring.");
+  }
+  if (pack.honor?.length) {
+    for (const key of [false,true]) {
+      const y = start(key ? "personal host key" : "who knows them?",key ? "Host copy · Answers match the numbered guest questions" : "Name / team: __________________________",18);
+      const available=height-135-y;
+      let size=10.5;
+      const entries=()=>pack.honor.map((q,i)=>({text:lines((i+1)+". "+(key ? q.answer : q.question),contentWidth,size),write:!key||!q.answer}));
+      let list=entries();
+      const used=()=>list.reduce((sum,e)=>sum+e.text.length*size*1.3+(e.write?size*.9:0)+5,0);
+      while(used()>available&&size>8){size-=.5;list=entries();}
+      if(used()>available)throw new Error("Personal questions are too long. Shorten them before printing.");
+      let top=y+size;
+      for(const entry of list){font(size);doc.text(entry.text,left,top,{lineHeightFactor:1.3});top+=(entry.text.length-1)*size*1.3;if(entry.write){top+=size*.9;doc.setDrawColor("#bbb0aa");doc.line(left+20,top,right,top);}top+=size*1.3+5;}
+      footer(key ? "HOST COPY · Agree answers before play. Complete blanks and keep this sheet separate." : "Host agrees answers before play. One point per match; pass any question. Host key is separate.");
+    }
+  }
+  if (pack.scramble?.length) {
+    for(const key of [false,true]) {
+      const y=start(key ? "scramble answers" : "word scramble",key ? "Host copy · Keep separate until the round ends" : "Unscramble each themed word · One point per answer");
+      const gap=28,colWidth=(contentWidth-gap)/2,rowHeight=Math.min(65,(height-145-y)/6);
+      pack.scramble.forEach((q,i)=>{const x=left+(i%2)*(colWidth+gap),top=y+12+Math.floor(i/2)*rowHeight;font(11);doc.text((i+1)+". "+(key?q.answer:q.clue),x,top);if(!key){doc.setDrawColor("#bbb0aa");doc.line(x,top+25,x+colWidth,top+25);}});
+      footer(key ? "HOST COPY · Answers match the numbered guest sheet. Reveal after the round ends." : "Give each player a copy. Agree a timer; one point per correct answer. Host key is separate.");
+    }
+  }
+  if(pack.drawing?.length) {
+    const y=start("draw & guess","Cut out 12 cards · Fold and mix face down");
+    const gap=10,cellWidth=(contentWidth-2*gap)/3,cellHeight=Math.min(100,(height-135-y-3*gap)/4);
+    pack.drawing.forEach((prompt,i)=>{const x=left+(i%3)*(cellWidth+gap),top=y+Math.floor(i/3)*(cellHeight+gap);doc.setDrawColor(ink);doc.setLineDashPattern([3,3],0);doc.rect(x,top,cellWidth,cellHeight);doc.setLineDashPattern([],0);const wrapped=lines(prompt,cellWidth-16,11);font(11);doc.text(wrapped,x+cellWidth/2,top+(cellHeight-(wrapped.length-1)*14.3)/2,{align:"center",lineHeightFactor:1.3});});
+    footer("Cut cards. Draw on separate paper without words or numbers. Agree a timer; pass any card.");
   }
   if (pageCount !== pack.pageCount) throw new Error("Incomplete PDF pack");
   doc.setProperties({title:"PartyPrint game pack",subject:"Printable party games",creator:"PartyPrint"});

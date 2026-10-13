@@ -1,3 +1,17 @@
+# Three additional free games and complete release review — October 12, 2026
+
+Starting main: 23f8a3e1f9e7780c3b0605c9479fd7eae918d906 (PR #28); verified successful Pages deployment 8e2e6b3-8fd7-4d7f-b7ba-3931ea5adef1, https://partyprint.live/. Current main, PRs, Actions and Pages were reconciled. Final release SHA, PR and production deployment ID are recorded in the release PR after publication.
+
+Implemented three optional free games for all six occasions: Who knows them? (up to 12 editable questions, guest worksheet and separate personal host key), themed word scramble (12 words and separate answers), and draw-and-guess (12 cut-out cards). Checking a game immediately selects its preview. Personal questions and answers remain on-device, are excluded from setup links, retain blank answer alignment and stay in order when other games regenerate. Existing defaults, bingo, trivia, scavenger hunts, This or that, themes, photo colors and PDF delivery are preserved.
+
+The review found and fixed two quiz print defects: pathological long text spilling to an extra page, and direct-PDF writing lines crossing the next question. Verified 27 unit tests including 762 occasion/selection states; static checks for 11 pages/220 links; all 254 desktop/mobile nonempty seven-game selections; six occasion pools; sharing, escaping, private host answers, preview selection and narrow full-sheet dialogs. The 24 new native/direct Letter/A4 PDFs pass physical page counts, nonblank content, expected text, safe boundaries, private-answer separation and writing-line intersection regression checks. Existing large-card/all-theme print matrix, selection/dialog/cache race, PDF delivery, photo privacy, guides/legal pages and premium sample checks also passed. Rendered PDFs and mobile/desktop screenshots were inspected; quiz, scramble answers and drawing cards are complete and readable. QA artifacts remain ignored under qa/. CI now runs the additional game/PDF matrix.
+
+Real iPhone OS printing/saving and physical printer output still require owner/device confirmation; Chromium viewports do not verify Safari. Production will be accepted only after exact-release Actions, Pages and real public-site browser/PDF checks pass. Previous custom-domain caching requires checking the actual delivered release, not merely deployment status.
+
+No added dependencies, backend, tracking, ads or payments. QA visits are not organic growth and no revenue impact is measured. Premium checkout is not activated. Next three priorities: (1) owner checks new and combined PDFs in iPhone Files; (2) complete authenticated Payhip seller/payout/private-delivery testing before checkout; (3) use a clean traffic week and actual Search Console queries to select the next useful landing-page improvement.
+
+---
+
 # Blank full-sheet preview correction — October 12, 2026
 
 Starting verified main `9b0b4a5e832dbd715259cd00258d6bd84465c645` (PR #27), production Pages deployment `db4d3a3f-7ba1-4a35-a20c-4becc8b434b8`; no newer main/open PRs, Actions and Pages green. Owner reported a blank This or that preview. Fresh Edge showed all 12 prompts, but a rapid full-sheet close/reopen reproduced an open dialog with zero items: the queued previous close event erased the newly opened sheet. Cleanup now runs only while the dialog remains closed.
