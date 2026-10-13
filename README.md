@@ -2,7 +2,7 @@
 
 A cheerful free party-game studio for baby showers, bridal showers, birthdays, office parties, holidays and game nights.
 
-**Production:** https://partyprint.live/ — Git-integrated Cloudflare Pages. DNS migration is completing; the previous https://partyprint-5xv.pages.dev/ remains available until redirects are verified. See `docs/LAUNCH_PLAN.md` for verified releases and outstanding browser/business work. Revenue services are not enabled.
+**Production:** https://partyprint.live/ — Git-integrated Cloudflare Pages. The previous Pages hostname and www redirect to this primary domain. See `docs/LAUNCH_PLAN.md` for verified releases and outstanding browser/business work. Revenue services are not enabled.
 
 ## Features
 
@@ -13,6 +13,7 @@ A cheerful free party-game studio for baby showers, bridal showers, birthdays, o
 - Browse every guest’s bingo card and open an upright full-content preview; narrow screens can scroll across the enlarged sheet. Preview navigation preserves prepared PDF files.
 - Share generic game settings via URL. No party title, personal name or custom prompts are embedded.
 - Four original guides plus accessible mobile UI, legal pages and SEO-friendly HTML.
+- Free coordinated baby-shower samples, including Wildflower gift bingo and baby animal matching with a host key. Optional full studio editions are prepared privately; checkout is not active.
 
 ## Architecture
 
@@ -52,6 +53,8 @@ GitHub Actions runs unit tests, checks local links and syntax, builds the artifa
 For local browser/PDF QA: set `CHROME_PATH` to Chrome or Edge, run `node scripts/print-qa.mjs`, then `python3 scripts/verify-print.py qa` (requires `pdfplumber==0.11.9`). Screenshots, PDFs and the manifest are written under ignored `qa/`; CI retains them as an artifact.
 
 Manual QA remains required: Chromium, Firefox, Safari and iPhone; 4×4 and 5×5 cards; high card counts; trivia with answer key; scavenger pages; Letter and A4 printers; blank-page/clipping checks; keyboard navigation; screenshots and real-deployment smoke tests. **Automated unit-test success isn't equivalent to visually verified PDF output or deployment.**
+
+Wildflower PDF QA: `python3 scripts/verify-wildflower-pdfs.py` checks public samples and preview provenance. Owners can add `--full-dir output/pdf/wildflower` to inspect the four private editions. Premium PDFs and authoring source are excluded from Git and `dist`; back up the private `output/` files separately before moving machines. Public-site deploys must never include full paid files.
 
 ## Monetization (NOT enabled)
 

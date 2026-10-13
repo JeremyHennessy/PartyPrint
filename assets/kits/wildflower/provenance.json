@@ -1,0 +1,22 @@
+{
+  "source": "Real PartyPrint Wildflower PDFs rendered with Poppler; original vector artwork.",
+  "full_editions_public": false,
+  "page_numbers": {
+    "sample_bingo": 1,
+    "sample_animal_match": 2,
+    "sample_answers": 3,
+    "full_welcome": 3
+  },
+  "sample_sha256": {
+    "wildflower-free-sample-A4.pdf": "e7c47e0e30c1727c01b9c09d428fa9403e27c09c6ec267deba6abb313d6888a9",
+    "wildflower-free-sample-Letter.pdf": "39c206f571d87c474364941bcbc51d992b44d4d42966717adf678781f98bf605"
+  },
+  "asset_sha256": {
+    "wildflower-animal-match.png": "9ab8b71aa819a57a8c1cd52e4e4353a98f82c36e025db2611dfa9a7b0cf39294",
+    "wildflower-bingo.png": "3e828b34098efd62350b6742b5ec8402eec3804eaf3cbeb108ff038076daee50",
+    "wildflower-pin.jpg": "0b41616032881546caf839f524253dd72f5f4ff6b0e13fb58eb79da1476a9581",
+    "wildflower-social.jpg": "8bc91bba6f23cf021da8bd057c5388b0108d50ef4b5ef2efdce83fe22d448472",
+    "wildflower-spread.jpg": "c97d2d7f8843707ca8df69be858510ac5d6769a2dffc9b3a4693a09bb3e40559",
+    "wildflower-welcome.png": "a0b72f03a034c2dbb7514612959290c81e8b59223b6a90aaf8e7cd95a275a5db"
+  }
+}

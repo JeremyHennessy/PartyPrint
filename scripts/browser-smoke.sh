@@ -31,6 +31,7 @@ timeout 45s "$CHROME" "${OPTIONS[@]}" --window-size=390,844 --screenshot="$PWD/q
 timeout 45s "$CHROME" "${OPTIONS[@]}" --no-pdf-header-footer --print-to-pdf="$PWD/qa/sample-bingo.pdf" "$URL" >/dev/null 2>>qa/chrome.log
 
 node scripts/brand-browser-qa.mjs
+CHROME_PATH="$CHROME" node scripts/wildflower-browser-qa.mjs
 
 python3 - <<'PY'
 from pathlib import Path
