@@ -20,7 +20,16 @@ const occasions=process.env.QA_OCCASIONS?.split(',') || (process.env.QA_SITE_URL
 let combinations=0;
 try {
   for(const width of [390,1440]) {
-    const page=await browser.newPage({viewport:{width,height:900}}), errors=[];
+    const page=await browser.newPage({viewport:{width,height:900}}), errors=[], moduleRequests=[];
+    page.on('request',request=>{
+      const url=new URL(request.url());
+      if(url.pathname.startsWith('/src/')&&url.pathname.endsWith('.js'))moduleRequests.push(url);
+    });
+    if(!process.env.QA_SITE_URL)await page.route('**/src/*.js*',route=>{
+      // Simulate an incompatible pre-release module still in browser cache.
+      if(!new URL(route.request().url()).searchParams.has('v'))return route.fulfill({contentType:'text/javascript',body:'throw new Error("Stale cached application module");'});
+      return route.continue();
+    });
     page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>{window.print=()=>{};});
     for(const occasion of occasions) {
       await page.goto(base+`?occasion=${occasion}&count=1&answers=2&games=bingo,trivia,scavenger,conversation`);
@@ -88,6 +97,21 @@ try {
     await page.locator('#tab-answers').click();await page.locator('#game-trivia').uncheck();
     assert.equal(await page.locator('#tab-answers').isVisible(),false);
     assert.notEqual(await page.locator('[data-preview][aria-selected="true"]').getAttribute('data-preview'),'answers');
+    await page.locator('#game-conversation').check();
+    await page.evaluate(()=>{
+      document.querySelector('#expand-preview').click();
+      document.querySelector('#sheet-dialog').close();
+      document.querySelector('#tab-conversation').click();
+      document.querySelector('#expand-preview').click();
+    });
+    // Wait for the queued close event from the previous opening.
+    await page.evaluate(()=>new Promise(resolve=>setTimeout(resolve,100)));
+    assert.equal(await page.locator('#full-sheet .question-list li').count(),12,'A delayed close must not erase a reopened conversation sheet');
+    assert.ok(await page.locator('#sheet-dialog').isVisible());await page.keyboard.press('Escape');
+    assert.ok(moduleRequests.length>=4,'The entry point and lazy PDF module must load');
+    const versions=new Set(moduleRequests.map(url=>url.searchParams.get('v')));
+    assert.equal(versions.size,1,'Application modules must use one release version');
+    assert.match([...versions][0]||'',/^[a-f0-9]{16}$/,'Missing release cache version');
     assert.equal(errors.length,0,errors.join('\n'));await page.close();
   }
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({combinations,occasions,widths:[390,1440],completePreviews:true,answerKeysAndGuestSheets:true,emptySelectionRecovery:true},null,2));

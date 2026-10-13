@@ -9,7 +9,7 @@ const server=http.createServer((req,res)=>{
   if(file!==root&&!file.startsWith(root+path.sep))return res.writeHead(403).end();
   if(fs.existsSync(file)&&fs.statSync(file).isDirectory())file=path.join(file,'index.html');
   if(!fs.existsSync(file))return res.writeHead(404).end();
-  if(file.endsWith('.html'))res.setHeader('Content-Security-Policy',fs.readFileSync('_headers','utf8').split('Content-Security-Policy: ')[1].trim());
+  if(file.endsWith('.html'))res.setHeader('Content-Security-Policy',fs.readFileSync('_headers','utf8').match(/Content-Security-Policy: ([^\r\n]+)/)[1]);
   res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css'})[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));

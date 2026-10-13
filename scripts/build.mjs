@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, "dist");
@@ -11,6 +12,22 @@ const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.ht
 const directories = ["src", "assets", "guides", "collections"];
 for (const name of files) fs.copyFileSync(path.join(root, name), path.join(output, name));
 for (const name of directories) fs.cpSync(path.join(root, name), path.join(output, name), { recursive: true });
+// A single content-derived version keeps the entry point and its module graph
+// together, even when a returning browser still has yesterday's modules cached.
+const modules = fs.readdirSync(path.join(output, "src")).filter(name => name.endsWith(".js")).sort();
+const version = createHash("sha256").update(modules.map(name => name + fs.readFileSync(path.join(output, "src", name), "utf8")).join("\n") + fs.readFileSync(path.join(output, "styles.css")) + fs.readFileSync(path.join(output, "print.css"))).digest("hex").slice(0, 16);
+for (const name of modules) {
+  const file = path.join(output, "src", name);
+  fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/((?:from\s*|import\s*\(\s*|import\s*)["'])(\.\/[^"']+\.js)(["'])/g, "$1$2?v=" + version + "$3"));
+}
+const versionHTML = folder => {
+  for (const item of fs.readdirSync(folder, {withFileTypes:true})) {
+    const file = path.join(folder, item.name);
+    if (item.isDirectory()) versionHTML(file);
+    else if (item.name.endsWith(".html")) fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/((?:src|href)=["'])([^"']+\.(?:js|css))(["'])/g, "$1$2?v=" + version + "$3"));
+  }
+};
+versionHTML(output);
 // Only the self-contained PDF engine is shipped, loaded on demand by the exporter.
 fs.mkdirSync(path.join(output, "assets/vendor"), { recursive: true });
 fs.copyFileSync(path.join(root, "node_modules/jspdf/dist/jspdf.umd.min.js"), path.join(output, "assets/vendor/jspdf-4.2.1.min.js"));
@@ -50,7 +67,7 @@ if (siteURL) {
       source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/${asset}"><meta property="og:image:type" content="${mime}"><meta property="og:image:width" content="${width}"><meta property="og:image:height" content="${height}"><meta property="og:image:alt" content="${alt}"><meta name="twitter:card" content="summary_large_image"></head>`);
     }
     if (!source.includes("</head>")) throw new Error("Missing </head>: " + file);
-    fs.writeFileSync(file, source.replace("</body>", '<script defer src="/src/analytics.js"></script></body>').replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
+    fs.writeFileSync(file, source.replace("</body>", '<script defer src="/src/analytics.js?v=' + version + '"></script></body>').replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
   }
   const urls = html.filter(file => !["privacy.html", "terms.html"].includes(path.relative(output, file).split(path.sep).join("/"))).map(file => {
     const relative = path.relative(output, file).split(path.sep).join("/");

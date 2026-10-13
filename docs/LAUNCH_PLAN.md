@@ -1,3 +1,15 @@
+# Blank full-sheet preview correction — October 12, 2026
+
+Starting verified main `9b0b4a5e832dbd715259cd00258d6bd84465c645` (PR #27), production Pages deployment `db4d3a3f-7ba1-4a35-a20c-4becc8b434b8`; no newer main/open PRs, Actions and Pages green. Owner reported a blank This or that preview. Fresh Edge showed all 12 prompts, but a rapid full-sheet close/reopen reproduced an open dialog with zero items: the queued previous close event erased the newly opened sheet. Cleanup now runs only while the dialog remains closed.
+
+Production JavaScript responses also exposed `max-age=14400` at unchanged asset URLs. This is a verified stale-release risk, not proof of the owner's exact browser state. Build now applies one content-derived release version to entry scripts, static module imports, lazy PDF imports and styles; `/src/*` responses revalidate. No service worker, dependencies, runtime backend or security-policy weakening. Adapted the local photo QA server to read only the CSP header line alongside additional header rules.
+
+Local evidence: 24 unit tests, static links/syntax/build and canonical/sitemap checks; 30 desktop/mobile game-selection cases with a deterministic rapid close/reopen regression, all 12 conversation prompts, and simulated incompatible unversioned modules. The entry/module graph and lazy PDF import use one release version. PDF delivery and four-width photo/privacy/CSP checks pass. Existing complete Letter/A4 output is unchanged and remains covered by CI. Final exact-head checks, preview/production URLs, main SHA and deployment ID are recorded in the release PR after verification. The owner's actual iPhone blank-screen flow still needs device confirmation; do not substitute Chromium for Safari evidence.
+
+Next priorities remain: owner iPhone acceptance; Payhip seller access and private delivery verification before checkout; genuine low-QA search/traffic evidence. No new advertising, payments or analytics.
+
+---
+
 # Complete selected-game previews — October 12, 2026
 
 Starting main: `09c1ff90e187e4feb7fa038e793e7b8961f167bb` (PR #26), verified successful Pages deployment `6c83d79a-98a8-4fbb-a304-5d3444ce4081` at https://partyprint.live/. Current main, open PRs, Actions and the actual Pages deployment were reconciled before changes. Final release SHA, PR, checks and production deployment evidence are recorded in this release's PR description after publication.
