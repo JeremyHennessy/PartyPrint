@@ -22,7 +22,7 @@ for (const file of pages) {
     assert.equal(image.origin, origin, relative + ": image origin");
     assert.ok(fs.existsSync(path.join(root, image.pathname.slice(1))), relative + ": image file");
   }
-  if (!["privacy.html", "terms.html"].includes(relative)) expected.push(origin + route);
+  if (!["privacy.html", "terms.html", "play/index.html"].includes(relative)) expected.push(origin + route);
 }
 const sitemap = fs.readFileSync(path.join(root, "sitemap.xml"), "utf8");
 assert.match(sitemap, /<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
@@ -30,6 +30,9 @@ assert.deepEqual([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => matc
 assert.ok(expected.includes(origin + "/collections/a-little-love/"));
 assert.equal(fs.readFileSync(path.join(root, "robots.txt"), "utf8").match(/^Sitemap: .*$/gm)?.join("\n"), "Sitemap: " + origin + "/sitemap.xml");
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const guest = fs.readFileSync(path.join(root,"play/index.html"),"utf8");
+assert.match(guest,/name="robots" content="noindex,follow"/);
+assert.ok(!guest.includes('analytics.js')&&!guest.includes('cloudflareinsights.com'),'Guest route must not transmit shared fragment content to analytics');
 assert.match(home, /name="google-site-verification" content="8EJGAYcKP8mh-1VWvZMmG6wx7K5UB8tZPvMBFNyJTkA"/);
 assert.match(home, /name="google-adsense-account" content="ca-pub-5463991523233853"/);
 assert.equal(fs.readFileSync(path.join(root, "ads.txt"), "utf8").trim(), "google.com, pub-5463991523233853, DIRECT, f08c47fec0942fa0");

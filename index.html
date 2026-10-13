@@ -11,6 +11,7 @@
   <meta property="og:description" content="Beautiful party games, made in minutes. Create custom bingo, trivia and scavenger hunts for free.">
   <link rel="icon" type="image/svg+xml" href="./assets/partyprint-mark.svg"><link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./play.css">
   <link rel="stylesheet" href="./print.css" media="print">
   <title>PartyPrint | Free Printable Party Games & Bingo Cards</title>
 <meta name="google-adsense-account" content="ca-pub-5463991523233853"></head>
@@ -156,7 +157,7 @@
 <button type="button" class="button button-primary" id="pdf-button">Download PDF ↓</button>
 <p id="pdf-status" role="status" aria-live="polite"></p>
 <div id="pdf-result" hidden><a id="pdf-download" class="button button-dark" download>Save PDF ↓</a><button type="button" id="pdf-share" class="button button-dark" hidden>Share PDF ↗</button><a id="pdf-open" target="_blank" rel="noopener" class="button">Open PDF ↗</a></div>
-<button type="button" class="button print-secondary" id="print-button">Print games ↗</button><button type="button" id="share-button" class="share-button">↗ Share this setup</button><p>Create a PDF on your device, or print with your browser. No signup or payment.</p></div>
+<button type="button" class="button print-secondary" id="print-button">Print games ↗</button><button type="button" id="share-button" class="share-button">↗ Share this setup</button><p>Create a PDF on your device, or print with your browser. No signup or payment.</p><details class="guest-share"><summary>Play on phones · Share with guests ↗</summary><p>Send your selected games as a guest link or QR code. Guests can mark squares, write answers and play without printing. Your party title, custom bingo words and personal quiz questions will be included in this link. Host answers and photos are excluded. Share only with people you want to see the game text.</p><p>Each browser gets a shuffled bingo card. Guests’ answers stay on their phones; there is no live room or scoreboard. Photo-inspired colors use the selected preset for guest games. Editing your kit requires a fresh guest link.</p><button type="button" id="create-guest-link" class="button button-light">Create guest link &amp; QR</button><p id="guest-link-status" role="status" aria-live="polite"></p><div id="guest-link-result" hidden><label for="guest-link">Your guest play link</label><textarea id="guest-link" readonly rows="3"></textarea><button type="button" class="button button-light" id="copy-guest-link">Copy guest link</button><button type="button" class="button button-light" id="share-guest-link">Share guest link ↗</button><p><a id="open-guest-link" target="_blank" rel="noopener noreferrer">Open guest games ↗</a></p><canvas id="guest-qr" aria-label="QR code for guests to scan" hidden></canvas><a id="save-guest-qr" download="PartyPrint-guest-QR.png" class="button button-light" hidden>Save QR image ↓</a></div></details></div>
           </div>
         </div>
       </div>

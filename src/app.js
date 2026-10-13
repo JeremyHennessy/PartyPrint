@@ -3,6 +3,7 @@ import { createPack, configFromURL, shareURL, escapeHTML } from "./core.js";
 
 import { getBingoPrompts } from "./content.js";
 import { honorQuestions } from "./extra-games.js";
+import { setupGuestShare } from "./guest-share.js";
 
 const $ = id => document.getElementById(id);
 const form = $("party-form");
@@ -14,6 +15,7 @@ const printButton = $("print-button");
 let activeTab = "bingo";
 let previewCardIndex = 0;
 let currentPack = null;
+const invalidateGuestLink = setupGuestShare(() => currentPack);
 let printablePack = null;
 let editorScrollY = 0;
 let pdfBusy = false;
@@ -157,6 +159,7 @@ function printPages(pack) {
 
 function displayError(text) {
   currentPack = null;
+  invalidateGuestLink();
   $("card-navigation").hidden = true;
   $("expand-preview").disabled = true;
   printRoot.innerHTML = "";
@@ -187,6 +190,7 @@ function render() {
     const pack = createPack(readConfig());
     if (photoTheme) pack.theme = photoTheme;
     currentPack = pack;
+    invalidateGuestLink();
     message.textContent = "";
     printButton.disabled = false;
     $("pdf-button").disabled = pdfBusy;

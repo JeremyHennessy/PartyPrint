@@ -1,3 +1,17 @@
+# Guest play links and QR sharing — October 13, 2026
+
+Starting main/application: 9bd4d6b34b7d8cd959d595ffb74d238347b3e16e (PR #29); successful deployment 86defe0b-3432-4516-a0cc-485a288fdd26 at https://partyprint.live/. Main, open PRs and Cloudflare deployment reconciled. Final release identity, exact checks and deployment evidence are recorded in the release PR after publication.
+
+Implemented an explicit “Play on phones” sharing option and /play/ guest route. Hosts can create/copy/share a snapshot link and a locally generated, independently decoded QR image. All seven selected games have phone interactions: bingo marks and line detection, scavenger checks, local quiz/scramble answers, conversation choices, drawing prompts and a finger/mouse canvas. Each browser receives an independently shuffled bingo card; this does not guarantee globally unique cards or implement synchronized multiplayer. Guests show their phone to the host for scoring. Titles/custom game text are shared only by the explicit guest-link action; personal host answers and photos are excluded. Photo colors fall back to the selected preset. Existing generic setup links remain privacy-safe and unchanged.
+
+Progress is kept locally and can be cleared, with an unavailable-storage message. No accounts, backend, database, paid services or host submissions. Guest fragment content is not sent in HTTP requests and the guest route loads no analytics beacon; noindex keeps invitation pages out of the sitemap. Guest visits are consequently not measured as Web Analytics pageviews in this release. A longer custom list may exceed QR capacity; the full guest link remains usable with a clear fallback. The MIT-licensed Nayuki encoder is vendored and loaded on demand; dev-only jsQR independently verifies actual QR pixels. Printing, PDF exports and existing game defaults are preserved.
+
+Verification covers guest payload privacy/validation, all 127 game selections, actual host-generated QR decoding, custom Unicode text, guest local progress/reload/clear, distinct browser cards, all seven game interactions, mobile overflow, invalid links and disabled storage. Desktop/mobile screenshots are saved under ignored qa/guest-play. CI runs the guest browser regression alongside all existing Letter/A4 and selection checks. Actual iPhone OS sharing/QR camera acceptance remains a device check; Chromium tests do not establish Safari behavior. Release acceptance requires exact-head green checks, preview interaction checks and real production verification.
+
+Business impact is a hypothesis: easier guest participation and a visible “Make your own games” route may encourage referrals; no traffic or revenue uplift is measured. No ads or checkout activated. Next three: (1) real iPhone host-link/QR and guest play acceptance; (2) complete Payhip seller/private delivery tests; (3) review clean host-page referrals/Search Console queries before choosing growth content. Live rooms, shared scores and synchronized host changes require a separate justified backend decision.
+
+---
+
 # Three additional free games and complete release review — October 12, 2026
 
 Starting main: 23f8a3e1f9e7780c3b0605c9479fd7eae918d906 (PR #28); verified successful Pages deployment e8e2e6b3-8fd7-4d7f-b7ba-3931ea5adef1, https://partyprint.live/. Current main, PRs, Actions and Pages were reconciled. Final release SHA, PR and production deployment ID are recorded in the release PR after publication.

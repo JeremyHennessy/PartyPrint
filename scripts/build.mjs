@@ -8,14 +8,14 @@ const output = path.join(root, "dist");
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
-const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.html", "styles.css", "print.css", "robots.txt", "ads.txt", "_headers"];
-const directories = ["src", "assets", "guides", "collections"];
+const files = ["index.html", "404.html", "about.html", "privacy.html", "terms.html", "styles.css", "play.css", "print.css", "robots.txt", "ads.txt", "_headers"];
+const directories = ["src", "assets", "guides", "collections", "play"];
 for (const name of files) fs.copyFileSync(path.join(root, name), path.join(output, name));
 for (const name of directories) fs.cpSync(path.join(root, name), path.join(output, name), { recursive: true });
 // A single content-derived version keeps the entry point and its module graph
 // together, even when a returning browser still has yesterday's modules cached.
 const modules = fs.readdirSync(path.join(output, "src")).filter(name => name.endsWith(".js")).sort();
-const version = createHash("sha256").update(modules.map(name => name + fs.readFileSync(path.join(output, "src", name), "utf8")).join("\n") + fs.readFileSync(path.join(output, "styles.css")) + fs.readFileSync(path.join(output, "print.css"))).digest("hex").slice(0, 16);
+const version = createHash("sha256").update(modules.map(name => name + fs.readFileSync(path.join(output, "src", name), "utf8")).join("\n") + fs.readFileSync(path.join(output,"src/vendor/qrcodegen.js")) + fs.readFileSync(path.join(output, "styles.css")) + fs.readFileSync(path.join(output, "play.css")) + fs.readFileSync(path.join(output, "print.css"))).digest("hex").slice(0, 16);
 for (const name of modules) {
   const file = path.join(output, "src", name);
   fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/((?:from\s*|import\s*\(\s*|import\s*)["'])(\.\/[^"']+\.js)(["'])/g, "$1$2?v=" + version + "$3"));
@@ -67,9 +67,12 @@ if (siteURL) {
       source = source.replace("</head>", `<meta property="og:image" content="${base}/assets/${asset}"><meta property="og:image:type" content="${mime}"><meta property="og:image:width" content="${width}"><meta property="og:image:height" content="${height}"><meta property="og:image:alt" content="${alt}"><meta name="twitter:card" content="summary_large_image"></head>`);
     }
     if (!source.includes("</head>")) throw new Error("Missing </head>: " + file);
-    fs.writeFileSync(file, source.replace("</body>", '<script defer src="/src/analytics.js?v=' + version + '"></script></body>').replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
+    // Guest URL fragments contain explicitly shared game text. Do not load a
+    // third-party beacon on that route or transmit guest responses/party text.
+    if(relative !== "play/index.html") source=source.replace("</body>", '<script defer src="/src/analytics.js?v=' + version + '"></script></body>');
+    fs.writeFileSync(file, source.replace("</head>", '<link rel="canonical" href="' + safe + '"><meta property="og:url" content="' + safe + '"></head>'));
   }
-  const urls = html.filter(file => !["privacy.html", "terms.html"].includes(path.relative(output, file).split(path.sep).join("/"))).map(file => {
+  const urls = html.filter(file => !["privacy.html", "terms.html", "play/index.html"].includes(path.relative(output, file).split(path.sep).join("/"))).map(file => {
     const relative = path.relative(output, file).split(path.sep).join("/");
     return base + (relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative);
   });
