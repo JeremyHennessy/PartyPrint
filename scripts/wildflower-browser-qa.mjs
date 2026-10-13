@@ -26,6 +26,10 @@ try {
     assert.equal(new URL(page.url()).pathname, '/collections/wildflower/');
     assert.equal((await page.goto(new URL('collections/wildflower/', origin).href)).status(), 200);
     assert.equal(await page.locator('h1').count(), 1);
+    const topPurchase = page.getByRole('link', { name: 'Browse the full kit — US$5 ↗', exact: true });
+    assert.equal(await topPurchase.getAttribute('href'), 'https://payhip.com/b/q7vnR');
+    assert.equal(await topPurchase.isVisible(), true);
+    assert.ok((await topPurchase.boundingBox()).y < 900, 'Paid option should be discoverable in the first screen');
     assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://partyprint.live/collections/wildflower/');
     assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), 'https://partyprint.live/assets/kits/wildflower/wildflower-social.jpg');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);

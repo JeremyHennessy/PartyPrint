@@ -2,7 +2,7 @@
 
 A cheerful free party-game studio for baby showers, bridal showers, birthdays, office parties, holidays and game nights.
 
-**Production:** https://partyprint.live/ — Git-integrated Cloudflare Pages. The previous Pages hostname and www redirect to this primary domain. See `docs/LAUNCH_PLAN.md` for verified releases and outstanding browser/business work. Revenue services are not enabled.
+**Production:** https://partyprint.live/ — Git-integrated Cloudflare Pages. The previous Pages hostname and www redirect to this primary domain. See `docs/LAUNCH_PLAN.md` for verified releases and outstanding browser/business work. The optional Wildflower kit is published on Payhip for US$5; advertising remains inactive pending approval and consent readiness.
 
 ## Features
 
@@ -15,7 +15,7 @@ A cheerful free party-game studio for baby showers, bridal showers, birthdays, o
 - Browse every guest’s bingo card and all 12 trivia questions, scavenger finds or conversation prompts. Preview separate host answers and requested guest answer sheets. Text sheets fit phones; enlarged bingo grids support sideways scrolling. Preview navigation preserves prepared PDF files.
 - Share generic game settings via URL. No party title, personal name or custom prompts are embedded.
 - Four original guides plus accessible mobile UI, legal pages and SEO-friendly HTML.
-- Free coordinated baby-shower samples, including Wildflower gift bingo and baby animal matching with a host key. Optional full studio editions are prepared privately; checkout is not active.
+- Free coordinated baby-shower samples, including Wildflower gift bingo and baby animal matching with a host key. The optional full Wildflower kit is available through Payhip for US$5 plus applicable tax. Paid processing and real-device full-kit acceptance remain unverified.
 
 ## Architecture
 
@@ -58,7 +58,7 @@ Manual QA remains required: Chromium, Firefox, Safari and iPhone; 4×4 and 5×5 
 
 Wildflower PDF QA: `python3 scripts/verify-wildflower-pdfs.py` checks public samples and preview provenance. Owners can add `--full-dir output/pdf/wildflower` to inspect the four private editions. Premium PDFs and authoring source are excluded from Git and `dist`; back up the private `output/` files separately before moving machines. Public-site deploys must never include full paid files.
 
-## Monetization (NOT enabled)
+## Monetization status
 
 AdSense ownership verification uses the real publisher meta tag and root ads.txt. Neither loads ad scripts. Site review/approval and consent remain required before restrained manual ad placements; see docs/LAUNCH_PLAN.md.
 
@@ -67,11 +67,11 @@ AdSense ownership verification uses the real publisher meta tag and root ads.txt
 3. Apply for an ad network when content and traffic justify it. Place minimal ads away from controls and printable sheets; do not add placeholder ads to low-value pages. Follow the network's policies and certified CMP/consent rules for applicable geographies.
 4. Explore transparent optional premium seasonal collections or relevant affiliate recommendations **if actual demand supports them**. Core print functionality stays free.
 
-Page RPM scenarios are not revenue forecasts; **there are no proven visits, earnings or ad approvals yet**.
+Page RPM scenarios are not revenue forecasts; **traffic counts include QA, measured Payhip sales remain US$0, and AdSense approval is pending**.
 
 ## Privacy
 
-The generator uses local browser state. It does not upload titles or custom prompts. Share links contain only generic configuration fields. Production uses cookie-free Cloudflare Web Analytics for aggregate visits and performance. No custom interaction events, tracking cookies or ads are present. Update `privacy.html`, consent mechanisms and security headers before adding any such providers.
+The generator uses local browser state. It does not upload titles or custom prompts. Generic setup links contain only configuration fields. Explicit guest-play links include the party title and custom game questions/words, with a disclosure before generation; host answers and photos are excluded. Production uses cookie-free Cloudflare Web Analytics for aggregate visits and performance. No custom interaction events, tracking cookies or ads are present. Update `privacy.html`, consent mechanisms and security headers before adding any such providers.
 
 ## Brand and contribution
 
@@ -80,4 +80,4 @@ PartyPrint is a working name; conduct a proper domain and trademark check before
 Feedback: https://github.com/JeremyHennessy/PartyPrint/issues
 
 ### Photo-inspired themes and conversation games
-The free generator can extract a coordinated color palette from a visitor-selected JPG, PNG or WebP (up to 10 MB), entirely in browser memory. Images are never uploaded, persisted, printed or shared in configuration links. It suggests colors rather than recreating image artwork. Optional This or that sheets work across all six occasions, alone or in a combined pack. Existing links keep their original three-game defaults. The upcoming private Wildflower premium kit now has 37 pages per Letter/A4 color/ink-friendly edition; checkout is not active.
+The free generator can extract a coordinated color palette from a visitor-selected JPG, PNG or WebP (up to 10 MB), entirely in browser memory. Images are never uploaded, persisted, printed or shared in configuration links. It suggests colors rather than recreating image artwork. Optional This or that sheets work across all six occasions, alone or in a combined pack. Existing links keep their original three-game defaults. The published US$5 Wildflower premium kit has 37 pages per Letter/A4 color/ink-friendly edition. Its paid files stay outside the public repository and deployment.

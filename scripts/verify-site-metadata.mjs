@@ -12,7 +12,7 @@ const pages = walk(root).filter(file => file.endsWith(".html") && path.basename(
 const expected = [];
 for (const file of pages) {
   const relative = path.relative(root, file).replaceAll(path.sep, "/");
-  const route = relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative;
+  const route = relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative.slice(0, -5);
   const source = fs.readFileSync(file, "utf8");
   const canonical = [...source.matchAll(/<link rel="canonical" href="([^"]+)"/g)].map(match => match[1]);
   assert.deepEqual(canonical, [origin + route], relative + ": canonical");
@@ -28,6 +28,8 @@ const sitemap = fs.readFileSync(path.join(root, "sitemap.xml"), "utf8");
 assert.match(sitemap, /<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
 assert.deepEqual([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]).sort(), expected.sort());
 assert.ok(expected.includes(origin + "/collections/a-little-love/"));
+assert.ok(expected.includes(origin + "/about"));
+assert.ok(!sitemap.includes('.html'), 'Sitemap must use final Cloudflare Pages URLs');
 assert.equal(fs.readFileSync(path.join(root, "robots.txt"), "utf8").match(/^Sitemap: .*$/gm)?.join("\n"), "Sitemap: " + origin + "/sitemap.xml");
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const guest = fs.readFileSync(path.join(root,"play/index.html"),"utf8");
