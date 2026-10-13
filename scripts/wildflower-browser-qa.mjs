@@ -13,6 +13,17 @@ try {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
+    assert.equal((await page.goto(origin.href)).status(), 200);
+    const discover = page.getByRole('link', { name: 'Browse premium kits — US$5', exact: true });
+    assert.equal(await discover.isVisible(), true);
+    await discover.click();
+    assert.equal(new URL(page.url()).hash, '#premium-kits');
+    const kit = page.getByRole('link', { name: 'Explore the premium kit — US$5 ↗', exact: true });
+    assert.equal(await kit.isVisible(), true);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await page.screenshot({ path: path.join(out, `premium-home-${width}.png`) });
+    await kit.click();
+    assert.equal(new URL(page.url()).pathname, '/collections/wildflower/');
     assert.equal((await page.goto(new URL('collections/wildflower/', origin).href)).status(), 200);
     assert.equal(await page.locator('h1').count(), 1);
     assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://partyprint.live/collections/wildflower/');
