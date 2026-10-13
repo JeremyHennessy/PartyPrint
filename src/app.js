@@ -238,7 +238,10 @@ $("expand-preview").addEventListener("click", () => {
   $("close-sheet").focus({preventScroll:true});
 });
 $("close-sheet").addEventListener("click", () => $("sheet-dialog").close());
-$("sheet-dialog").addEventListener("close", () => { $("full-sheet").innerHTML = ""; });
+$("sheet-dialog").addEventListener("close", () => {
+  // Close events are queued: an earlier close must not erase a reopened sheet.
+  if (!$("sheet-dialog").open) $("full-sheet").innerHTML = "";
+});
 
 function preparePrint() {
   if (!currentPack) return false;
