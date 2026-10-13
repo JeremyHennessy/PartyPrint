@@ -1,3 +1,13 @@
+# Premium homepage discovery — October 13, 2026
+
+Starting verified main `c66a64977896da5e1c021cdfa95a637adcc45d34`, PR #31, production deployment `3d3de612-e7aa-4830-a131-e66ee8d95320` at https://partyprint.live/. Wildflower is published on Payhip at US$5 with the revised four-edition ZIP; customer retrieval checksum and exact-main checks passed. No newer main/open PR found before this correction.
+
+Owner reported the premium offer was hard to find. Added an always-visible hero link (including mobile), desktop navigation, an original-PDF preview section with price/contents/free alternatives, and accurate FAQ/footer wording. Free generator and game output are unchanged. Four-width browser checks cover homepage discovery, anchor navigation, no overflow and the actual collection route. Final checks, merge SHA and production deployment are recorded in this release PR.
+
+Next: real iPhone full-kit/physical printer acceptance; a clean seven-day discovery baseline and actual Google queries; consent readiness and approval before restrained ads. No measured revenue or growth impact is claimed.
+
+---
+
 # Commercial launch readiness — October 13, 2026
 
 Verified application main: `a2bae4578c78404b76d408685c0c3e37a1066dd6`, [PR #30](https://github.com/JeremyHennessy/PartyPrint/pull/30). Exact-main verify and Pages checks passed. Cloudflare production deployment `c83c6bfa-3aa4-4d2c-96f4-83fcf9735cb1` reports success for that commit at https://partyprint.live/. No newer main or open PRs were found before this preparation. The documentation release's final identity belongs in its PR after publication.
