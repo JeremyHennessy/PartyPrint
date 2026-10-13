@@ -1,3 +1,17 @@
+# Complete selected-game previews — October 12, 2026
+
+Starting main: `09c1ff90e187e4feb7fa038e793e7b8961f167bb` (PR #26), verified successful Pages deployment `6c83d79a-98a8-4fbb-a304-5d3444ce4081` at https://partyprint.live/. Current main, open PRs, Actions and the actual Pages deployment were reconciled before changes. Final release SHA, PR, checks and production deployment evidence are recorded in this release's PR description after publication.
+
+Reproduced on production at 390/1440 pixels: trivia preview showed only 6 of 12 questions and scavenger preview only 8 of 12 items; their full sheets already contained all items. Corrected both previews to show complete content. Added separate host-answer and optional guest-answer preview tabs, explicit sheet descriptions and selection guidance. Bingo-only controls hide when bingo is off without losing values. Empty selection clears stale selected tabs; removing guest copies or trivia selects an available view. Text-only full sheets fit phones without horizontal scrolling; enlarged bingo keeps its readable, scrollable grid. PDFs and iPhone saving handlers are unchanged.
+
+Verified locally: 24 unit tests, including all 15 nonempty game combinations across six occasions and sharing round trips; static syntax/220 links; production-origin canonical/social metadata and 8 sitemap URLs. Real Edge browser matrix covers 180 selection combinations (six occasions × 15 combinations × desktop/mobile), complete previews and full-sheet content, correct printable page counts, host/guest separation, keyboard tab navigation, empty-selection recovery, zero guest sheets, removal of active answer tabs, preserved prepared PDFs and no document overflow or JavaScript errors. CI runs all-occasion unit coverage and the 30-case desktop/mobile selection regression; the broader browser matrix can be rerun locally with `node scripts/selection-qa.mjs`.
+
+Native/direct Letter/A4 PDF regression matrix passed physical page counts, nonblank pages, expected text and safe text bounds, including 48-card bingo, long/custom/Unicode text, standalone games, combined packs, separate host keys and up to 48 guest sheets. Delivery and local-photo/privacy checks passed. Visually inspected desktop/mobile game previews, host answers, guest sheets and rendered direct Letter trivia/A4 scavenger PDFs. Evidence: ignored `qa/selection-review-before/findings.json`, `qa/selections/results.json`, preview screenshots and existing PDF manifest/artifacts. Real iPhone OS dialogs and physical printing remain device checks; Chromium viewport tests do not verify Safari.
+
+No new tracking, payments, ads, dependencies or infrastructure. Search/traffic/revenue state is unchanged; QA visits are not growth. Next three priorities: (1) owner confirms the complete single-game and combined-pack flow on iPhone; (2) finish Payhip seller access/payout/support settings and private delivery tests before checkout; (3) use the low-QA traffic week and actual Search Console queries to choose growth work. Do not add speculative games while reliability or commercial access remains unresolved.
+
+---
+
 # Photo-inspired themes and extra party games — October 12, 2026
 
 Starting main: `065b38241bf4ec738a5de7f10fa31e9cbb60c895` (PR #25); verified Pages deployment `faf6740d-6843-4e70-acd1-4d0bd2dd93de`, https://partyprint.live/. This release uses the existing Git-integrated Pages project; final release SHA, PR and deployment evidence are recorded in its PR description.
