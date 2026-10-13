@@ -90,7 +90,7 @@ test("choosing individual games actually removes other games", () => {
   assert.equal(pack.trivia.length, 12);
   assert.equal(pack.scavenger.length, 0);
   assert.equal(pack.pageCount, 2);
-  assert.throws(() => createPack({ games: { bingo: false, trivia: false, scavenger: false } }), /at least one game/);
+  assert.throws(() => createPack({ games: { bingo: false, trivia: false, scavenger: false, conversation: false } }), /at least one game/);
 });
 
 test("one-card and maximum-card modes are supported", () => {
@@ -109,7 +109,7 @@ test("unknown theme, occasion and layout values safely fall back", () => {
 test("share link never includes private title, host or custom prompts", () => {
   const link = shareURL("https://example.test/?old=1#main", {
     occasion: "office", theme: "blue", count: 18, size: 4, title: "Secret Party",
-    host: "Private Person", custom: "Super private prompt", games: { bingo: true, trivia: false, scavenger: true }
+    host: "Private Person", custom: "Super private prompt", games: { bingo: true, trivia: false, scavenger: true, conversation: false }
   });
   assert.ok(link.includes("occasion=office"));
   assert.ok(link.includes("games=bingo%2Cscavenger"));
@@ -121,7 +121,7 @@ test("share link never includes private title, host or custom prompts", () => {
   assert.equal(restored.occasion, "office");
   assert.equal(restored.count, 18);
   assert.equal(restored.size, 4);
-  assert.deepEqual(restored.games, { bingo: true, trivia: false, scavenger: true });
+  assert.deepEqual(restored.games, { bingo: true, trivia: false, scavenger: true, conversation: false });
 });
 
 test("untrusted query parameters cannot create arbitrary themes or occasions", () => {
@@ -129,7 +129,7 @@ test("untrusted query parameters cannot create arbitrary themes or occasions", (
   assert.equal(result.occasion, "baby");
   assert.equal(result.theme, "peach");
   assert.equal(result.count, 48);
-  assert.deepEqual(result.games, { bingo: false, trivia: false, scavenger: false });
+  assert.deepEqual(result.games, { bingo: false, trivia: false, scavenger: false, conversation: false });
 });
 
 test("different events produce meaningfully different trivia selections", () => {

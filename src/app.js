@@ -1,3 +1,4 @@
+import { themeFromPhoto } from "./photo-theme.js";
 import { createPack, configFromURL, shareURL, escapeHTML } from "./core.js";
 
 import { getBingoPrompts } from "./content.js";
@@ -16,6 +17,8 @@ let printablePack = null;
 let editorScrollY = 0;
 let pdfBusy = false;
 let readyPDF = null;
+let photoTheme = null;
+let photoRequest = 0;
 const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let seed = (() => {
@@ -37,7 +40,8 @@ function readConfig() {
     games: {
       bingo: $("game-bingo").checked,
       trivia: $("game-trivia").checked,
-      scavenger: $("game-scavenger").checked
+      scavenger: $("game-scavenger").checked,
+      conversation: $("game-conversation").checked
     },
     theme: document.querySelector('input[name="theme"]:checked')?.value || "peach",
     custom: $("custom-prompts").value,
@@ -99,6 +103,10 @@ function scavengerHTML(pack, isPreview = false) {
     sheetEnd("PLAY AT YOUR OWN PACE · EVERY FIND IS A WIN");
 }
 
+function conversationHTML(pack) {
+  return sheetStart(pack, "this or that", "Choose either option · No right or wrong answers") + `<ol class="question-list">${pack.conversation.map(q => `<li>${escapeHTML(q)}</li>`).join("")}</ol>` + sheetEnd("TAKE TURNS · ASK WHY IF YOU WISH · PASS ANY QUESTION");
+}
+
 function printPages(pack) {
   const pages = [];
   for (const card of pack.bingoCards) {
@@ -116,6 +124,7 @@ function printPages(pack) {
     pages.push(`<article class="print-page">${scavengerHTML(pack)}
       <p class="print-how-to">Check off each thing you find. Set a timer or play throughout the event.</p></article>`);
   }
+  if (pack.conversation.length) pages.push(`<article class="print-page">${conversationHTML(pack)}<p class="print-how-to">Read an option pair aloud. Each willing guest chooses one; sharing a reason is optional. No scoring or answer key. Pass any question.</p></article>`);
   return pages.join("");
 }
 
@@ -140,6 +149,7 @@ function render() {
   $("bingo-mode-help").textContent = $("bingo-mode").value === "gifts" ? "Mark gifts as the guest of honor opens them." : "Mark things guests say or do during the celebration.";
   try {
     const pack = createPack(readConfig());
+    if (photoTheme) pack.theme = photoTheme;
     currentPack = pack;
     message.textContent = "";
     printButton.disabled = false;
@@ -147,7 +157,8 @@ function render() {
     const activeGames = {
       bingo: pack.bingoCards.length > 0,
       trivia: pack.trivia.length > 0,
-      scavenger: pack.scavenger.length > 0
+      scavenger: pack.scavenger.length > 0,
+      conversation: pack.conversation.length > 0
     };
     if (!activeGames[activeTab]) activeTab = Object.keys(activeGames).find(key => activeGames[key]);
 
@@ -160,7 +171,7 @@ function render() {
     stage.setAttribute("aria-labelledby", "tab-" + activeTab);
     previewCardIndex = Math.min(previewCardIndex, Math.max(0, pack.bingoCards.length - 1));
     renderPreview();
-    const extras = [pack.trivia.length && "trivia", pack.config.answerCount && pack.config.answerCount + " answer sheets", pack.scavenger.length && "scavenger hunt"].filter(Boolean);
+    const extras = [pack.trivia.length && "trivia", pack.config.answerCount && pack.config.answerCount + " answer sheets", pack.scavenger.length && "scavenger hunt", pack.conversation.length && "this or that"].filter(Boolean);
     const parts = [
       pack.bingoCards.length ? pack.bingoCards.length + " bingo card" + (pack.bingoCards.length === 1 ? "" : "s") : "",
       ...extras
@@ -180,7 +191,7 @@ function renderPreview() {
     tab.tabIndex = tab.dataset.preview === activeTab ? 0 : -1;
   }
   stage.setAttribute("aria-labelledby", "tab-" + activeTab);
-  stage.innerHTML = activeTab === "bingo" ? bingoHTML(pack, pack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(pack, true) : scavengerHTML(pack, true);
+  stage.innerHTML = activeTab === "bingo" ? bingoHTML(pack, pack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(pack, true) : activeTab === "conversation" ? conversationHTML(pack) : scavengerHTML(pack, true);
   $("expand-preview").disabled = false;
   $("card-navigation").hidden = activeTab !== "bingo" || pack.bingoCards.length < 2;
   $("card-position").textContent = "Card " + (previewCardIndex + 1) + " / " + pack.bingoCards.length;
@@ -194,7 +205,7 @@ for (const [id, direction] of [["previous-card", -1], ["next-card", 1]]) $(id).a
 });
 $("expand-preview").addEventListener("click", () => {
   if (!currentPack) return;
-  $("full-sheet").innerHTML = activeTab === "bingo" ? bingoHTML(currentPack, currentPack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(currentPack) : scavengerHTML(currentPack);
+  $("full-sheet").innerHTML = activeTab === "bingo" ? bingoHTML(currentPack, currentPack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(currentPack) : activeTab === "conversation" ? conversationHTML(currentPack) : scavengerHTML(currentPack);
   $("sheet-dialog").showModal();
   $("sheet-dialog").scrollTop = 0;
   $("close-sheet").focus({preventScroll:true});
@@ -222,6 +233,7 @@ function restoreFromURL() {
   $("game-bingo").checked = config.games.bingo;
   $("game-trivia").checked = config.games.trivia;
   $("game-scavenger").checked = config.games.scavenger;
+  $("game-conversation").checked = config.games.conversation;
   const selected = document.querySelector('input[name="theme"][value="' + config.theme + '"]');
   if (selected) selected.checked = true;
 }
@@ -235,6 +247,24 @@ $("edit-word-list").addEventListener("click", () => {
 
 restoreFromURL();
 $("year").textContent = String(new Date().getFullYear());
+$("theme-photo").addEventListener("change", async () => {
+  const request = ++photoRequest, file = $("theme-photo").files[0];
+  if (!file) return;
+  $("photo-status").textContent = "Finding your photo’s colors…";
+  try {
+    const theme = await themeFromPhoto(file);
+    if (request !== photoRequest) return;
+    photoTheme = theme; $("remove-photo").hidden = false;
+    $("photo-palette").innerHTML = [theme.swatch,theme.ink,theme.tint].map(color => `<span style="background:${color}" aria-hidden="true"></span>`).join("");
+    $("photo-palette").hidden = false;
+    $("photo-status").textContent = "Photo-inspired colors ready. Setup links keep the original theme.";
+    render();
+  } catch (error) { if (request === photoRequest) $("photo-status").textContent = error.message; }
+  finally { if (request === photoRequest) $("theme-photo").value = ""; }
+});
+function resetPhotoTheme() { photoRequest++; photoTheme = null; $("photo-palette").hidden = true; $("photo-palette").innerHTML = ""; $("remove-photo").hidden = true; $("theme-photo").value = ""; $("photo-status").textContent = ""; }
+$("remove-photo").addEventListener("click", () => { resetPhotoTheme(); render(); });
+for (const radio of document.querySelectorAll('input[name="theme"]')) radio.addEventListener("change", resetPhotoTheme);
 form.addEventListener("input", render);
 form.addEventListener("change", render);
 

@@ -76,3 +76,6 @@ The generator uses local browser state. It does not upload titles or custom prom
 PartyPrint is a working name; conduct a proper domain and trademark check before spending on the brand. No open-source license grant is provided by this repository. The website terms allow free personal, classroom and internal workplace printing of generated sheets; commercial resale of templates is not allowed.
 
 Feedback: https://github.com/JeremyHennessy/PartyPrint/issues
+
+### Photo-inspired themes and conversation games
+The free generator can extract a coordinated color palette from a visitor-selected JPG, PNG or WebP (up to 10 MB), entirely in browser memory. Images are never uploaded, persisted, printed or shared in configuration links. It suggests colors rather than recreating image artwork. Optional This or that sheets work across all six occasions, alone or in a combined pack. Existing links keep their original three-game defaults. The upcoming private Wildflower premium kit now has 37 pages per Letter/A4 color/ink-friendly edition; checkout is not active.

@@ -1,3 +1,4 @@
+import { conversationPrompts } from "./conversation.js";
 import { getBingoPrompts, getTriviaQuestions, getScavengerPrompts, occasionById, themeById } from "./content.js";
 
 export function clampInteger(value, low, high, fallback) {
@@ -87,7 +88,8 @@ export function normalizeConfig(config = {}) {
   const games = {
     bingo: config.games?.bingo !== false,
     trivia: config.games?.trivia !== false,
-    scavenger: config.games?.scavenger !== false
+    scavenger: config.games?.scavenger !== false,
+    conversation: config.games?.conversation === true
   };
   return {
     occasion,
@@ -128,7 +130,8 @@ export function createPack(userConfig) {
     bingoCards,
     trivia,
     scavenger,
-    pageCount: bingoCards.length + (trivia.length ? 2 + config.answerCount : 0) + (scavenger.length ? 1 : 0),
+    conversation: config.games.conversation ? shuffle(conversationPrompts(config.occasion), "conversation:" + config.seed).slice(0,12) : [],
+    pageCount: bingoCards.length + (trivia.length ? 2 + config.answerCount : 0) + (scavenger.length ? 1 : 0) + (config.games.conversation ? 1 : 0),
     customCount: custom.length
   };
 }
@@ -159,7 +162,8 @@ export function configFromURL(search) {
   const games = gamesParam === null ? undefined : {
     bingo: gamesParam.split(",").includes("bingo"),
     trivia: gamesParam.split(",").includes("trivia"),
-    scavenger: gamesParam.split(",").includes("scavenger")
+    scavenger: gamesParam.split(",").includes("scavenger"),
+    conversation: gamesParam.split(",").includes("conversation")
   };
   return normalizeConfig({
     occasion,

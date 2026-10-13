@@ -57,6 +57,8 @@ jobs:
           export CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
           node scripts/print-qa.mjs
           node scripts/pdf-delivery-qa.mjs
+          node scripts/photo-game-qa.mjs
+          python3 scripts/verify-photo-game.py
           python3 scripts/verify-print.py qa
           python3 scripts/verify-collection-pdfs.py
           python3 scripts/verify-wildflower-pdfs.py
