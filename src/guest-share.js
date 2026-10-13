@@ -1,6 +1,12 @@
 import { guestURL } from './guest-link.js';
 export function setupGuestShare(getPack) {
   const $=id=>document.getElementById(id);let generation=0,qrFile=null;
+  $('phone-play-button').addEventListener('click',()=>{
+    const options=document.querySelector('.guest-share');
+    options.open=true;
+    options.querySelector('summary').focus();
+    options.scrollIntoView({block:'nearest',behavior:'smooth'});
+  });
   function invalidate(){generation++;qrFile=null;$('guest-link-result').hidden=true;$('guest-link-status').textContent='';$('create-guest-link').disabled=!getPack()?.pageCount;}
   $('create-guest-link').addEventListener('click',async()=>{
     const pack=getPack();if(!pack?.pageCount)return;const run=++generation;

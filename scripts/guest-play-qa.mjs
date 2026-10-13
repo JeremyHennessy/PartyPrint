@@ -6,7 +6,12 @@ let cases=0;const errors=[];
 try{
  const host=await browser.newPage({viewport:{width:390,height:900}});host.on('pageerror',e=>errors.push(e.message));
  await host.goto(base+'?count=1&games=honor,bingo,trivia,scavenger,conversation,scramble,drawing');await host.locator('#preview-stage .game-sheet').waitFor();await host.locator('#party-title').fill('María & friends <party>');await host.locator('#honor-settings summary').click();await host.locator('#honor-questions').fill('Favorite <snack>?\nFavorite song?');await host.locator('#honor-answers').fill('HOST PRIVATE ANSWER\nSECOND HOST SECRET');
- await host.locator('.guest-share summary').click();await host.locator('#create-guest-link').click();await host.locator('#guest-qr').waitFor({state:'visible'});const link=await host.locator('#guest-link').inputValue();assert.equal(guestConfig(new URL(link).hash).honorAnswers,'');
+ assert.equal(await host.locator('.guest-share').getAttribute('open'),null);
+ await host.locator('#phone-play-button').focus();await host.keyboard.press('Enter');
+ assert.equal(await host.locator('.guest-share').evaluate(e=>e.open),true);
+ assert.equal(await host.locator('.guest-share summary').evaluate(e=>e===document.activeElement),true);
+ assert.equal(await host.locator('#guest-link-result').isVisible(),false,'Opening phone options must not generate a private link');
+ await host.locator('#create-guest-link').click();await host.locator('#guest-qr').waitFor({state:'visible'});const link=await host.locator('#guest-link').inputValue();assert.equal(guestConfig(new URL(link).hash).honorAnswers,'');
  const pixels=await host.locator('#guest-qr').evaluate(c=>({width:c.width,height:c.height,data:Array.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data)}));assert.equal(jsQR(new Uint8ClampedArray(pixels.data),pixels.width,pixels.height)?.data,link);
  console.log('Host QR independently decoded.');
  let copied='';await host.exposeFunction('recordGuestLink',s=>copied=s);await host.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:window.recordGuestLink},configurable:true}));await host.locator('#copy-guest-link').click();assert.equal(copied,link);console.log('Guest clipboard link matches.');

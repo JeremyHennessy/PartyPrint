@@ -47,7 +47,7 @@ if (siteURL) {
   const html = walk(output).filter(file => file.endsWith(".html") && !file.endsWith("404.html"));
   for (const file of html) {
     const relative = path.relative(output, file).split(path.sep).join("/");
-    const slug = relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative;
+    const slug = relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative.slice(0, -5);
     const canonical = base + slug;
     const safe = canonical.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
     let source = fs.readFileSync(file, "utf8");
@@ -74,7 +74,7 @@ if (siteURL) {
   }
   const urls = html.filter(file => !["privacy.html", "terms.html", "play/index.html"].includes(path.relative(output, file).split(path.sep).join("/"))).map(file => {
     const relative = path.relative(output, file).split(path.sep).join("/");
-    return base + (relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative);
+    return base + (relative === "index.html" ? "/" : relative.endsWith("/index.html") ? "/" + relative.slice(0, -10) : "/" + relative.slice(0, -5));
   });
   const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(url => '  <url><loc>' + url.replaceAll("&", "&amp;") + '</loc></url>').join("\n") + '\n</urlset>\n';

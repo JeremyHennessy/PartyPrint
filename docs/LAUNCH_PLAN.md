@@ -1,3 +1,16 @@
+# Launch clarity and clean URLs — October 13, 2026
+
+Starting verified main: `d634f93d606552cc3a8a4c6841ecedf84734e6f5`, [PR #33](https://github.com/JeremyHennessy/PartyPrint/pull/33), successful Cloudflare production deployment `1a1ca4bc-0fe2-4319-831a-ff85bb3f7b25` at https://partyprint.live/. No newer main or open pull requests found. Final release identity and deployment evidence will be recorded in this release PR after verification.
+
+This focused release makes Play on phones visible beside the export controls. Opening it shows the existing privacy disclosure, focuses its heading and does not generate a link until explicitly requested. The Wildflower first screen now offers both the optional US$5 kit and free sample/custom generator. Canonical and social URLs for about/privacy/terms use Cloudflare's final extensionless routes; the sitemap uses /about rather than its redirecting .html URL. Legacy links still redirect normally. README now reflects the published kit, inactive ads and intentional guest-link privacy distinction. Game algorithms, print layouts, paid files, prices, analytics and account settings are unchanged.
+
+Validation includes 31 unit tests, 12 HTML pages/238 local links and metadata for 11 pages/8 sitemap URLs. Browser regression coverage now asserts keyboard phone-option opening without premature link generation and first-screen premium discovery. Complete browser/print CI and production verification are required before release acceptance; detailed results and screenshots are retained in the release PR and ignored QA artifacts.
+
+Business status from October 13 review: Payhip US$0 sales, one complimentary order; paid processing, inbox receipt, full-kit iPhone Files acceptance and physical printing remain unverified. AdSense Getting ready / Review requested; ads.txt is valid live despite the dashboard's Not found status. Consent message remains draft; no ads are active. Google confirms homepage and baby guide indexed, sitemap Success; aggregate Performance is still processing. Traffic includes QA and is not proof of demand.
+
+Next three priorities: (1) owner real-device full-kit and paid-order acceptance; (2) a minimal-QA October 14–20 ADT traffic window and available Google queries to guide content; (3) actual AdSense approval, then certified consent/privacy verification before one restrained editorial placement. No background follow-up is configured and no revenue or conversion uplift is claimed.
+
+---
 # Discovery and purchase review — October 13, 2026
 
 Starting and verified production main: `268e9b305211dd19204a419e1dd094fd26a21a63`, [PR #32](https://github.com/JeremyHennessy/PartyPrint/pull/32). Exact-main verify and Pages checks are now successful. Cloudflare production deployment `6741dc46-a5a1-46e3-88ed-6a5ade142193` reports success for that commit at https://partyprint.live/. No newer main or open PRs were found before this pass. This release's final commit/deployment identity will be recorded in its PR after verification.
