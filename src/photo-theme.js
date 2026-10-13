@@ -19,10 +19,10 @@ export async function themeFromPhoto(file) {
   if (!file || !['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('Choose a JPG, PNG or WebP photo. For HEIC, export a JPG first.');
   if (file.size > 10 * 1024 * 1024) throw new Error('Choose a photo smaller than 10 MB.');
   const url = await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error('This photo could not be read.')); reader.readAsDataURL(file); });
-    const image = new Image();
-    await new Promise((resolve,reject) => { image.onload = resolve; image.onerror = () => reject(new Error('This image could not be read. Try a JPG or PNG.')); image.src = url; });
-    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 64;
-    const context = canvas.getContext('2d', {willReadFrequently:true});
-    context.drawImage(image,0,0,64,64);
-    return paletteFromPixels(context.getImageData(0,0,64,64).data);
+  const image = new Image();
+  await new Promise((resolve,reject) => { image.onload = resolve; image.onerror = () => reject(new Error('This image could not be read. Try a JPG or PNG.')); image.src = url; });
+  const canvas = document.createElement('canvas'); canvas.width = canvas.height = 64;
+  const context = canvas.getContext('2d', {willReadFrequently:true});
+  context.drawImage(image,0,0,64,64);
+  return paletteFromPixels(context.getImageData(0,0,64,64).data);
 }
