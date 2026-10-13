@@ -56,7 +56,7 @@ def animal_answers(activity, key):
 
 def verify(file, dims, full=False):
     with pdfplumber.open(file) as pdf:
-        assert len(pdf.pages) == (34 if full else 3), f'{file}: page count'
+        assert len(pdf.pages) == (37 if full else 3), f'{file}: page count'
         for number, page in enumerate(pdf.pages, 1):
             text = page.extract_text() or ''
             assert len(text) > 75 and 'partyprint.live' in text, f'{file}: blank/retired origin page {number}'
@@ -74,9 +74,16 @@ def verify(file, dims, full=False):
             for i, page in [(0, 'A little wildflower.'), (1, 'A happy host plan'),
                             (2, 'Welcome, little wildflower'), (30, 'Little predictions'),
                             (31, 'A little encouragement'), (32, 'Thank you for the love'),
-                            (33, 'A little note. A lot of love.')]:
+                            (33, 'A little note. A lot of love.'), (34, 'Baby A to Z'),
+                            (35, 'Little bag treasure hunt'), (36, 'This or that')]:
                 assert page in pdf.pages[i].extract_text()
             assert 'Pages 4-27' in pdf.pages[1].extract_text()
+            assert 'Pages 35-37' in pdf.pages[1].extract_text()
+            alphabet = pdf.pages[34].extract_text()
+            assert all(re.search(r'\b'+letter+r'\b',alphabet) for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+            bag = pdf.pages[35].extract_text()
+            assert len(pdf.pages[35].rects)==12 and 'No proof needed' in bag and 'No phones, IDs' in bag
+            assert pdf.pages[36].extract_text().count('?')==12
             puzzles = dict(re.findall(r'\b(\d+)\. ([A-Z]+)\b', pdf.pages[28].extract_text()))
             answers = dict(re.findall(r'\b(\d+)\. ([A-Z]+)\b', pdf.pages[29].extract_text()))
             assert len(puzzles) == len(answers) == 10

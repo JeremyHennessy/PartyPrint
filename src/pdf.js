@@ -33,7 +33,7 @@ export function createPDF(pack, format, jsPDF, fontData, progress = () => {}) {
   doc.addFont("NotoSans.ttf", "NotoSans", "normal");
   doc.setFont("NotoSans", "normal");
   const cmap = doc.getFont().metadata.cmap.unicode.codeMap;
-  const text = [pack.config.title, ...pack.bingoCards.flatMap(c => c.rows.flat()), ...pack.trivia.flatMap(q => [q.question, q.answer]), ...pack.scavenger].join(" ");
+  const text = [pack.config.title, ...pack.bingoCards.flatMap(c => c.rows.flat()), ...pack.trivia.flatMap(q => [q.question, q.answer]), ...pack.scavenger, ...(pack.conversation || [])].join(" ");
   const missing = [...new Set([...text].filter(c => !/\s/.test(c) && !cmap[c.codePointAt(0)]))];
   if (missing.length) throw new Error("The PDF font cannot show these characters: " + missing.slice(0, 8).join(" ") + ". Replace them or use browser printing.");
   const width = doc.internal.pageSize.getWidth(), height = doc.internal.pageSize.getHeight();
@@ -133,6 +133,14 @@ export function createPDF(pack, format, jsPDF, fontData, progress = () => {}) {
       doc.setDrawColor("#ddd3cb"); doc.line(x, top + rowHeight - 14, x + colWidth, top + rowHeight - 14);
     });
     footer("Check off each thing you find. Set a timer or play throughout the event.");
+  }
+  if (pack.conversation?.length) {
+    const y = start("this or that", "Choose either option · No right or wrong answers");
+    const spacing = Math.min(34, (height - 135 - y) / pack.conversation.length);
+    pack.conversation.forEach((prompt, i) => {
+      font(10); doc.text(lines((i + 1) + ". " + prompt, contentWidth, 10), left, y + 12 + i * spacing, {lineHeightFactor:1.3});
+    });
+    footer("Take turns choosing an option. Sharing a reason is optional. Pass any question. No scoring.");
   }
   if (pageCount !== pack.pageCount) throw new Error("Incomplete PDF pack");
   doc.setProperties({title:"PartyPrint game pack",subject:"Printable party games",creator:"PartyPrint"});

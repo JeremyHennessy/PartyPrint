@@ -21,6 +21,8 @@ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, headless: true, args: ['--no-sandbox'] });
 const base = `http://127.0.0.1:${server.address().port}/`;
 const cases = [
+  {name:'conversation',count:1,size:5,games:'conversation',theme:'sage'},
+  {name:'all-four-games',count:1,size:5,games:'bingo,trivia,scavenger,conversation',theme:'blue',long:true},
   ...['bridal','birthday','office','holiday','game-night'].map(occasion=>({name:occasion,occasion,count:1,size:5,games:'bingo,trivia,scavenger',theme:'peach'})),
   {name:'one-classic',count:1,size:5,games:'bingo',theme:'peach'},
   {name:'twelve-quick',count:12,size:4,games:'bingo',theme:'sage'},
@@ -139,7 +141,7 @@ try {
   // Exercise actual controls, replacement editing, regeneration and privacy-safe sharing.
   await page.goto(base + '?occasion=baby&mode=gifts&games=bingo');
   assert.match(await page.locator('#preview-stage').innerText(), /gift as it is opened/);
-  await page.locator('.advanced-options summary').click();
+  await page.locator('.advanced-options:has(#custom-prompts) summary').click();
   await page.locator('#edit-word-list').click();
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', {value:{writeText: async text => { window.sharedSetup = text; }}, configurable:true}));
   await page.locator('#party-title').fill('Private family name');
@@ -199,14 +201,14 @@ try {
     await page.waitForSelector('.bingo-board, .question-list, .scavenger-list');
     if (test.long || test.unbroken) {
       await page.locator('#party-title').fill(test.unbroken ? 'W'.repeat(70) : 'Celebrating Alexandra & Christopher’s wonderful new adventure — welcome!');
-      await page.locator('.advanced-options summary').click();
+      await page.locator('.advanced-options:has(#custom-prompts) summary').click();
       await page.locator('#prompt-source').selectOption('replace');
       await page.locator('#custom-prompts').fill(Array.from({length:40},(_,i)=>test.unbroken ? `${i} ${'W'.repeat(52)}` : `Guest ${i}: Grandma’s special blanket & a lovely surprise!`).join('\n'));
     }
     for (const format of ['Letter','A4']) {
       const file = `${test.name}-${format}.pdf`;
       await page.pdf({path:path.join(output,file),format,printBackground:true,displayHeaderFooter:false});
-      const expected = (test.games.includes('bingo') ? test.count : 0) + (test.games.includes('trivia') ? 2 + (test.answers || 0) : 0) + (test.games.includes('scavenger') ? 1 : 0);
+      const expected = (test.games.includes('bingo') ? test.count : 0) + (test.games.includes('trivia') ? 2 + (test.answers || 0) : 0) + (test.games.includes('scavenger') ? 1 : 0) + (test.games.includes('conversation') ? 1 : 0);
       const pages = await page.locator('#print-root .print-page').evaluateAll(nodes => nodes.map(node => { const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT); const parts = []; while (walker.nextNode()) parts.push(walker.currentNode.textContent); return parts.join(' '); }));
       assert.equal(pages.length, expected, 'Missing logical sheets');
       if (test.answers) {

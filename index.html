@@ -33,7 +33,7 @@
         <div class="hero-content">
           <div class="eyebrow"><span class="eyebrow-star" aria-hidden="true">✽</span> THE LITTLE PARTY PLANNING SHORTCUT</div>
           <h1>Good times.<br><em>Great games.</em><br>No fuss.</h1>
-          <p class="hero-lead">Gorgeous party games, ready in a few clicks. Create your own bingo, trivia and scavenger hunt printables — and get back to the fun stuff.</p>
+          <p class="hero-lead">Gorgeous party games, ready in a few clicks. Create your own bingo, trivia and scavenger hunt and conversation printables — and get back to the fun stuff.</p>
           <div class="hero-actions"><a href="#studio" class="button button-dark">Create my free party kit <span aria-hidden="true">↗</span></a><a href="#how-it-works" class="text-link">See how it works <span aria-hidden="true">→</span></a></div>
           <div class="hero-trust"><span class="trust-avatars" aria-hidden="true"><i>✿</i><i>★</i><i>♡</i></span><span><strong>Made for real celebrations</strong><small>Free to use · No signup · Ready to print</small></span></div>
         </div>
@@ -109,6 +109,7 @@
               <fieldset class="field-group game-field"><legend>Pick your games <span class="optional">(one or more)</span></legend><div class="game-toggles">
                 <label class="toggle-card"><input id="game-bingo" type="checkbox" checked><span class="toggle-icon">⊞</span><span>Bingo</span><span class="toggle-check">✓</span></label>
                 <label class="toggle-card"><input id="game-trivia" type="checkbox" checked><span class="toggle-icon">?</span><span>Trivia</span><span class="toggle-check">✓</span></label>
+                <label class="toggle-card"><input id="game-conversation" type="checkbox"><span class="toggle-icon">↔</span><span>This or that</span><span class="toggle-check">✓</span></label>
                 <label class="toggle-card"><input id="game-scavenger" type="checkbox" checked><span class="toggle-icon">⌕</span><span>Scavenger</span><span class="toggle-check">✓</span></label>
               </div></fieldset>
               <div class="field-group" id="trivia-sheets-field"><label for="trivia-answer-count">Guest trivia answer sheets</label><input id="trivia-answer-count" type="number" min="0" max="48" value="0" inputmode="numeric"><small>Optional: 0–48 copies with space for 12 answers. The host key stays separate.</small></div>
@@ -118,6 +119,7 @@
                 <label class="theme-choice"><input type="radio" name="theme" value="lilac"><span class="theme-swatch" style="--swatch:#c8b6e7"></span><span>Lilac</span></label>
                 <label class="theme-choice"><input type="radio" name="theme" value="blue"><span class="theme-swatch" style="--swatch:#aacfe4"></span><span>Blue sky</span></label>
               </div></fieldset>
+              <details class="advanced-options"><summary>Match colors from your photo</summary><label for="theme-photo">Choose an invitation, decoration or photo</label><input id="theme-photo" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG or WebP, up to 10 MB. Colors are extracted on this device. Your photo is never uploaded, saved, included in links or printed. This suggests colors; it does not recreate artwork.</small><div id="photo-palette" hidden aria-label="Photo-inspired colors"></div><p id="photo-status" role="status" aria-live="polite"></p><button id="remove-photo" type="button" class="button button-light" hidden>Remove photo colors</button></details>
               <details class="advanced-options"><summary>✳ Customize the bingo word list <span class="optional">(optional)</span></summary><label for="prompt-source">How to use your words</label><div class="select-wrap"><select id="prompt-source"><option value="supplement">Mix with curated words</option><option value="replace">Use only my word list</option></select></div><button type="button" id="edit-word-list" class="button button-light">Start with the curated list</button><label for="custom-prompts" class="sr-only">Custom bingo prompts, one per line</label><textarea id="custom-prompts" rows="5" maxlength="8000" placeholder="Grandma's famous cookies&#10;Someone wearing pink&#10;The guest of honor laughs"></textarea><small>One prompt per line, up to 80 unique words (56 characters each). Use at least 16 for a 4 × 4 card or 24 for a 5 × 5 card when replacing the list. Editing and mixing keeps your words until you leave this page.</small></details>
               <div id="form-message" class="form-message" role="status" aria-live="polite"></div>
             </form>
@@ -127,6 +129,7 @@
             <div class="preview-tabs" role="tablist" aria-label="Preview a printable">
               <button type="button" role="tab" aria-selected="true" id="tab-bingo" aria-controls="preview-stage" data-preview="bingo">Bingo</button>
               <button type="button" role="tab" aria-selected="false" id="tab-trivia" aria-controls="preview-stage" data-preview="trivia">Trivia</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-conversation" aria-controls="preview-stage" data-preview="conversation">This or that</button>
               <button type="button" role="tab" aria-selected="false" id="tab-scavenger" aria-controls="preview-stage" data-preview="scavenger">Scavenger hunt</button>
             </div>
             <div id="preview-stage" class="preview-stage" role="tabpanel" aria-labelledby="tab-bingo" tabindex="0"><div class="preview-loading">Creating a little magic…</div></div>

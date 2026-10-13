@@ -1,3 +1,19 @@
+# Photo-inspired themes and extra party games — October 12, 2026
+
+Starting main: `065b38241bf4ec738a5de7f10fa31e9cbb60c895` (PR #25); verified Pages deployment `faf6740d-6843-4e70-acd1-4d0bd2dd93de`, https://partyprint.live/. This release uses the existing Git-integrated Pages project; final release SHA, PR and deployment evidence are recorded in its PR description.
+
+Implemented: free local photo-to-color inspiration (JPG/PNG/WebP ≤10 MB), dark readable ink and light tint, visible matched swatches, original-theme reset, regeneration retaining colors. Photos are never uploaded, stored, printed or included in sharing URLs. This is color matching, not image generation or artwork recreation. Browser/private PDF paths remain unchanged. New opt-in This or that conversation sheets have six occasion-specific prompt pools, twelve prompts per sheet, clear optional participation rules and no answer key/scoring. Existing three-game links and default pack counts remain unchanged.
+
+Private Wildflower premium editions expanded from 34 to 37 pages each. Bonus pages 35–37: Baby A to Z, optional private bag treasure hunt, and This or that. Updated host guide, customer README, listing draft and owner preview. Four full editions, customer ZIP and owner-source backup remain under ignored output/, excluded from Git/dist. Sample PDFs are unchanged and remain free. Fixed-wording files; no paid customization or entitlement system. Checkout still awaits seller account/payout setup and delivery testing. US$9 remains an unvalidated experiment, not earned revenue.
+
+QA: 23 unit tests; static links/syntax and metadata checks; full native/direct Letter/A4 print matrix including standalone conversation and long-title all-four-game packs; physical counts, expected text and safe bounds checked with pdfplumber. New photo browser checks enforce production CSP, four widths (320/390/768/1440), no photo network requests, regeneration, generic sharing, reset, invalid/corrupt formats and real PDF downloads. Visually inspected desktop/mobile studio, direct Letter/native A4 conversation pages, all three new premium pages in Letter color/A4 monochrome. All 148 premium pages pass count/nonblank/bounds/font/game-content checks. Existing iPhone/iPad PDF delivery handler regression checks pass with stubbed OS sheets; real iPhone photo picker and physical printing remain unverified. QA requests are not genuine growth.
+
+No new tracking, payment/ads runtime, dependencies, backend or infrastructure. Search indexing/performance, AdSense review and genuine traffic baseline are unchanged from the previous handoff; no new claims of indexing, approval or sales.
+
+Next three tasks: (1) finish owner Payhip account/payout/support settings and test private automated delivery before enabling a purchase link; (2) obtain actual iPhone photo-picker/Save to Files evidence; (3) use the low-QA traffic week and Search Console queries to choose the next collection instead of expanding speculative paid infrastructure.
+
+---
+
 # Launch and revenue guardrails
 
 ## Wildflower product and discovery experiment — October 12, 2026

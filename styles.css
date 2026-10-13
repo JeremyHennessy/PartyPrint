@@ -273,3 +273,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
 .guide-tag,.step-kicker,.step-number{color:#895047}
 .field-group small,.advanced-options small,.preview-bottom small,.download-panel p,.optional{color:#675e62}
 .guides-note{color:#765851}
+
+.game-toggles{grid-template-columns:repeat(2,minmax(0,1fr))}#theme-photo{max-width:100%;font-size:.85rem}
+
+#photo-palette:not([hidden]){display:flex;gap:8px;margin-top:12px}#photo-palette span{width:28px;height:28px;border:1px solid #ddd3cb;border-radius:50%}
