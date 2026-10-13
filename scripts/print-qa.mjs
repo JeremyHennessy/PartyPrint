@@ -42,7 +42,7 @@ try {
   await iphone.addInitScript(() => { window.printCalls = 0; window.print = () => { window.printCalls++; }; });
   await iphone.addInitScript(() => {
     Object.defineProperty(navigator,'canShare',{value:()=>true});
-    Object.defineProperty(navigator,'share',{value:async ({files})=>{window.sharedFile={name:files[0].name,type:files[0].type,size:files[0].size};if(window.cancelShare)throw new DOMException('Cancelled','AbortError');}});
+    Object.defineProperty(navigator,'share',{value:async ({files})=>{window.sharedPDFFile=files[0];window.sharedFile={name:files[0].name,type:files[0].type,size:files[0].size};if(window.cancelShare)throw new DOMException('Cancelled','AbortError');}});
   });
   await iphone.goto(base + '?occasion=baby&mode=gifts&count=1&games=bingo,trivia,scavenger');
   await iphone.locator('#party-title').fill('Private iPhone celebration');
@@ -61,17 +61,17 @@ try {
   assert.ok(await iphone.locator('#pdf-result').isVisible(),'Share cancellation should retain the ready file');
   await iphone.locator('#pdf-result').screenshot({path:path.join(output,'iphone-file-actions.png')});
   await iphone.locator('#studio').screenshot({path:path.join(output,'mobile-pdf-ready.png')});
-  const iphoneDownload=iphone.waitForEvent('download');
+  await iphone.evaluate(()=>window.cancelShare=false);
   await iphone.locator('#pdf-download').click();
-  await (await iphoneDownload).saveAs(path.join(output,'iphone-download.pdf'));
+  // Inspect the exact bytes handed to the iPhone sheet, not a desktop download.
+  fs.writeFileSync(path.join(output,'iphone-download.pdf'),Buffer.from(await iphone.evaluate(async()=>Array.from(new Uint8Array(await window.sharedPDFFile.arrayBuffer())))));
   await iphone.locator('#party-title').fill('Zoë & François — Café № 7');
   assert.ok(!(await iphone.locator('#pdf-result').isVisible()),'Editing should invalidate old PDF');
   await iphone.locator('#pdf-button').click();
   await iphone.waitForFunction(()=>!document.querySelector('#pdf-button').disabled);
   assert.ok(await iphone.locator('#pdf-result').isVisible(),await iphone.locator('#pdf-status').innerText());
-  const unicodeDownload=iphone.waitForEvent('download');
   await iphone.locator('#pdf-download').click();
-  await (await unicodeDownload).saveAs(path.join(output,'unicode-download.pdf'));
+  fs.writeFileSync(path.join(output,'unicode-download.pdf'),Buffer.from(await iphone.evaluate(async()=>Array.from(new Uint8Array(await window.sharedPDFFile.arrayBuffer())))));
   assert.ok(requests.every(url=>!url.includes('Private')&&!url.includes('Fran')),'Private title leaked into asset requests');
   await iphone.locator('#party-title').fill('Private iPhone celebration');
   await iphone.locator('#print-button').click();

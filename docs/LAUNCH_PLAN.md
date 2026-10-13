@@ -1,5 +1,13 @@
 # Launch and revenue guardrails
 
+## iPhone PDF saving correction — 2026-10-12
+
+Owner confirms Share PDF works on their iPhone but Save PDF does not. Their attached five-page Letter PDF has nonblank content; rendered first bingo page inspected for readable text/margins. This is evidence for file generation/sharing, not successful direct download or physical printing. The Save control previously used a blob download link. On Apple mobile devices it now opens the same file-sharing path confirmed working by the owner, labeled **Save to Files** with explicit sheet instructions. Share PDF remains available; desktop downloads remain unchanged. Unsupported mobile sharing shows **Open PDF to save** and viewer/Safari instructions. Cancellation is quiet; sharing failures offer the independent Open PDF fallback. PDF layout/engine and privacy behavior are unchanged.
+
+Added real-browser delivery regression coverage for desktop file download, iPhone/iPad user-activation sharing, cancellation, failure and unsupported fallback. Native OS sharing is stubbed in automated tests, so actual new iPhone Save to Files completion remains an owner-device check. Mobile screenshot inspected without overflow; all 20 generator tests, static checks and build passed locally. Exact-head CI runs full existing Letter/A4 print verification plus the new delivery checks before merge. Final PR/main/deployment evidence is recorded in the release PR.
+
+AdSense follow-up: owner completed their payments profile; Google confirms **We've got your info / completed all the steps**. New-domain site remains **Getting ready / Review requested**, with ads off. This supersedes the publisher-details blocker below; approval/consent and Google sitemap processing remain outstanding.
+
 ## Completed redirect and Google move — 2026-10-12
 
 Observed main `d2647277e3ad675ab4e46104fa1bf8b008068a5f`; successful Pages production deployment `63c1ad40-85cf-44ef-af22-bdc6a8ea0342`, https://partyprint.live/. Ordinary HTTPS now works and the owner confirms phone access. Enabled the existing migration rule after that prerequisite. Verified legacy production and www return 301 to the primary domain, preserving paths and query parameters; primary returns 200 and the deployment-specific preview remains 200/noindex. No application, DNS, nameserver or security changes were needed.

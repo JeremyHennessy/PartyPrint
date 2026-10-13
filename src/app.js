@@ -344,9 +344,24 @@ $("pdf-button").addEventListener("click", async () => {
     $("pdf-open").href = readyPDF.url;
     let canShare = false;
     try { canShare = Boolean(navigator.canShare?.({files:[file]})); } catch { /* Download stays available. */ }
+    readyPDF.canShare = canShare;
+    const saveLink = $("pdf-download");
+    saveLink.removeAttribute("target");
+    saveLink.removeAttribute("rel");
+    saveLink.textContent = "Save PDF ↓";
+    if (isAppleMobile) {
+      saveLink.removeAttribute("download");
+      saveLink.textContent = canShare ? "Save to Files ↗" : "Open PDF to save ↗";
+      if (!canShare) {
+        saveLink.target = "_blank";
+        saveLink.rel = "noopener";
+      }
+    }
     $("pdf-share").hidden = !canShare;
     $("pdf-result").hidden = false;
-    $("pdf-status").textContent = "Your " + pack.pageCount + "-page PDF is ready. Tap Save PDF below. On iPhone, you can also Share PDF → Save to Files.";
+    $("pdf-status").textContent = "Your " + pack.pageCount + "-page PDF is ready. " + (isAppleMobile
+      ? canShare ? "Tap Save to Files, then choose Save to Files in the iPhone share sheet." : "Tap Open PDF to save, then use the PDF viewer’s Share menu → Save to Files. If nothing opens, open PartyPrint in Safari."
+      : "Tap Save PDF below to download it.");
     $("pdf-download").focus({preventScroll:true});
     $("pdf-result").scrollIntoView({block:"nearest",behavior:"smooth"});
   } catch (error) {
@@ -357,10 +372,19 @@ $("pdf-button").addEventListener("click", async () => {
     $("pdf-button").textContent = "Download PDF ↓";
   }
 });
-$("pdf-share").addEventListener("click", async () => {
+async function shareReadyPDF() {
   if (!readyPDF) return;
   try { await navigator.share({files:[readyPDF.file]}); }
-  catch (error) { if (error.name !== "AbortError") $("pdf-status").textContent = "Sharing is unavailable here. Use Save PDF or Open PDF instead."; }
+  catch (error) { if (error.name !== "AbortError") $("pdf-status").textContent = isAppleMobile
+    ? "The share sheet couldn’t open. Tap Open PDF, then use the viewer’s Share menu → Save to Files. If nothing opens, open PartyPrint in Safari."
+    : "Sharing is unavailable here. Use Save PDF or Open PDF instead."; }
+}
+$("pdf-share").addEventListener("click", shareReadyPDF);
+$("pdf-download").addEventListener("click", event => {
+  if (!isAppleMobile || !readyPDF?.canShare) return;
+  event.preventDefault();
+  // Share synchronously from the tap: waiting first can lose iOS user activation.
+  shareReadyPDF();
 });
 
 $("share-button").addEventListener("click", async () => {
