@@ -260,6 +260,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}fieldset legend{padding:0;margi
 .brand-lockup .brand-mark{border-radius:8px;background:#fff}
 
 .collection-example{max-width:420px;margin:28px auto}.collection-example img{display:block;width:100%;height:auto;border:1px solid var(--line)}.collection-example figcaption{font-size:12px;color:var(--muted);margin-top:10px}
+.kit-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.guide-hero .kit-actions{justify-content:center}.kit-spread{margin:0 0 34px}.kit-spread img{display:block;width:100%;height:auto;border-radius:12px}.kit-spread figcaption,.kit-page-grid figcaption{font-size:12px;color:#675e62;line-height:1.7;margin-top:12px}.kit-page-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin:32px 0}.kit-page-grid figure{margin:0}.kit-page-grid img{display:block;width:100%;height:auto;border:1px solid var(--line)}.guide-body .kit-save-help{font-size:14px}.kit-actions .button{white-space:normal;text-align:center}#sample{scroll-margin-top:24px}@media(max-width:480px){.kit-page-grid{grid-template-columns:1fr}.kit-page-grid figure{max-width:340px;margin:auto}.kit-actions{align-items:stretch}.kit-actions .button{flex:1 1 220px}}
 
 /* Genuine PDF previews and matching occasion pictograms, preserving the card layout. */
 .occasion-art img{display:block;width:120px;height:120px;max-width:none;object-fit:contain}

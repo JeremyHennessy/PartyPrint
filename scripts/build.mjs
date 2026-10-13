@@ -36,6 +36,7 @@ if (siteURL) {
     let source = fs.readFileSync(file, "utf8");
     // Product-specific social previews; PNG is deliberate for major social crawlers.
     const shareImages = {
+      "collections/wildflower/index.html": ["kits/wildflower/wildflower-social.jpg", "Real Wildflower gift-bingo page from the free baby shower sample", 1200, 630],
       "collections/a-little-love/index.html": ["kits/prediction-preview.png", "Two printable baby prediction cards from the free sample collection", 696, 900],
       "index.html": ["marketing/og-home.jpg", "Real PartyPrint printable bingo and trivia sheets, ready to customize", 1200, 630],
       "guides/baby-shower-bingo/index.html": ["marketing/og-baby.jpg", "Real PartyPrint printable baby shower gift-opening bingo", 1200, 630],
