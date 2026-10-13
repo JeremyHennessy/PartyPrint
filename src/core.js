@@ -1,4 +1,5 @@
 import { conversationPrompts } from "./conversation.js";
+import { honorQuestions, scrambleWords, drawingPrompts } from "./extra-games.js";
 import { getBingoPrompts, getTriviaQuestions, getScavengerPrompts, occasionById, themeById } from "./content.js";
 
 export function clampInteger(value, low, high, fallback) {
@@ -89,7 +90,10 @@ export function normalizeConfig(config = {}) {
     bingo: config.games?.bingo !== false,
     trivia: config.games?.trivia !== false,
     scavenger: config.games?.scavenger !== false,
-    conversation: config.games?.conversation === true
+    conversation: config.games?.conversation === true,
+    honor: config.games?.honor === true,
+    scramble: config.games?.scramble === true,
+    drawing: config.games?.drawing === true
   };
   return {
     occasion,
@@ -103,7 +107,9 @@ export function normalizeConfig(config = {}) {
     size: config.size === 4 || config.size === "4" ? 4 : 5,
     seed: Number.isFinite(Number(config.seed)) ? Number(config.seed) : 42,
     games,
-    custom: String(config.custom || "").slice(0, 8000)
+    custom: String(config.custom || "").slice(0, 8000),
+    honorQuestions: String(config.honorQuestions || "").slice(0, 2000),
+    honorAnswers: String(config.honorAnswers || "").slice(0, 2000)
   };
 }
 
@@ -123,6 +129,15 @@ export function createPack(userConfig) {
   const scavenger = config.games.scavenger
     ? shuffle(getScavengerPrompts(config.occasion), "scavenger:" + config.seed).slice(0, 12)
     : [];
+  const customQuestions = config.honorQuestions.split(/\r?\n/).map(line=>tidyText(line,100)).filter(Boolean).slice(0,12);
+  const answers = config.honorAnswers.split(/\r?\n/).map(line=>tidyText(line,100));
+  const honor = config.games.honor ? (customQuestions.length ? customQuestions : honorQuestions(config.occasion)).map((question,i)=>({question,answer:answers[i] || ""})) : [];
+  const scramble = config.games.scramble ? shuffle(scrambleWords(config.occasion),"words:"+config.seed).slice(0,12).map((answer,i)=>{
+    let clue=shuffle([...answer],"letters:"+config.seed+":"+i).join("");
+    if(clue===answer)clue=answer.slice(1)+answer[0];
+    return {clue,answer};
+  }) : [];
+  const drawing = config.games.drawing ? shuffle(drawingPrompts(config.occasion),"drawing:"+config.seed).slice(0,12) : [];
   return {
     config,
     occasion: occasionById(config.occasion),
@@ -130,8 +145,9 @@ export function createPack(userConfig) {
     bingoCards,
     trivia,
     scavenger,
+    honor, scramble, drawing,
     conversation: config.games.conversation ? shuffle(conversationPrompts(config.occasion), "conversation:" + config.seed).slice(0,12) : [],
-    pageCount: bingoCards.length + (trivia.length ? 2 + config.answerCount : 0) + (scavenger.length ? 1 : 0) + (config.games.conversation ? 1 : 0),
+    pageCount: bingoCards.length + (trivia.length ? 2 + config.answerCount : 0) + (scavenger.length ? 1 : 0) + (config.games.conversation ? 1 : 0) + (honor.length ? 2 : 0) + (scramble.length ? 2 : 0) + (drawing.length ? 1 : 0),
     customCount: custom.length
   };
 }
@@ -163,7 +179,10 @@ export function configFromURL(search) {
     bingo: gamesParam.split(",").includes("bingo"),
     trivia: gamesParam.split(",").includes("trivia"),
     scavenger: gamesParam.split(",").includes("scavenger"),
-    conversation: gamesParam.split(",").includes("conversation")
+    conversation: gamesParam.split(",").includes("conversation"),
+    honor: gamesParam.split(",").includes("honor"),
+    scramble: gamesParam.split(",").includes("scramble"),
+    drawing: gamesParam.split(",").includes("drawing")
   };
   return normalizeConfig({
     occasion,

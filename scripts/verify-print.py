@@ -12,6 +12,11 @@ for case in json.loads((folder / 'print-manifest.json').read_text(encoding='utf-
     with pdfplumber.open(folder / case['file']) as pdf:
         if len(pdf.pages) != case['expectedPages']:
             failures.append(f"{case['file']}: {len(pdf.pages)} pages, expected {case['expectedPages']}")
+        for private_answer in case.get('privateAnswers', []):
+            if private_answer in (pdf.pages[0].extract_text() or ''):
+                failures.append(f"{case['file']}: guest sheet exposes a private host answer")
+            if len(pdf.pages) < 2 or private_answer not in (pdf.pages[1].extract_text() or ''):
+                failures.append(f"{case['file']}: separate host key is missing an answer")
         for i, page in enumerate(pdf.pages):
             text = page.extract_text() or ''
             if 'my trivia answers' in text.lower():
@@ -19,6 +24,12 @@ for case in json.loads((folder / 'print-manifest.json').read_text(encoding='utf-
                 writing_lines = [edge for edge in page.edges if edge.get('orientation') == 'h' and edge['x1'] - edge['x0'] > 200]
                 if len(writing_lines) < 12: failures.append(f"{case['file']} page {i+1}: missing writing lines")
             if not text.strip(): failures.append(f"{case['file']} page {i+1}: blank")
+            if 'who knows them?' in text.lower() or 'personal host key' in text.lower():
+                for edge in page.edges:
+                    if edge.get('orientation') != 'h' or edge['x1'] - edge['x0'] < 200: continue
+                    if any(char['top'] + 2 < edge['top'] < char['bottom'] - 2 and char['x1'] > edge['x0'] and char['x0'] < edge['x1'] for char in page.chars):
+                        failures.append(f"{case['file']} page {i+1}: writing line overlaps text")
+                        break
             # Each logical sheet must be complete on its own physical page.
             if i < len(case['expectedText']):
                 expected = normalize(case['expectedText'][i]).lower()

@@ -59,6 +59,8 @@ jobs:
           node scripts/pdf-delivery-qa.mjs
           node scripts/photo-game-qa.mjs
           QA_OCCASIONS=baby node scripts/selection-qa.mjs
+          node scripts/extra-game-qa.mjs
+          python3 scripts/verify-print.py qa/extra-games
           python3 scripts/verify-photo-game.py
           python3 scripts/verify-print.py qa
           python3 scripts/verify-collection-pdfs.py

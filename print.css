@@ -30,4 +30,9 @@
   .print-page .print-how-to{margin-top:auto;border-top:1px solid #ddd3cb;padding:5mm 0 0;text-align:center;font-size:9pt;color:#74696e}
   .print-page .print-how-to strong{color:var(--theme-ink)}
   .print-page .print-leaf{font-size:18pt;color:var(--theme-ink)}
+  .print-page .honor-list{margin-top:4mm}.print-page .honor-list li{font-size:9pt;padding:1.2mm 0;line-height:1.2}.print-page .honor-list .writing-line{min-height:2.5mm;margin-top:1mm}.print-page .honor-key li{min-height:9mm}
+  .honor-page .game-sheet h4{font-size:18pt;margin:4mm 0 2mm}.honor-page .print-topline{padding-bottom:3mm}.honor-page .sheet-subtitle{margin-bottom:3mm}.honor-page .honor-list li{padding:0.8mm 0}.honor-page .print-footnote{margin-top:3mm}
+  .honor-page .unbroken-copy li{word-break:break-all}
+  .print-page .scramble-list{grid-template-columns:1fr 1fr;gap:8mm 12mm;margin-top:8mm;font-size:12pt;padding-left:8mm}.print-page .scramble-list .writing-line{min-height:6mm}
+  .print-page .drawing-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm;margin:7mm 0}.print-page .drawing-card{min-height:29mm;padding:3mm;font-size:11pt;break-inside:avoid}
 }

@@ -33,7 +33,7 @@
         <div class="hero-content">
           <div class="eyebrow"><span class="eyebrow-star" aria-hidden="true">✽</span> THE LITTLE PARTY PLANNING SHORTCUT</div>
           <h1>Good times.<br><em>Great games.</em><br>No fuss.</h1>
-          <p class="hero-lead">Gorgeous party games, ready in a few clicks. Create your own bingo, trivia and scavenger hunt and conversation printables — and get back to the fun stuff.</p>
+          <p class="hero-lead">Gorgeous party games, ready in a few clicks. Make bingo, quizzes, word puzzles, drawing games and more — and get back to the fun stuff.</p>
           <div class="hero-actions"><a href="#studio" class="button button-dark">Create my free party kit <span aria-hidden="true">↗</span></a><a href="#how-it-works" class="text-link">See how it works <span aria-hidden="true">→</span></a></div>
           <div class="hero-trust"><span class="trust-avatars" aria-hidden="true"><i>✿</i><i>★</i><i>♡</i></span><span><strong>Made for real celebrations</strong><small>Free to use · No signup · Ready to print</small></span></div>
         </div>
@@ -111,7 +111,11 @@
                 <label class="toggle-card"><input id="game-trivia" type="checkbox" checked><span class="toggle-icon">?</span><span>Trivia</span><span class="toggle-check">✓</span></label>
                 <label class="toggle-card"><input id="game-conversation" type="checkbox"><span class="toggle-icon">↔</span><span>This or that</span><span class="toggle-check">✓</span></label>
                 <label class="toggle-card"><input id="game-scavenger" type="checkbox" checked><span class="toggle-icon">⌕</span><span>Scavenger</span><span class="toggle-check">✓</span></label>
+                <label class="toggle-card"><input id="game-honor" type="checkbox"><span class="toggle-icon">♡</span><span>Who knows them?</span><span class="toggle-check">✓</span></label>
+                <label class="toggle-card"><input id="game-scramble" type="checkbox"><span class="toggle-icon">ABC</span><span>Word scramble</span><span class="toggle-check">✓</span></label>
+                <label class="toggle-card"><input id="game-drawing" type="checkbox"><span class="toggle-icon">✎</span><span>Draw &amp; guess</span><span class="toggle-check">✓</span></label>
               </div></fieldset>
+              <details class="advanced-options" id="honor-settings" hidden><summary>Personalize Who knows them?</summary><p>Celebrate a guest of honor or a willing teammate. Use the suggested questions or write your own. Skip anything too personal.</p><button type="button" id="edit-honor-questions" class="button button-light">Start with suggested questions</button><label for="honor-questions">Questions <span class="optional">(optional)</span></label><textarea id="honor-questions" rows="5" maxlength="2000" placeholder="What is their favorite food?&#10;What is their ideal day off?"></textarea><small>One per line, up to 12 questions (100 characters each). Leave empty for suggestions.</small><label for="honor-answers">Host answers <span class="optional">(optional)</span></label><textarea id="honor-answers" rows="4" maxlength="2000" placeholder="An answer for question 1&#10;An answer for question 2"></textarea><small>One answer per line, in question order (100 characters each). Blank lines leave writing space on the separate host key. Personal questions and answers stay on this device and are excluded from shared links.</small></details>
               <div class="field-group" id="trivia-sheets-field"><label for="trivia-answer-count">Guest trivia answer sheets</label><input id="trivia-answer-count" type="number" min="0" max="48" value="0" inputmode="numeric"><small>Optional: 0–48 copies with space for 12 answers. The host key stays separate.</small></div>
               <fieldset class="field-group theme-field"><legend>Set the mood</legend><div class="theme-choices" id="theme-choices">
                 <label class="theme-choice"><input type="radio" name="theme" value="peach" checked><span class="theme-swatch" style="--swatch:#f5bda8"></span><span>Peachy</span></label>
@@ -131,6 +135,11 @@
               <button type="button" role="tab" aria-selected="false" id="tab-trivia" aria-controls="preview-stage" data-preview="trivia">Trivia</button>
               <button type="button" role="tab" aria-selected="false" id="tab-conversation" aria-controls="preview-stage" data-preview="conversation">This or that</button>
               <button type="button" role="tab" aria-selected="false" id="tab-scavenger" aria-controls="preview-stage" data-preview="scavenger">Scavenger hunt</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-honor" aria-controls="preview-stage" data-preview="honor">Who knows them?</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-scramble" aria-controls="preview-stage" data-preview="scramble">Word scramble</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-drawing" aria-controls="preview-stage" data-preview="drawing">Draw &amp; guess</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-honor-key" aria-controls="preview-stage" data-preview="honor-key" hidden>Personal host key</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-scramble-key" aria-controls="preview-stage" data-preview="scramble-key" hidden>Scramble answers</button>
               <button type="button" role="tab" aria-selected="false" id="tab-answers" aria-controls="preview-stage" data-preview="answers" hidden>Host answers</button>
               <button type="button" role="tab" aria-selected="false" id="tab-guest" aria-controls="preview-stage" data-preview="guest" hidden>Guest sheet</button>
             </div>
