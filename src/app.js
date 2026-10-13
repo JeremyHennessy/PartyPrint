@@ -75,11 +75,10 @@ function bingoHTML(pack, card) {
     sheetEnd("FIRST COMPLETE LINE WINS · GOOD LUCK ♡");
 }
 
-function triviaHTML(pack, isPreview = false) {
-  const questions = isPreview ? pack.trivia.slice(0, 6) : pack.trivia;
+function triviaHTML(pack) {
+  const questions = pack.trivia;
   return sheetStart(pack, "trivia time", "12 questions · One point per correct answer") +
     `<ol class="question-list">${questions.map(q => `<li>${escapeHTML(q.question)}</li>`).join("")}</ol>` +
-    (isPreview ? `<p class="print-footnote">+ 6 more questions in your printed pack</p>` : "") +
     sheetEnd("ANSWERS INCLUDED ON A SEPARATE HOST SHEET");
 }
 
@@ -95,11 +94,10 @@ function guestAnswersHTML(pack) {
     `<ol class="guest-answer-lines">${pack.trivia.map(() => "<li><span></span></li>").join("")}</ol>` + sheetEnd("12 QUESTIONS · ONE POINT PER CORRECT ANSWER");
 }
 
-function scavengerHTML(pack, isPreview = false) {
-  const items = isPreview ? pack.scavenger.slice(0, 8) : pack.scavenger;
+function scavengerHTML(pack) {
+  const items = pack.scavenger;
   return sheetStart(pack, "find & seek", "Spot each item · Tick it off · Have fun!") +
     `<ul class="scavenger-list">${items.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>` +
-    (isPreview ? `<p class="print-footnote">+ 4 more finds on your printed page</p>` : "") +
     sheetEnd("PLAY AT YOUR OWN PACE · EVERY FIND IS A WIN");
 }
 
@@ -140,11 +138,19 @@ function displayError(text) {
   $("pdf-button").disabled = true;
   $("pack-summary").textContent = "Choose your games";
   $("page-summary").textContent = "Your pack will appear here";
+  $("preview-details").textContent = "Choose at least one game to preview its sheets.";
+  for (const tab of tabs) {
+    tab.disabled = true;
+    if (["answers", "guest"].includes(tab.dataset.preview)) tab.hidden = true;
+    tab.setAttribute("aria-selected", "false");
+    tab.tabIndex = -1;
+  }
 }
 
 function render() {
   clearPDF();
   $("trivia-sheets-field").hidden = !$("game-trivia").checked;
+  $("bingo-settings").hidden = !$("game-bingo").checked;
   $("bingo-mode-field").hidden = $("occasion").value !== "baby" || !$("game-bingo").checked;
   $("bingo-mode-help").textContent = $("bingo-mode").value === "gifts" ? "Mark gifts as the guest of honor opens them." : "Mark things guests say or do during the celebration.";
   try {
@@ -158,13 +164,16 @@ function render() {
       bingo: pack.bingoCards.length > 0,
       trivia: pack.trivia.length > 0,
       scavenger: pack.scavenger.length > 0,
-      conversation: pack.conversation.length > 0
+      conversation: pack.conversation.length > 0,
+      answers: pack.trivia.length > 0,
+      guest: pack.trivia.length > 0 && pack.config.answerCount > 0
     };
     if (!activeGames[activeTab]) activeTab = Object.keys(activeGames).find(key => activeGames[key]);
 
     for (const tab of tabs) {
       const type = tab.dataset.preview;
       tab.disabled = !activeGames[type];
+      if (type === "answers" || type === "guest") tab.hidden = !activeGames[type];
       tab.setAttribute("aria-selected", type === activeTab ? "true" : "false");
       tab.tabIndex = type === activeTab ? 0 : -1;
     }
@@ -191,12 +200,29 @@ function renderPreview() {
     tab.tabIndex = tab.dataset.preview === activeTab ? 0 : -1;
   }
   stage.setAttribute("aria-labelledby", "tab-" + activeTab);
-  stage.innerHTML = activeTab === "bingo" ? bingoHTML(pack, pack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(pack, true) : activeTab === "conversation" ? conversationHTML(pack) : scavengerHTML(pack, true);
+  stage.innerHTML = previewHTML(pack);
+  const descriptions = {
+    bingo: "Bingo · Card " + (previewCardIndex + 1) + " of " + pack.bingoCards.length,
+    trivia: "Trivia · All 12 questions · Host answers are a separate sheet",
+    scavenger: "Scavenger hunt · All 12 items",
+    conversation: "This or that · All 12 prompts",
+    answers: "Host answer key · All 12 answers · Keep separate from guest sheets",
+    guest: "Guest answer sheet · 12 blank answer lines · " + pack.config.answerCount + " identical copies in your PDF"
+  };
+  $("preview-details").textContent = descriptions[activeTab];
   $("expand-preview").disabled = false;
   $("card-navigation").hidden = activeTab !== "bingo" || pack.bingoCards.length < 2;
   $("card-position").textContent = "Card " + (previewCardIndex + 1) + " / " + pack.bingoCards.length;
   $("previous-card").disabled = previewCardIndex === 0;
   $("next-card").disabled = previewCardIndex >= pack.bingoCards.length - 1;
+}
+function previewHTML(pack) {
+  if (activeTab === "bingo") return bingoHTML(pack, pack.bingoCards[previewCardIndex]);
+  if (activeTab === "trivia") return triviaHTML(pack);
+  if (activeTab === "answers") return answersHTML(pack);
+  if (activeTab === "guest") return guestAnswersHTML(pack);
+  if (activeTab === "conversation") return conversationHTML(pack);
+  return scavengerHTML(pack);
 }
 for (const [id, direction] of [["previous-card", -1], ["next-card", 1]]) $(id).addEventListener("click", () => {
   if (!currentPack) return;
@@ -205,7 +231,8 @@ for (const [id, direction] of [["previous-card", -1], ["next-card", 1]]) $(id).a
 });
 $("expand-preview").addEventListener("click", () => {
   if (!currentPack) return;
-  $("full-sheet").innerHTML = activeTab === "bingo" ? bingoHTML(currentPack, currentPack.bingoCards[previewCardIndex]) : activeTab === "trivia" ? triviaHTML(currentPack) : activeTab === "conversation" ? conversationHTML(currentPack) : scavengerHTML(currentPack);
+  $("full-sheet").innerHTML = previewHTML(currentPack);
+  document.querySelector(".sheet-swipe-help").hidden = activeTab !== "bingo";
   $("sheet-dialog").showModal();
   $("sheet-dialog").scrollTop = 0;
   $("close-sheet").focus({preventScroll:true});

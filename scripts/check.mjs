@@ -28,7 +28,7 @@ for (const file of html) {
     localLinks += 1;
   }
 }
-for (const file of ["src/app.js", "src/pdf.js", "src/core.js", "src/content.js", "src/analytics.js", "src/photo-theme.js", "src/conversation.js", "scripts/photo-game-qa.mjs", "scripts/build.mjs", "scripts/check.mjs", "scripts/print-qa.mjs", "scripts/brand-browser-qa.mjs", "scripts/make-marketing-pdfs.mjs", "scripts/wildflower-browser-qa.mjs"]) {
+for (const file of ["src/app.js", "src/pdf.js", "src/core.js", "src/content.js", "src/analytics.js", "src/photo-theme.js", "src/conversation.js", "scripts/photo-game-qa.mjs", "scripts/selection-qa.mjs", "scripts/build.mjs", "scripts/check.mjs", "scripts/print-qa.mjs", "scripts/brand-browser-qa.mjs", "scripts/make-marketing-pdfs.mjs", "scripts/wildflower-browser-qa.mjs"]) {
   const abs = path.join(root, file);
   execFileSync(process.execPath, ["--check", abs]);
   if (file.startsWith("src/")) {

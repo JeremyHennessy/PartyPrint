@@ -101,7 +101,7 @@
                 </select></div>
               </div>
               <div class="field-group"><label for="party-title">Give your party a name <span class="optional">(optional)</span></label><input id="party-title" maxlength="70" name="party-title" placeholder="e.g. Olivia's Baby Shower" autocomplete="off"><small>It'll appear on every printable.</small></div>
-              <div class="field-row">
+              <div class="field-row" id="bingo-settings">
                 <div class="field-group"><label for="guest-count">How many bingo cards?</label><div class="number-field"><input id="guest-count" type="number" min="1" max="48" value="12" inputmode="numeric"><span>cards</span></div></div>
                 <div class="field-group"><label for="card-size">Bingo grid</label><div class="select-wrap"><select id="card-size"><option value="5">5 × 5 · Classic</option><option value="4">4 × 4 · Quick play</option></select></div></div>
               </div>
@@ -131,7 +131,11 @@
               <button type="button" role="tab" aria-selected="false" id="tab-trivia" aria-controls="preview-stage" data-preview="trivia">Trivia</button>
               <button type="button" role="tab" aria-selected="false" id="tab-conversation" aria-controls="preview-stage" data-preview="conversation">This or that</button>
               <button type="button" role="tab" aria-selected="false" id="tab-scavenger" aria-controls="preview-stage" data-preview="scavenger">Scavenger hunt</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-answers" aria-controls="preview-stage" data-preview="answers" hidden>Host answers</button>
+              <button type="button" role="tab" aria-selected="false" id="tab-guest" aria-controls="preview-stage" data-preview="guest" hidden>Guest sheet</button>
             </div>
+            <p class="preview-help">Preview sheets from your selected games. To include another game, tick it under “Pick your games.”</p>
+            <p id="preview-details" class="preview-details" role="status" aria-live="polite"></p>
             <div id="preview-stage" class="preview-stage" role="tabpanel" aria-labelledby="tab-bingo" tabindex="0"><div class="preview-loading">Creating a little magic…</div></div>
             <div class="preview-controls"><div id="card-navigation" hidden><button type="button" id="previous-card" aria-label="Previous bingo card">←</button><span id="card-position" aria-live="polite"></span><button type="button" id="next-card" aria-label="Next bingo card">→</button></div><button type="button" id="expand-preview">Read full sheet ↗</button></div>
             <div class="preview-bottom">
