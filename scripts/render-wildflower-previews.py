@@ -77,8 +77,8 @@ for source, name in [('sample-1.png', 'wildflower-bingo.png'),
 # Every page is retained; contact sheets make complete layout review practical.
 for prefix in ['letter', 'a4-ink', 'letter-ink', 'a4-color']:
     pages = sorted(p for p in QA.glob(prefix+'-*.png') if p.stem[len(prefix)+1:].isdigit())
-    assert len(pages) == 34
-    for start in range(0, 34, 12):
+    assert len(pages) == 37
+    for start in range(0, 37, 12):
         contact = Image.new('RGB', (1800, 1840), '#e5e2dd')
         d = ImageDraw.Draw(contact)
         for index, file in enumerate(pages[start:start+12]):

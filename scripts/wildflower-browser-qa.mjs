@@ -19,8 +19,13 @@ try {
     assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), 'https://partyprint.live/assets/kits/wildflower/wildflower-social.jpg');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     assert.equal(await page.locator('script[src*="adsbygoogle"],script[src*="pinterest"],iframe[src*="payhip"]').count(), 0);
-    assert.match(await page.locator('main').innerText(), /It is not on sale yet/);
-    assert.equal(await page.getByRole('link', { name: /buy|checkout|purchase/i }).count(), 0);
+    assert.match(await page.locator('main').innerText(), /US\$5 one-time purchase/);
+    assert.match(await page.locator('main').innerText(), /plus applicable tax/);
+    const purchase = page.getByRole('link', { name: 'Get the full kit — US$5 ↗', exact: true });
+    assert.equal(await purchase.count(), 1);
+    assert.equal(await purchase.getAttribute('href'), 'https://payhip.com/b/q7vnR');
+    assert.equal(await purchase.getAttribute('rel'), 'noopener noreferrer');
+    assert.equal(await page.getByRole('link', { name: 'PartyPrint store contact form', exact: true }).getAttribute('href'), 'https://payhip.com/PartyPrint/contact');
     const imageResults = await page.locator('main img').evaluateAll(images => images.map(i => ({ alt: i.alt, loaded: i.complete && i.naturalWidth > 0 })));
     // Lazy images are checked after scrolling rather than assuming above-fold loading.
     for (const img of await page.locator('main img').all()) {
