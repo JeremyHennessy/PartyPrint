@@ -4,7 +4,8 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const required = ["index.html", "styles.css", "print.css", "src/app.js", "src/pdf.js", "src/core.js", "src/content.js", "privacy.html", "terms.html", "about.html", "404.html", "assets/favicon.svg", "robots.txt", "_headers", ".github/workflows/verify.yml", "guides/baby-shower-bingo/index.html", "guides/bridal-shower-games/index.html", "guides/birthday-party-games/index.html", "guides/office-party-games/index.html"];
+for (const file of ['src/guest.js','src/guest-share.js','src/guest-link.js','src/qr.js','src/vendor/qrcodegen.js','scripts/guest-play-qa.mjs']) execFileSync(process.execPath,['--check',path.join(root,file)]);
+const required = ["index.html", "play/index.html", "play.css", "styles.css", "print.css", "src/app.js", "src/pdf.js", "src/core.js", "src/content.js", "privacy.html", "terms.html", "about.html", "404.html", "assets/favicon.svg", "robots.txt", "_headers", ".github/workflows/verify.yml", "guides/baby-shower-bingo/index.html", "guides/bridal-shower-games/index.html", "guides/birthday-party-games/index.html", "guides/office-party-games/index.html"];
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), "Missing: " + file);
 const walk = folder => fs.readdirSync(folder, { withFileTypes: true }).flatMap(entry => {
   const abs = path.join(folder, entry.name);
